@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "minhasfinancasofc-service"
+location: "southamerica-east1"
+schemas:
+  - source: "./schema"
+    datasource:
+      postgresql:
+        database: "minhasfinancasofc-database"
+        cloudSql:
+          instanceId: "minhasfinancasofc-instance"
+          schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connectors/client"]

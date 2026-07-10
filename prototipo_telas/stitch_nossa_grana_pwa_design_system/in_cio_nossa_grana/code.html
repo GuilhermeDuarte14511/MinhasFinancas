@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nossa Grana - Dashboard Inicial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "secondary": "#006a63",
+                        "on-primary-fixed": "#0f0069",
+                        "outline": "#777587",
+                        "tertiary-container": "#5551c2",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-secondary-container": "#006f67",
+                        "surface-container-high": "#eae6f4",
+                        "surface": "#fcf8ff",
+                        "inverse-surface": "#302f39",
+                        "secondary-container": "#99efe5",
+                        "on-surface": "#1b1b24",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dcd8e5",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-on-surface": "#f3effc",
+                        "tertiary-fixed": "#e2dfff",
+                        "tertiary": "#3d37a9",
+                        "surface-container-low": "#f5f2ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e4e1ee",
+                        "primary-container": "#4f46e5",
+                        "background": "#fcf8ff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4d44e3",
+                        "on-primary-container": "#dad7ff",
+                        "outline-variant": "#c7c4d8",
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1b1b24",
+                        "primary": "#3525cd",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#e2dfff",
+                        "surface-container": "#f0ecf9",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-tertiary-container": "#dbd7ff",
+                        "secondary-fixed": "#9cf2e8",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-bright": "#fcf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "container-margin-desktop": "40px",
+                        "container-margin-mobile": "16px",
+                        "3xl": "64px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+        
+        /* Glassmorphism effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col pt-safe pb-[100px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="flex items-center gap-sm">
+<div class="flex -space-x-2">
+<img alt="Guilherme" class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A small, circular profile picture of a young man smiling, light lighting, clear background, modern ui component style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBj8qfRYWzu26VwSCXurwzm16EXi7-q6GtuWp7ftbOMInKg-iIqfwf-w1KzSBnKcoBeNL4EZA568XAEPE7UfSdF_icQIV8xuTnxAm-xzcuq7kSc-F1gxc7aWGNPa2CkrAphwTBmnQF2uaBeisL0Gjy6ZgEfJZW4Ka8gGo5smdARdp31NMl4B8Xk3fnE1u7YuVWeOHvN7sY4koVwemTDAaOGFpZtnz0FpFMXksLK-Boq4k2b1GUKK0"/>
+<img alt="Mariana" class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A small, circular profile picture of a young woman smiling, bright lighting, soft background, clean modern ui component style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-EJAOoRxoVs2MYA2nVYKZXkgXannWlpPWg9GwyB87_dubylf7d3gb51PNXG6eZnqVcPKrbuznlFDcUt_-xCb5DxQD0-ghFs3XIy3MPya5JdEvSavNFD_c9v_lepIj2RI-EQ40fZp1_nI9713J9zw7Xb_x_DtaCJRgxSNOmYAoeT0VGaXnJ4gEh1jFqwXIWeomJ_9Y1IdmOXYsbMAvrUWeazcasxmm4-jRHu71tLNMyCiQGHi10OQ"/>
+</div>
+<div class="flex flex-col ml-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Olá, Guilherme</span>
+<div class="flex items-center gap-xs text-primary cursor-pointer active:scale-95 duration-200">
+<span class="font-label-lg text-label-lg font-bold">Finanças da Família</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-container-margin-mobile md:px-container-margin-desktop pt-[80px] pb-lg max-w-7xl mx-auto w-full flex flex-col gap-lg">
+<!-- Faturas Summary Card -->
+<section class="bg-white rounded-xl border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<h2 class="font-title-lg text-title-lg text-on-surface">Faturas de julho</h2>
+<span class="font-label-md text-label-md bg-surface-container-low text-primary px-3 py-1 rounded-full">Atualizado agora</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total em faturas</span>
+<span class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">R$ 3.842,70</span>
+</div>
+<!-- Shared Progress Bar -->
+<div class="flex flex-col gap-xs mt-sm">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-secondary">Pago: R$ 1.500,00</span>
+<span class="text-on-surface-variant">Pendente: R$ 2.342,70</span>
+</div>
+<div class="w-full h-3 bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 39%;"></div>
+</div>
+</div>
+</section>
+<!-- Limites Bento Grid -->
+<section class="grid grid-cols-2 gap-md">
+<div class="bg-primary-container text-on-primary-container rounded-xl p-md flex flex-col justify-between shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)]">
+<span class="font-label-md text-label-md opacity-90">Limite Disponível</span>
+<span class="font-title-lg text-title-lg mt-sm">R$ 8.750,00</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-md flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Limite Total</span>
+<span class="font-title-lg text-title-lg text-on-surface mt-sm">R$ 15.000,00</span>
+</div>
+</section>
+<!-- Elegant Cards Carousel -->
+<section class="flex flex-col gap-md -mx-container-margin-mobile md:mx-0">
+<div class="px-container-margin-mobile md:px-0 flex justify-between items-center">
+<h3 class="font-title-lg text-title-lg text-on-surface">Nossos Cartões</h3>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+</div>
+<div class="flex overflow-x-auto hide-scrollbar gap-md px-container-margin-mobile md:px-0 pb-xs snap-x snap-mandatory">
+<!-- Card Índigo -->
+<div class="snap-center shrink-0 w-[280px] h-[170px] rounded-xl p-md flex flex-col justify-between text-white shadow-lg relative overflow-hidden bg-gradient-to-br from-primary to-tertiary">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white to-transparent"></div>
+<div class="relative z-10 flex justify-between items-start">
+<span class="font-label-lg text-label-lg font-semibold tracking-wider">NOSSA GRANA</span>
+<span class="material-symbols-outlined">contactless</span>
+</div>
+<div class="relative z-10 flex flex-col gap-xs">
+<span class="font-label-md text-label-md opacity-80">Cartão Índigo</span>
+<div class="flex justify-between items-end">
+<span class="font-body-lg text-body-lg tracking-widest">**** 4321</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+</div>
+</div>
+</div>
+<!-- Card Verde -->
+<div class="snap-center shrink-0 w-[280px] h-[170px] rounded-xl p-md flex flex-col justify-between text-white shadow-lg relative overflow-hidden bg-gradient-to-br from-secondary to-on-secondary-container">
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white to-transparent"></div>
+<div class="relative z-10 flex justify-between items-start">
+<span class="font-label-lg text-label-lg font-semibold tracking-wider">NOSSA GRANA</span>
+<span class="material-symbols-outlined">contactless</span>
+</div>
+<div class="relative z-10 flex flex-col gap-xs">
+<span class="font-label-md text-label-md opacity-80">Cartão Verde</span>
+<div class="flex justify-between items-end">
+<span class="font-body-lg text-body-lg tracking-widest">**** 8765</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Próximos Vencimentos -->
+<section class="flex flex-col gap-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface">Próximos vencimentos</h3>
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<ul class="flex flex-col">
+<li class="flex items-center justify-between p-md border-b border-outline-variant min-h-[72px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Fatura Índigo</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Vence em 12 jul</span>
+</div>
+</div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">R$ 1.842,70</span>
+</li>
+<li class="flex items-center justify-between p-md border-b border-outline-variant min-h-[72px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Empréstimo</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Vence em 18 jul</span>
+</div>
+</div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">R$ 500,00</span>
+</li>
+<li class="flex items-center justify-between p-md min-h-[72px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Fatura Verde</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Vence em 25 jul</span>
+</div>
+</div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">R$ 1.500,00</span>
+</li>
+</ul>
+</div>
+</section>
+<!-- Atividades Recentes -->
+<section class="flex flex-col gap-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface">Atividades recentes</h3>
+<div class="flex flex-col gap-md">
+<div class="flex items-start gap-md">
+<img alt="Mariana" class="w-10 h-10 rounded-full border border-outline-variant object-cover mt-xs" data-alt="Small avatar of Mariana smiling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCB_byjmvqBNX_N38EGKHbC5qDKdEjU9puxgPKtAegcgDphoStQBPWxPyQa73oKnyoSIi6SeZPcDfkIP96WBSZQLV89VOle1Cy-zgYMfVDdos587fwL6c-Zv1LKZiaCYqeZVva5N_fM5-GDc7Fkfev2R1u9IIusgCRBztMriybte8RaqhbEU5Vb5tjPTstuZTuszhwxsR2kLBZ4InT63j0JJdwhmjTHe1uLLocMXNc-aafAkMPb5M"/>
+<div class="flex-1 bg-surface-container-low rounded-xl p-md border border-outline-variant">
+<p class="font-body-md text-body-md text-on-surface"><span class="font-semibold">Mariana</span> pagou a Fatura Verde de junho.</p>
+<span class="font-label-md text-label-md text-on-surface-variant mt-xs block">Hoje, 09:41</span>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<img alt="Guilherme" class="w-10 h-10 rounded-full border border-outline-variant object-cover mt-xs" data-alt="Small avatar of Guilherme smiling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_sDE2D92TJuvhtyvFh3BVdwg-XI9LWpR-dF7uuyoTj4BSnsWwNtNL3OiTgzvl45NyV7M3wRWoq1DU6btk808hMGh538Vf6eykf7CW6QmiTDZAdl6vrMXeOIcNrpvTzIF6g95B9GRjRWJgKYVBWo4AFYjf0NKcWQLNbegVEHO8JsXQvA2UMdq5cZ4ktTcjwUgA3JGQIMZTt-jYQR9M-owyEeDkS_FwFa9Pp3vnzxTbZGCZSnHuvdY"/>
+<div class="flex-1 bg-surface-container-low rounded-xl p-md border border-outline-variant">
+<p class="font-body-md text-body-md text-on-surface"><span class="font-semibold">Guilherme</span> adicionou uma compra no Mercado Livre.</p>
+<span class="font-label-md text-label-md text-on-surface-variant mt-xs block">Ontem, 19:20</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl md:hidden">
+<!-- Início (Active) -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md mt-xs">Início</span>
+</button>
+<!-- Cartões -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="font-label-md text-label-md mt-xs">Cartões</span>
+</button>
+<!-- Novo (FAB-like integration) -->
+<div class="relative -top-6">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-[0px_8px_10px_-6px_rgba(15,23,42,0.1)] border-4 border-surface active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<!-- Agenda -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md mt-xs">Agenda</span>
+</button>
+<!-- Mais -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-md text-label-md mt-xs">Mais</span>
+</button>
+</nav>
+<!-- Desktop Navigation Fallback (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed top-0 right-0 h-16 items-center px-lg z-50 gap-md">
+<!-- Replicating the logic of bottom nav for desktop topbar if needed, but keeping it simple as bottom nav is main requirement -->
+</nav>
+</body></html>

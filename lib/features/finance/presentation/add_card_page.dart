@@ -1,0 +1,170 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/widgets/app_widgets.dart';
+import '../../../core/money/money.dart';
+import '../application/finance_controller.dart';
+
+class AddCardPage extends ConsumerStatefulWidget {
+  const AddCardPage({super.key});
+
+  @override
+  ConsumerState<AddCardPage> createState() => _AddCardPageState();
+}
+
+class _AddCardPageState extends ConsumerState<AddCardPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _digitsController = TextEditingController();
+  Money _limit = const Money.zero();
+  int _closingDay = 10;
+  int _dueDay = 17;
+  bool _saving = false;
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    try {
+      await ref
+          .read(financeControllerProvider.notifier)
+          .addCard(
+            nickname: _nameController.text.trim(),
+            lastFourDigits: _digitsController.text,
+            limit: _limit,
+            closingDay: _closingDay,
+            dueDay: _dueDay,
+          );
+      if (!mounted) return;
+      showSuccessMessage(context, 'Cartão adicionado com segurança.');
+      context.go('/app/cards');
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ref.read(financeControllerProvider).errorMessage ??
+                  'Não foi possível salvar o cartão.',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _digitsController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const BrandAppBar(title: 'Adicionar cartão', showBack: true),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: AppContent(
+            maxWidth: 620,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Cadastre apenas os dados necessários',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Nunca informe número completo, CVV ou senha do cartão.',
+                  ),
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Apelido do cartão',
+                      hintText: 'Ex: Cartão Índigo',
+                      prefixIcon: Icon(Icons.credit_card_outlined),
+                    ),
+                    validator: (value) => (value?.trim().length ?? 0) >= 3
+                        ? null
+                        : 'Informe um apelido.',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _digitsController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(4),
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Últimos 4 dígitos',
+                      prefixIcon: Icon(Icons.pin_outlined),
+                    ),
+                    validator: (value) => value?.length == 4
+                        ? null
+                        : 'Informe exatamente 4 dígitos.',
+                  ),
+                  const SizedBox(height: 16),
+                  CurrencyField(
+                    label: 'Limite em centavos',
+                    onChanged: (value) => _limit = value,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          initialValue: _closingDay,
+                          decoration: const InputDecoration(
+                            labelText: 'Fechamento',
+                          ),
+                          items: [
+                            for (var day = 1; day <= 31; day++)
+                              DropdownMenuItem(
+                                value: day,
+                                child: Text('Dia $day'),
+                              ),
+                          ],
+                          onChanged: (value) => _closingDay = value ?? 10,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          initialValue: _dueDay,
+                          decoration: const InputDecoration(
+                            labelText: 'Vencimento',
+                          ),
+                          items: [
+                            for (var day = 1; day <= 31; day++)
+                              DropdownMenuItem(
+                                value: day,
+                                child: Text('Dia $day'),
+                              ),
+                          ],
+                          onChanged: (value) => _dueDay = value ?? 17,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 26),
+                  FilledButton(
+                    onPressed: _saving ? null : _save,
+                    child: Text(_saving ? 'Salvando...' : 'Salvar cartão'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

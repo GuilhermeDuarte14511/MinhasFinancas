@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Membros do Espaço - Nossa Grana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#c3c0ff",
+                      "secondary-fixed-dim": "#80d5cb",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#0f0069",
+                      "on-surface-variant": "#464555",
+                      "outline-variant": "#c7c4d8",
+                      "error": "#ba1a1a",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-container": "#006f67",
+                      "tertiary": "#3d37a9",
+                      "surface-bright": "#fcf8ff",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#4f46e5",
+                      "surface-dim": "#dcd8e5",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#e2dfff",
+                      "primary": "#3525cd",
+                      "secondary-fixed": "#9cf2e8",
+                      "on-secondary-fixed-variant": "#00504a",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-tertiary-fixed-variant": "#3b35a7",
+                      "on-primary-fixed": "#0f0069",
+                      "on-secondary-fixed": "#00201d",
+                      "inverse-on-surface": "#f3effc",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e4e1ee",
+                      "on-surface": "#1b1b24",
+                      "on-tertiary-container": "#dbd7ff",
+                      "inverse-surface": "#302f39",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface": "#fcf8ff",
+                      "on-background": "#1b1b24",
+                      "secondary-container": "#99efe5",
+                      "surface-variant": "#e4e1ee",
+                      "surface-container-low": "#f5f2ff",
+                      "surface-container-high": "#eae6f4",
+                      "on-primary-container": "#dad7ff",
+                      "outline": "#777587",
+                      "background": "#fcf8ff",
+                      "secondary": "#006a63",
+                      "inverse-primary": "#c3c0ff",
+                      "surface-container": "#f0ecf9",
+                      "tertiary-container": "#5551c2",
+                      "surface-tint": "#4d44e3",
+                      "primary-fixed": "#e2dfff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "gutter": "16px",
+                      "2xl": "48px",
+                      "container-margin-desktop": "40px",
+                      "3xl": "64px",
+                      "base": "8px",
+                      "container-margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Couple profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a modern couple, smiling warmly at the camera. The lighting is soft and inviting, reflecting a humanistic and supportive corporate modern style. Bright, clear background to ensure the subjects stand out clearly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPrHUPfDAbWMR89q4lC8vlPKDvfl11w0_ErjVye5Zwrb5bWqCnxIGxvEs-56QTBWgRa4k8V1LYL-gd-E3GVeWiC7Y_oiVekPMDrD7eNOEqBpcRhwzP992YfhYu0g6aF64tlWSl4BVbfOSvxg5bFIycgxTqh451HcO4cnZmPZOSbwmFYiysUuCuCZ4fYV7GEGGVsySg4ovTjfe57cYIBDaLUG0FOf5a2SHC1ibAUUbwEYczALLh0KI"/>
+</div>
+<span class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-32 px-container-margin-mobile md:px-container-margin-desktop max-w-5xl mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-xl">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Finanças da Família</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Gerencie quem tem acesso a este espaço.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Main Column: Members -->
+<div class="lg:col-span-2 flex flex-col gap-lg">
+<!-- Action Bar -->
+<div class="flex justify-between items-center">
+<h2 class="font-title-lg text-title-lg text-on-surface">Membros (2)</h2>
+<button class="h-[52px] bg-primary-container text-on-primary font-label-lg text-label-lg px-lg rounded-full flex items-center gap-sm shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                        Convidar pessoa
+                    </button>
+</div>
+<!-- Members List -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<!-- Member Item 1 -->
+<div class="flex items-center justify-between p-lg border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a young man with a friendly expression. He is wearing casual, modern attire suitable for a collaborative financial management app. The background is a clean, bright, light-mode inspired gradient. The image feels welcoming and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZtDVw1jtFtxfZ2Gy0c_M60qcJak9ESh_H0hFF3cTCY2CtCBfhuQ0cLfc3qlUUpwXkhtnNRbHC3w69-Ab2fdoRUAKAljtc0vtguzgBuKc2hfaXtuCKeOnb0Ra_PGWG_lsgrMBdvng72kTXYg3U2_7dGDgh_w1Dv0HaQHhLk6QhMSWHmIs7Dcwkq1r6D0lhfvGuEkZXNz5-RVAUcpeR5O8Et9uK4aMokgPFNIjYzwADAg_6kF2DpTo"/>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Carlos Silva</p>
+<p class="font-body-md text-body-md text-on-surface-variant">carlos.silva@email.com</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="h-8 px-sm flex items-center justify-center rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">Proprietário</span>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Member Item 2 -->
+<div class="flex items-center justify-between p-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a young woman smiling warmly. She is styled in smart-casual modern clothing, fitting the corporate modern aesthetic of a financial app designed for couples. The lighting is soft and the background is a pristine, bright white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlMhlBqE2UsCl3iaC77MwEeMfR58gOikDsRyxGPWhIMOVITlKv8wk297gahAfhU8VERPK-t4yb3nriBaWlK45L-fK1EzJ6Con1BMIw4kf-GpiQjngVyRixV-krljsd8JxmPouRZwv9Q3R6PhvDyuqr8QsSpeCo9yj_NfQSyP0VchUCsSeezmPWMolWGDx1AnLWWDV57CBmAGzpAMiRighgdUHuhGuBFYu-2MMeNPbgrpBweouHIOs"/>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Ana Costa</p>
+<p class="font-body-md text-body-md text-on-surface-variant">ana.costa@email.com</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="h-8 px-sm flex items-center justify-center rounded-full bg-surface-variant text-on-surface-variant font-label-md text-label-md">Editor</span>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Column: Activity -->
+<div class="flex flex-col gap-lg">
+<h2 class="font-title-lg text-title-lg text-on-surface">Atividades Recentes</h2>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<ul class="relative border-l border-outline-variant ml-sm space-y-md">
+<li class="pl-md relative">
+<div class="absolute w-3 h-3 bg-primary-container rounded-full -left-[6.5px] top-1 border-2 border-surface-container-lowest"></div>
+<p class="font-label-lg text-label-lg text-on-surface">Ana Costa aceitou o convite</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Hoje, 10:30</p>
+</li>
+<li class="pl-md relative">
+<div class="absolute w-3 h-3 bg-surface-variant rounded-full -left-[6.5px] top-1 border-2 border-surface-container-lowest"></div>
+<p class="font-label-lg text-label-lg text-on-surface">Convite enviado para Ana Costa</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Ontem, 15:45</p>
+</li>
+<li class="pl-md relative">
+<div class="absolute w-3 h-3 bg-surface-variant rounded-full -left-[6.5px] top-1 border-2 border-surface-container-lowest"></div>
+<p class="font-label-lg text-label-lg text-on-surface">Espaço 'Finanças da Família' criado</p>
+<p class="font-body-md text-body-md text-on-surface-variant">12 de Outubro, 09:00</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs group-hover:text-on-surface">home</span>
+<span class="font-label-md text-label-md">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs group-hover:text-on-surface">credit_card</span>
+<span class="font-label-md text-label-md">Cartões</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs group-hover:text-on-surface">add_circle</span>
+<span class="font-label-md text-label-md">Novo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 group" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs group-hover:text-on-surface">calendar_today</span>
+<span class="font-label-md text-label-md">Agenda</span>
+</a>
+<!-- Active Tab: Mais (Settings/Profile usually sit here) -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-label-md text-label-md">Mais</span>
+</a>
+</nav>
+</body></html>

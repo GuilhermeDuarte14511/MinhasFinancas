@@ -1,0 +1,5 @@
+connectorId: client
+generate:
+  dartSdk:
+    outputDir: ../../../lib/features/finance/infrastructure/sql_connect_generated
+    package: nossa_grana_sql_connect

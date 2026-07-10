@@ -1,0 +1,2484 @@
+Você está trabalhando no workspace GitHub do projeto “Nossa Grana”.
+
+Sua missão é analisar o repositório e implementar um aplicativo de gestão financeira compartilhada para casais e famílias, seguindo DDD, Clean Architecture, Clean Code e SOLID.
+
+O projeto deve utilizar um único código-fonte Flutter, gerando dois artefatos:
+
+1. Aplicativo Android nativo, instalado diretamente por APK.
+2. Aplicação Flutter Web/PWA, hospedada no Firebase Hosting e acessada pelo Safari do iPhone.
+
+Android e Web devem compartilhar o mesmo Firebase Authentication, Firebase SQL Connect, PostgreSQL, modelo de domínio, regras financeiras e dados.
+
+Não entregue apenas recomendações ou exemplos. Inspecione o workspace, crie um plano e comece a implementação incremental, mantendo o repositório compilável e testável ao final de cada etapa.
+
+==================================================
+1. REGRAS DE EXECUÇÃO
+==================================================
+
+Antes de alterar qualquer arquivo:
+
+1. Execute `git status`.
+2. Inspecione a estrutura com `rg --files`.
+3. Leia completamente:
+   - AGENTS.md, se existir.
+   - README.
+   - pubspec.yaml.
+   - analysis_options.yaml.
+   - firebase.json.
+   - .firebaserc.
+   - arquivos do SQL Connect.
+   - configurações Android e Web.
+   - workflows do GitHub.
+   - documentos de arquitetura.
+4. Identifique alterações existentes do usuário.
+5. Preserve código, assets e mudanças não relacionadas.
+6. Verifique as versões instaladas:
+   - `flutter --version`.
+   - `dart --version`.
+   - `firebase --version`.
+   - `flutterfire --version`.
+7. Verifique se existem designs ou assets exportados do Google Stitch.
+8. Descubra se o repositório está vazio, parcialmente iniciado ou funcional.
+
+Depois da inspeção:
+
+1. Apresente uma interpretação resumida da especificação.
+2. Crie um plano incremental.
+3. Registre decisões arquiteturais importantes.
+4. Comece a implementação.
+5. Não pare apenas na documentação quando houver implementação segura possível.
+6. Não deixe o repositório quebrado.
+7. Só faça perguntas se existir uma decisão material que não possa ser inferida.
+8. Use emuladores quando faltarem credenciais reais.
+
+Não execute sem autorização:
+
+- Criação de recursos pagos.
+- Criação de instância Cloud SQL.
+- Deploy no Firebase.
+- Alteração de produção.
+- Commit.
+- Push.
+- Pull request.
+- Criação ou versionamento de keystore.
+
+==================================================
+2. VISÃO DO PRODUTO
+==================================================
+
+Nome provisório: Nossa Grana.
+
+O Nossa Grana funciona como uma planilha financeira compartilhada para casais e famílias.
+
+Um usuário cria um espaço financeiro, como “Finanças da Família”, e convida outra pessoa.
+
+Os membros administram juntos:
+
+- Cartões de crédito.
+- Titulares dos cartões.
+- Limites.
+- Compras à vista.
+- Compras parceladas.
+- Parcelas atuais e futuras.
+- Faturas.
+- Pagamentos totais e parciais.
+- Próximos vencimentos.
+- Empréstimos.
+- Parcelas de empréstimos.
+- Categorias.
+- Lembretes.
+- Histórico de atividades.
+- Permissões dos membros.
+
+Exemplo principal:
+
+- Guilherme utiliza o aplicativo Android nativo.
+- Mariana utiliza o Web/PWA no iPhone.
+- Ambos entram no mesmo espaço “Finanças da Família”.
+- Guilherme registra uma compra pelo Android.
+- Mariana visualiza a compra no Web.
+- Mariana registra um pagamento.
+- Guilherme visualiza a fatura atualizada no Android.
+
+O sistema deve identificar quem realizou cada ação.
+
+Exemplos:
+
+- “Guilherme adicionou uma compra.”
+- “Mariana registrou o pagamento da fatura.”
+- “Compra cadastrada por Mariana.”
+- “Cartão pertencente a Guilherme.”
+
+==================================================
+3. OBJETIVOS DA EXPERIÊNCIA
+==================================================
+
+O usuário deve conseguir:
+
+1. Descobrir em menos de 5 segundos quanto ainda pode gastar.
+2. Registrar uma compra em menos de 20 segundos.
+3. Visualizar quanto precisa pagar no mês.
+4. Identificar valores pagos, pendentes e vencidos.
+5. Entender o impacto das compras parceladas.
+6. Visualizar os próximos meses comprometidos.
+7. Identificar os próximos vencimentos.
+8. Saber quem cadastrou cada informação.
+9. Compartilhar os dados com outro usuário de forma segura.
+10. Usar o aplicativo sem conhecimento avançado de finanças.
+
+Priorizar:
+
+- Limite disponível.
+- Limite comprometido.
+- Faturas atuais.
+- Valores pendentes.
+- Próximos vencimentos.
+- Ações rápidas.
+- Clareza de parcelamentos.
+- Colaboração entre os membros.
+
+Evitar:
+
+- Excesso de gráficos.
+- Linguagem técnica.
+- Aparência de planilha tradicional.
+- Interface bancária complexa.
+- Gamificação excessiva.
+- Informações demais na mesma tela.
+
+==================================================
+4. PLATAFORMAS
+==================================================
+
+Um único projeto Flutter deve suportar:
+
+ANDROID NATIVO
+
+- Aplicativo compilado nativamente.
+- Instalado diretamente por APK.
+- Sem publicação inicial na Play Store.
+- Firebase Authentication para Android.
+- Firebase SQL Connect para Android.
+- Firebase Cloud Messaging nativo.
+- Botão ou gesto de voltar.
+- Permissões nativas.
+- Barras de sistema e safe areas.
+- Assinatura release configurável sem versionar segredos.
+
+WEB/PWA
+
+- Flutter Web.
+- Hospedado no Firebase Hosting.
+- Acessado pelo Safari do iPhone.
+- Instalável na tela inicial.
+- Executado em modo standalone.
+- Firebase Authentication para Web.
+- Mesmo Firebase SQL Connect.
+- Web Push quando suportado.
+- Lembretes internos como fallback.
+- Refresh e navegação direta por URL.
+- Safe areas do Safari.
+- Persistência de sessão.
+
+Não criar:
+
+- Aplicativo iOS nativo.
+- Projeto Xcode.
+- Publicação na Apple App Store.
+- Versão desktop.
+- Layout para tablet.
+- Bancos separados por plataforma.
+- Modelos de domínio separados.
+- Dois projetos Flutter.
+
+O Firebase Hosting deve hospedar apenas o build Web. Nunca tente hospedar o APK.
+
+==================================================
+5. STACK
+==================================================
+
+Frontend:
+
+- Flutter estável.
+- Dart estável.
+- Material Design 3.
+- Riverpod para estado e composição de dependências.
+- GoRouter para navegação.
+- Intl com locale `pt_BR`.
+- Bibliotecas estáveis e necessárias.
+- Código compartilhado entre Android e Web.
+
+Backend:
+
+- Firebase Authentication.
+- Firebase SQL Connect, anteriormente Data Connect.
+- Cloud SQL for PostgreSQL.
+- SDK Dart gerado pelo SQL Connect.
+- Firebase Cloud Messaging.
+- Firebase Hosting.
+- Cloud Functions somente quando necessárias.
+- Cloud Scheduler somente para lembretes agendados.
+- Firebase App Check antes da produção.
+
+Desenvolvimento:
+
+- Firebase Emulator Suite.
+- Authentication Emulator.
+- SQL Connect Emulator.
+- Hosting Emulator.
+- Seeds de desenvolvimento.
+- Configurações separadas para desenvolvimento e produção.
+
+Configurar FlutterFire para:
+
+flutterfire configure --platforms=android,web
+
+Registrar no mesmo projeto Firebase:
+
+- Um Firebase Android App.
+- Um Firebase Web App.
+
+Use `DefaultFirebaseOptions.currentPlatform`.
+
+Se o projeto estiver vazio, use provisoriamente:
+
+- Nome: Nossa Grana.
+- Slug: `nossa_grana`.
+- Android applicationId: `br.com.nossagrana.app`.
+
+Documente como alterar esses identificadores posteriormente.
+
+==================================================
+6. ORÇAMENTO DE INFRAESTRUTURA
+==================================================
+
+O custo mensal total desejado é de até R$ 50–60.
+
+Antes de criar uma instância Cloud SQL:
+
+1. Investigue se existe instância do aplicativo atual que possa ser reutilizada.
+2. Verifique projeto Firebase/GCP.
+3. Verifique região.
+4. Verifique capacidade.
+5. Verifique isolamento.
+6. Considere database ou schema separado.
+7. Considere serviço SQL Connect separado.
+8. Apresente impacto e riscos.
+9. Aguarde autorização.
+
+Controle custos com:
+
+- Queries limitadas.
+- Paginação.
+- Índices.
+- Poucos listeners permanentes.
+- Cache seguro.
+- Operações agrupadas.
+- Rotinas agendadas apenas quando necessárias.
+- Orçamento e alertas de faturamento documentados.
+
+Não misture Firestore e SQL Connect sem uma justificativa aprovada.
+
+==================================================
+7. ARQUITETURA
+==================================================
+
+Use um monólito modular organizado por bounded contexts.
+
+Não use:
+
+- Microserviços.
+- Event sourcing.
+- CQRS complexo.
+- Service Locator.
+- Heranças artificiais.
+- BaseRepository genérico.
+- BaseUseCase genérico.
+- God classes.
+- Pastas genéricas que acumulam responsabilidades.
+
+Estrutura de referência:
+
+lib/
+  app/
+    bootstrap/
+      app_bootstrap.dart
+      firebase_bootstrap.dart
+      platform_composition.dart
+    routing/
+    theme/
+    localization/
+
+  core/
+    errors/
+    result/
+    money/
+    clock/
+    validation/
+    platform/
+
+  features/
+    identity_access/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+
+    financial_spaces/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+
+    credit_cards/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+
+    billing/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+
+    loans/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+
+    reminders/
+      domain/
+      application/
+      infrastructure/
+        android/
+        web/
+      presentation/
+
+    app_installation/
+      application/
+      infrastructure/
+        android/
+        web/
+      presentation/
+
+    dashboard/
+      application/
+      presentation/
+
+dataconnect/
+  schema/
+  connectors/
+    client/
+    admin/
+  seed/
+
+functions/
+  src/
+    invitations/
+    reminders/
+    notifications/
+
+test/
+  unit/
+  application/
+  infrastructure/
+  widget/
+  integration/
+
+integration_test/
+
+docs/
+  architecture.md
+  domain-model.md
+  database-schema.md
+  security.md
+  infrastructure-costs.md
+  implementation-plan.md
+  decisions/
+
+Regras de dependência:
+
+- Domain não depende de Flutter.
+- Domain não depende de Firebase.
+- Domain não depende de Riverpod.
+- Domain não depende de SQL Connect.
+- Domain não conhece Android ou Web.
+- Application depende de Domain e de interfaces.
+- Infrastructure implementa interfaces.
+- Presentation depende de Application.
+- O SDK gerado do SQL Connect permanece na Infrastructure.
+- DTOs não podem vazar para Domain ou Presentation.
+- Use mapeadores explícitos.
+- Riverpod realiza composição nas bordas.
+- Widgets não contêm regras financeiras.
+- Providers não calculam parcelas, faturas ou limites.
+- Diferenças de plataforma permanecem na Infrastructure.
+
+Use código em inglês e textos da interface em português do Brasil.
+
+==================================================
+8. BOUNDED CONTEXTS
+==================================================
+
+Modele:
+
+1. Identity and Access.
+2. Financial Spaces and Membership.
+3. Credit Cards and Purchases.
+4. Billing and Payments.
+5. Loans.
+6. Reminders and Notifications.
+7. Dashboard and Reporting.
+
+==================================================
+9. VALUE OBJECTS E REGRAS CENTRAIS
+==================================================
+
+Crie Value Objects:
+
+- Money.
+- EmailAddress.
+- FirebaseUserId.
+- FinancialSpaceId.
+- UserProfileId.
+- MemberId.
+- InvitationId.
+- CreditCardId.
+- PurchaseId.
+- PurchaseInstallmentId.
+- InvoiceId.
+- InvoicePaymentId.
+- CategoryId.
+- LoanId.
+- LoanInstallmentId.
+- LoanPaymentId.
+- CardLastFourDigits.
+- InstallmentCount.
+- BillingDay.
+- DueDay.
+- ReferenceMonth.
+- PercentageRate.
+- HexColor.
+- TimeOfDay.
+- IdempotencyKey.
+
+Money:
+
+- Nunca usar `double` em regras financeiras.
+- Representar dinheiro internamente em centavos.
+- Usar inteiro de 64 bits quando suportado.
+- No PostgreSQL, usar BIGINT em centavos ou NUMERIC/DECIMAL exato.
+- Nunca usar ponto flutuante binário.
+- Formatar como `R$ 1.250,90`.
+
+Datas:
+
+- Eventos e auditoria em UTC.
+- Vencimentos como datas civis.
+- Exibição e agendamento em `America/Sao_Paulo`.
+- Tratar fevereiro e anos bissextos.
+- Tratar meses sem os dias 29, 30 ou 31.
+- Datas de referência mensal devem ser normalizadas.
+
+==================================================
+10. AGREGADOS E SERVIÇOS DE DOMÍNIO
+==================================================
+
+Agregados:
+
+- FinancialSpace.
+- CreditCard.
+- Purchase.
+- CreditCardInvoice.
+- Loan.
+- NotificationPreference.
+
+Entidades:
+
+- UserProfile.
+- SpaceMember.
+- SpaceInvitation.
+- Category.
+- PurchaseInstallment.
+- InvoicePayment.
+- LoanInstallment.
+- LoanPayment.
+- NotificationRule.
+- DeviceSubscription.
+- NotificationDelivery.
+- AuditEvent.
+
+Serviços e políticas:
+
+- InstallmentScheduleGenerator.
+- InvoiceCycleCalculator.
+- CreditLimitCalculator.
+- InvoiceStatusPolicy.
+- PaymentAllocationPolicy.
+- MembershipAuthorizationPolicy.
+- InvitationPolicy.
+- LoanScheduleCalculator.
+- ReminderScheduleCalculator.
+- AuditEventFactory.
+
+==================================================
+11. ENUMS
+==================================================
+
+Defina enums de domínio:
+
+MembershipRole:
+
+- owner.
+- editor.
+- viewer.
+
+MembershipStatus:
+
+- invited.
+- active.
+- suspended.
+- removed.
+
+InvitationStatus:
+
+- pending.
+- accepted.
+- revoked.
+- expired.
+
+CreditCardStatus:
+
+- active.
+- archived.
+
+PurchaseStatus:
+
+- active.
+- cancelled.
+
+InstallmentStatus:
+
+- planned.
+- open.
+- paid.
+- cancelled.
+
+InvoiceStatus:
+
+- open.
+- closed.
+- partiallyPaid.
+- paid.
+- overdue.
+- cancelled.
+
+PaymentStatus:
+
+- confirmed.
+- reversed.
+
+LoanStatus:
+
+- active.
+- paidOff.
+- overdue.
+- cancelled.
+
+LoanInstallmentStatus:
+
+- planned.
+- open.
+- partiallyPaid.
+- paid.
+- overdue.
+- cancelled.
+
+LoanAmortizationMethod:
+
+- price.
+- sac.
+- manual.
+
+NotificationPlatform:
+
+- android.
+- web.
+
+NotificationEventType:
+
+- invoiceClosing.
+- invoiceDue.
+- loanInstallmentDue.
+
+NotificationChannel:
+
+- push.
+- inApp.
+
+NotificationDeliveryStatus:
+
+- pending.
+- processing.
+- sent.
+- failed.
+- skipped.
+
+==================================================
+12. MODELO DE BANCO DE DADOS
+==================================================
+
+Implemente todas as tabelas abaixo no schema do SQL Connect/PostgreSQL.
+
+Use UUID como chave primária, salvo justificativa técnica.
+
+Todas as tabelas compartilhadas devem possuir `financial_space_id`.
+
+Utilize constraints, foreign keys, índices, versionamento otimista e unicidade onde necessário.
+
+----------------------------------------------
+TABELA 1 — user_profile
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- firebase_uid VARCHAR NOT NULL UNIQUE.
+- email VARCHAR NOT NULL.
+- normalized_email VARCHAR NOT NULL.
+- display_name VARCHAR NOT NULL.
+- photo_url VARCHAR NULL.
+- locale VARCHAR NOT NULL DEFAULT 'pt_BR'.
+- timezone VARCHAR NOT NULL DEFAULT 'America/Sao_Paulo'.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- last_seen_at TIMESTAMPTZ NULL.
+
+Regras:
+
+- Nunca armazenar senha.
+- `firebase_uid` vincula ao Firebase Authentication.
+- `normalized_email` deve ser usado para comparação.
+
+Índices:
+
+- unique firebase_uid.
+- index normalized_email.
+
+----------------------------------------------
+TABELA 2 — financial_space
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- name VARCHAR NOT NULL.
+- currency_code CHAR(3) NOT NULL DEFAULT 'BRL'.
+- timezone VARCHAR NOT NULL DEFAULT 'America/Sao_Paulo'.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- archived_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Regras:
+
+- Um espaço deve possuir pelo menos um Owner.
+- Espaço com dados financeiros deve ser arquivado, não apagado.
+
+----------------------------------------------
+TABELA 3 — space_member
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- user_id UUID NOT NULL FK user_profile.
+- role MembershipRole NOT NULL.
+- status MembershipStatus NOT NULL.
+- invited_by_user_id UUID NULL FK user_profile.
+- joined_at TIMESTAMPTZ NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- removed_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- UNIQUE(financial_space_id, user_id).
+
+Índices:
+
+- financial_space_id.
+- user_id.
+- financial_space_id + status.
+
+----------------------------------------------
+TABELA 4 — space_invitation
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- email VARCHAR NOT NULL.
+- normalized_email VARCHAR NOT NULL.
+- role MembershipRole NOT NULL.
+- token_hash VARCHAR NOT NULL UNIQUE.
+- status InvitationStatus NOT NULL.
+- expires_at TIMESTAMPTZ NOT NULL.
+- invited_by_user_id UUID NOT NULL FK user_profile.
+- accepted_by_user_id UUID NULL FK user_profile.
+- accepted_at TIMESTAMPTZ NULL.
+- revoked_at TIMESTAMPTZ NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+
+Regras:
+
+- Token de uso único.
+- Nunca armazenar token puro.
+- Expiração obrigatória.
+- Convite aceito deve corresponder ao e-mail verificado.
+- Owner e Editor podem convidar apenas conforme a política definida.
+
+Índices:
+
+- financial_space_id.
+- normalized_email.
+- status + expires_at.
+
+----------------------------------------------
+TABELA 5 — category
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- name VARCHAR NOT NULL.
+- normalized_name VARCHAR NOT NULL.
+- icon VARCHAR NOT NULL.
+- color_hex CHAR(7) NOT NULL.
+- is_default BOOLEAN NOT NULL DEFAULT FALSE.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- archived_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- UNIQUE(financial_space_id, normalized_name).
+
+Categorias iniciais:
+
+- Mercado.
+- Casa.
+- Alimentação.
+- Transporte.
+- Saúde.
+- Lazer.
+- Assinaturas.
+- Educação.
+- Outros.
+
+----------------------------------------------
+TABELA 6 — credit_card
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- cardholder_member_id UUID NOT NULL FK space_member.
+- nickname VARCHAR NOT NULL.
+- institution_name VARCHAR NULL.
+- brand VARCHAR NULL.
+- last_four_digits CHAR(4) NOT NULL.
+- credit_limit_cents BIGINT NOT NULL.
+- closing_day SMALLINT NOT NULL.
+- due_day SMALLINT NOT NULL.
+- color_hex CHAR(7) NOT NULL.
+- reminders_enabled BOOLEAN NOT NULL DEFAULT TRUE.
+- status CreditCardStatus NOT NULL.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- updated_by_user_id UUID NOT NULL FK user_profile.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- archived_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- credit_limit_cents >= 0.
+- closing_day entre 1 e 31.
+- due_day entre 1 e 31.
+- last_four_digits deve conter apenas números.
+
+Índices:
+
+- financial_space_id.
+- cardholder_member_id.
+- financial_space_id + status.
+
+Nunca armazenar:
+
+- Número completo.
+- CVV.
+- Senha.
+- Dados de faixa magnética.
+
+----------------------------------------------
+TABELA 7 — purchase
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- credit_card_id UUID NOT NULL FK credit_card.
+- category_id UUID NOT NULL FK category.
+- description VARCHAR NOT NULL.
+- merchant_name VARCHAR NULL.
+- total_amount_cents BIGINT NOT NULL.
+- purchase_date DATE NOT NULL.
+- installment_count SMALLINT NOT NULL.
+- first_invoice_reference DATE NOT NULL.
+- notes VARCHAR NULL.
+- status PurchaseStatus NOT NULL.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- updated_by_user_id UUID NOT NULL FK user_profile.
+- cancelled_by_user_id UUID NULL FK user_profile.
+- cancelled_at TIMESTAMPTZ NULL.
+- cancellation_reason VARCHAR NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- total_amount_cents > 0.
+- installment_count entre 1 e 24.
+- first_invoice_reference normalizado para o primeiro dia do mês.
+
+Índices:
+
+- financial_space_id.
+- credit_card_id.
+- category_id.
+- purchase_date.
+- status.
+
+Regras:
+
+- Compra cancelada não deve ser apagada.
+- Alterações em compras de faturas fechadas precisam de política explícita.
+- Toda compra gera parcelas de forma atômica.
+
+----------------------------------------------
+TABELA 8 — credit_card_invoice
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- credit_card_id UUID NOT NULL FK credit_card.
+- reference_month DATE NOT NULL.
+- closing_date DATE NOT NULL.
+- due_date DATE NOT NULL.
+- status InvoiceStatus NOT NULL.
+- total_amount_cents BIGINT NOT NULL DEFAULT 0.
+- paid_amount_cents BIGINT NOT NULL DEFAULT 0.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- closed_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- UNIQUE(credit_card_id, reference_month).
+- total_amount_cents >= 0.
+- paid_amount_cents >= 0.
+- paid_amount_cents não pode ultrapassar o permitido pela política.
+- reference_month normalizado para o primeiro dia do mês.
+
+Índices:
+
+- financial_space_id.
+- credit_card_id + reference_month.
+- due_date.
+- status.
+
+Regra de fonte de verdade:
+
+- Parcelas determinam o total da fatura.
+- Pagamentos confirmados determinam o valor pago.
+- Se totais forem persistidos para performance, mantenha invariantes transacionais.
+
+----------------------------------------------
+TABELA 9 — purchase_installment
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- purchase_id UUID NOT NULL FK purchase.
+- invoice_id UUID NOT NULL FK credit_card_invoice.
+- installment_number SMALLINT NOT NULL.
+- installment_count SMALLINT NOT NULL.
+- amount_cents BIGINT NOT NULL.
+- due_date DATE NOT NULL.
+- status InstallmentStatus NOT NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+
+Constraints:
+
+- UNIQUE(purchase_id, installment_number).
+- amount_cents > 0.
+- installment_number entre 1 e installment_count.
+
+Índices:
+
+- financial_space_id.
+- purchase_id.
+- invoice_id.
+- due_date.
+- status.
+
+Regra:
+
+- A soma de `amount_cents` deve ser exatamente igual ao total da compra.
+
+----------------------------------------------
+TABELA 10 — invoice_payment
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- invoice_id UUID NOT NULL FK credit_card_invoice.
+- amount_cents BIGINT NOT NULL.
+- paid_at TIMESTAMPTZ NOT NULL.
+- notes VARCHAR NULL.
+- status PaymentStatus NOT NULL.
+- idempotency_key VARCHAR NOT NULL.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- reversed_by_user_id UUID NULL FK user_profile.
+- reversed_at TIMESTAMPTZ NULL.
+- reversal_reason VARCHAR NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+
+Constraints:
+
+- amount_cents > 0.
+- UNIQUE(financial_space_id, idempotency_key).
+
+Índices:
+
+- financial_space_id.
+- invoice_id.
+- paid_at.
+- status.
+
+Regras:
+
+- Pagamentos não devem ser apagados.
+- Correções devem usar reversão.
+- Reversões devem gerar auditoria.
+
+----------------------------------------------
+TABELA 11 — loan
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- name VARCHAR NOT NULL.
+- lender VARCHAR NULL.
+- principal_amount_cents BIGINT NOT NULL.
+- monthly_interest_rate NUMERIC exato NOT NULL.
+- amortization_method LoanAmortizationMethod NOT NULL.
+- installment_count SMALLINT NOT NULL.
+- contracted_at DATE NULL.
+- first_due_date DATE NOT NULL.
+- expected_installment_amount_cents BIGINT NULL.
+- notes VARCHAR NULL.
+- status LoanStatus NOT NULL.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- updated_by_user_id UUID NOT NULL FK user_profile.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- cancelled_at TIMESTAMPTZ NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- principal_amount_cents > 0.
+- monthly_interest_rate >= 0.
+- installment_count > 0.
+
+Índices:
+
+- financial_space_id.
+- status.
+- first_due_date.
+
+----------------------------------------------
+TABELA 12 — loan_installment
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- loan_id UUID NOT NULL FK loan.
+- installment_number SMALLINT NOT NULL.
+- due_date DATE NOT NULL.
+- opening_balance_cents BIGINT NOT NULL.
+- principal_amount_cents BIGINT NOT NULL.
+- interest_amount_cents BIGINT NOT NULL.
+- total_amount_cents BIGINT NOT NULL.
+- paid_amount_cents BIGINT NOT NULL DEFAULT 0.
+- status LoanInstallmentStatus NOT NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- UNIQUE(loan_id, installment_number).
+- installment_number > 0.
+- valores não podem ser negativos.
+
+Índices:
+
+- financial_space_id.
+- loan_id.
+- due_date.
+- status.
+
+----------------------------------------------
+TABELA 13 — loan_payment
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- loan_id UUID NOT NULL FK loan.
+- loan_installment_id UUID NOT NULL FK loan_installment.
+- amount_cents BIGINT NOT NULL.
+- paid_at TIMESTAMPTZ NOT NULL.
+- notes VARCHAR NULL.
+- status PaymentStatus NOT NULL.
+- idempotency_key VARCHAR NOT NULL.
+- created_by_user_id UUID NOT NULL FK user_profile.
+- reversed_by_user_id UUID NULL FK user_profile.
+- reversed_at TIMESTAMPTZ NULL.
+- reversal_reason VARCHAR NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+
+Constraints:
+
+- amount_cents > 0.
+- UNIQUE(financial_space_id, idempotency_key).
+
+Índices:
+
+- loan_id.
+- loan_installment_id.
+- paid_at.
+- status.
+
+----------------------------------------------
+TABELA 14 — notification_preference
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- user_id UUID NOT NULL FK user_profile.
+- enabled BOOLEAN NOT NULL DEFAULT TRUE.
+- push_enabled BOOLEAN NOT NULL DEFAULT FALSE.
+- in_app_enabled BOOLEAN NOT NULL DEFAULT TRUE.
+- preferred_time TIME NOT NULL.
+- timezone VARCHAR NOT NULL DEFAULT 'America/Sao_Paulo'.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- version INTEGER NOT NULL DEFAULT 1.
+
+Constraints:
+
+- UNIQUE(financial_space_id, user_id).
+
+----------------------------------------------
+TABELA 15 — notification_rule
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- notification_preference_id UUID NOT NULL FK notification_preference.
+- event_type NotificationEventType NOT NULL.
+- days_before SMALLINT NOT NULL.
+- enabled BOOLEAN NOT NULL DEFAULT TRUE.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+
+Constraints:
+
+- days_before >= 0.
+- UNIQUE(notification_preference_id, event_type, days_before).
+
+Valores iniciais possíveis:
+
+- 7 dias antes.
+- 3 dias antes.
+- 1 dia antes.
+- No dia, representado por 0.
+
+----------------------------------------------
+TABELA 16 — device_subscription
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- user_id UUID NOT NULL FK user_profile.
+- platform NotificationPlatform NOT NULL.
+- token_or_endpoint VARCHAR NOT NULL.
+- token_hash VARCHAR NOT NULL.
+- device_name VARCHAR NULL.
+- enabled BOOLEAN NOT NULL DEFAULT TRUE.
+- last_seen_at TIMESTAMPTZ NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+- revoked_at TIMESTAMPTZ NULL.
+
+Constraints:
+
+- UNIQUE(user_id, token_hash).
+
+Índices:
+
+- user_id.
+- platform.
+- enabled.
+
+Regras:
+
+- Nunca registrar subscription sem usuário autenticado.
+- Revogar ao sair quando apropriado.
+- Não escrever token completo em logs.
+
+----------------------------------------------
+TABELA 17 — notification_delivery
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- user_id UUID NOT NULL FK user_profile.
+- notification_rule_id UUID NOT NULL FK notification_rule.
+- entity_type VARCHAR NOT NULL.
+- entity_id UUID NOT NULL.
+- title VARCHAR NOT NULL.
+- body VARCHAR NOT NULL.
+- scheduled_for TIMESTAMPTZ NOT NULL.
+- channel NotificationChannel NOT NULL.
+- status NotificationDeliveryStatus NOT NULL.
+- attempt_count SMALLINT NOT NULL DEFAULT 0.
+- deduplication_key VARCHAR NOT NULL.
+- sent_at TIMESTAMPTZ NULL.
+- last_attempt_at TIMESTAMPTZ NULL.
+- failure_code VARCHAR NULL.
+- created_at TIMESTAMPTZ NOT NULL.
+- updated_at TIMESTAMPTZ NOT NULL.
+
+Constraints:
+
+- UNIQUE(deduplication_key).
+
+Índices:
+
+- status + scheduled_for.
+- user_id.
+- financial_space_id.
+- entity_type + entity_id.
+
+Regras:
+
+- Impedir notificações duplicadas.
+- Não incluir informações sensíveis no corpo.
+
+----------------------------------------------
+TABELA 18 — audit_event
+----------------------------------------------
+
+Colunas:
+
+- id UUID PK.
+- financial_space_id UUID NOT NULL FK financial_space.
+- actor_user_id UUID NOT NULL FK user_profile.
+- entity_type VARCHAR NOT NULL.
+- entity_id UUID NOT NULL.
+- action VARCHAR NOT NULL.
+- summary VARCHAR NOT NULL.
+- correlation_id VARCHAR NULL.
+- occurred_at TIMESTAMPTZ NOT NULL.
+
+Índices:
+
+- financial_space_id + occurred_at.
+- actor_user_id.
+- entity_type + entity_id.
+
+Regras:
+
+- Append-only.
+- Não editar ou apagar eventos comuns.
+- Não armazenar senhas, tokens, CVV ou número completo de cartão.
+
+==================================================
+13. AUTORIZAÇÃO E MULTI-TENANCY
+==================================================
+
+Todas as informações financeiras pertencem ao FinancialSpace.
+
+Papéis:
+
+OWNER
+
+- Administrar o espaço.
+- Convidar e remover membros.
+- Alterar papéis.
+- Transferir propriedade.
+- Administrar todos os dados.
+- Arquivar o espaço.
+
+EDITOR
+
+- Visualizar dados.
+- Cadastrar e editar cartões.
+- Cadastrar compras.
+- Registrar pagamentos.
+- Cadastrar empréstimos.
+- Configurar suas notificações.
+- Não remover o último Owner.
+
+VIEWER
+
+- Apenas leitura.
+- Pode configurar suas próprias notificações.
+- Não pode alterar informações financeiras.
+
+Regras:
+
+- Toda operação deve validar membership ativa.
+- Nunca confiar apenas no `financial_space_id` enviado pelo cliente.
+- Derivar o ator do contexto autenticado.
+- Não aceitar `created_by_user_id` arbitrário.
+- Exigir autorização explícita nas queries e mutations.
+- Preferir e-mail verificado.
+- Impedir acesso cruzado entre espaços.
+- Um espaço deve ter pelo menos um Owner.
+- Convite deve corresponder ao e-mail verificado.
+- Consultar documentação atual do SQL Connect antes de usar `@auth` e `@check`.
+- Operações administrativas devem usar ambiente privilegiado e menor privilégio.
+- Criar testes de isolamento entre espaços.
+
+==================================================
+14. FUNCIONALIDADES DE AUTENTICAÇÃO
+==================================================
+
+Implementar:
+
+- Criar conta com nome, e-mail e senha.
+- Verificar e-mail.
+- Login com e-mail e senha.
+- Login com Google.
+- Recuperar senha.
+- Persistir sessão.
+- Observar mudança de autenticação.
+- Logout.
+- Editar nome e foto.
+- Exibir sessão expirada.
+- Vincular Firebase User ao UserProfile.
+- Proteger rotas.
+- Redirecionar usuário autenticado.
+- Tratar erros com mensagens amigáveis.
+- Não armazenar senha.
+
+Casos de uso:
+
+- SignUp.
+- SignIn.
+- SignInWithGoogle.
+- SignOut.
+- SendPasswordReset.
+- SendEmailVerification.
+- ObserveAuthState.
+- GetCurrentUserProfile.
+- UpdateUserProfile.
+
+==================================================
+15. FUNCIONALIDADES DE ESPAÇO COMPARTILHADO
+==================================================
+
+Implementar:
+
+- Criar espaço financeiro.
+- Listar espaços do usuário.
+- Selecionar espaço ativo.
+- Trocar de espaço.
+- Editar nome.
+- Arquivar espaço.
+- Convidar por e-mail.
+- Copiar link de convite.
+- Aceitar convite.
+- Revogar convite.
+- Reenviar convite expirado.
+- Listar membros.
+- Alterar papel.
+- Remover membro.
+- Transferir propriedade.
+- Mostrar atividades recentes.
+- Criar categorias padrão ao criar o espaço.
+
+Casos de uso:
+
+- CreateFinancialSpace.
+- ListUserFinancialSpaces.
+- SelectFinancialSpace.
+- UpdateFinancialSpace.
+- ArchiveFinancialSpace.
+- InviteMember.
+- AcceptInvitation.
+- RevokeInvitation.
+- ChangeMemberRole.
+- RemoveMember.
+- TransferOwnership.
+- ListMembers.
+- ListAuditEvents.
+
+==================================================
+16. FUNCIONALIDADES DE CARTÕES
+==================================================
+
+Implementar:
+
+- Cadastrar cartão.
+- Editar cartão.
+- Arquivar cartão.
+- Listar cartões.
+- Visualizar detalhes.
+- Identificar titular.
+- Configurar limite.
+- Configurar fechamento.
+- Configurar vencimento.
+- Escolher cor.
+- Ativar lembretes.
+- Visualizar limite total.
+- Visualizar comprometido.
+- Visualizar disponível.
+- Visualizar fatura atual.
+- Navegar por faturas mensais.
+- Visualizar compras e parcelas.
+- Filtrar por categoria e membro.
+
+Nunca solicitar:
+
+- Número completo.
+- CVV.
+- Senha.
+- Data completa do cartão.
+
+Casos de uso:
+
+- CreateCreditCard.
+- UpdateCreditCard.
+- ArchiveCreditCard.
+- ListCreditCards.
+- GetCreditCardDetails.
+- GetCreditLimitSummary.
+
+==================================================
+17. FUNCIONALIDADES DE COMPRAS
+==================================================
+
+Implementar:
+
+- Compra à vista.
+- Compra parcelada.
+- Descrição.
+- Estabelecimento opcional.
+- Valor.
+- Data.
+- Cartão.
+- Categoria.
+- Quantidade de parcelas entre 1 e 24.
+- Primeira fatura.
+- Observação.
+- Pessoa que cadastrou.
+- Prévia antes de salvar.
+- Impacto no limite.
+- Lista das parcelas.
+- Faturas futuras.
+- Editar compra.
+- Cancelar compra.
+- Pesquisar.
+- Filtrar.
+- Auditoria.
+
+Prévia:
+
+- Valor total.
+- Número de parcelas.
+- Valor de cada parcela.
+- Primeira fatura.
+- Última fatura.
+- Limite antes.
+- Limite depois.
+
+Regras:
+
+- Operação de compra, parcelas e faturas deve ser atômica.
+- Soma das parcelas igual ao total.
+- Distribuir centavos restantes deterministicamente.
+- Compra cancelada deve cancelar seus efeitos conforme a política.
+- Não apagar histórico.
+- Compra em fatura fechada não pode ser alterada silenciosamente.
+
+Casos de uso:
+
+- CreatePurchase.
+- UpdatePurchase.
+- CancelPurchase.
+- GetPurchaseDetails.
+- ListCardPurchases.
+- SearchPurchases.
+- PreviewInstallmentSchedule.
+- GenerateInstallmentSchedule.
+
+==================================================
+18. FUNCIONALIDADES DE FATURAS
+==================================================
+
+Implementar:
+
+- Gerar faturas mensais.
+- Fatura atual.
+- Faturas futuras.
+- Faturas anteriores.
+- Estado aberta.
+- Estado fechada.
+- Estado parcialmente paga.
+- Estado paga.
+- Estado vencida.
+- Total.
+- Pago.
+- Pendente.
+- Fechamento.
+- Vencimento.
+- Lista de compras.
+- Lista de parcelas.
+- Filtro por categoria.
+- Filtro por membro.
+- Busca.
+- Compartilhar resumo textual.
+- Registrar pagamento total.
+- Registrar pagamento parcial.
+- Reverter pagamento.
+- Recalcular status.
+- Atualizar limite.
+- Auditoria.
+
+Casos de uso:
+
+- ListInvoices.
+- GetInvoiceDetails.
+- CloseInvoice.
+- RegisterInvoicePayment.
+- ReverseInvoicePayment.
+- GetInvoicePaymentHistory.
+- ListUpcomingInvoices.
+
+==================================================
+19. REGRAS DE LIMITE E FATURA
+==================================================
+
+Diferenciar:
+
+- Limite total.
+- Limite comprometido.
+- Limite disponível.
+- Fatura atual.
+- Parcelas futuras.
+- Valor pago.
+- Valor pendente.
+
+Regra inicial:
+
+- O valor ainda não quitado das compras compromete o limite.
+- Cada parcela pertence a uma fatura.
+- Pagamentos confirmados liberam limite conforme a política.
+- Pagamentos revertidos restauram o saldo anterior.
+- Cancelamentos devem atualizar parcelas e faturas de modo consistente.
+- Nunca permitir limite ou saldo incorreto por arredondamento.
+
+Fechamento:
+
+- Compra antes do fechamento pode entrar na fatura corrente.
+- Compra após o fechamento entra na próxima.
+- Permitir que o usuário ajuste a primeira fatura.
+- Tratar meses curtos.
+- Criar testes para dias de fronteira.
+
+==================================================
+20. FUNCIONALIDADES DE EMPRÉSTIMOS
+==================================================
+
+Implementar:
+
+- Cadastrar empréstimo.
+- Nome.
+- Credor.
+- Valor principal.
+- Taxa mensal.
+- Método Price.
+- Método SAC.
+- Cronograma manual.
+- Quantidade de parcelas.
+- Primeira data de vencimento.
+- Valor esperado da parcela.
+- Observações.
+- Gerar cronograma.
+- Mostrar saldo devedor.
+- Mostrar principal e juros.
+- Próxima parcela.
+- Parcelas pagas.
+- Parcelas pendentes.
+- Parcelas vencidas.
+- Pagamento total.
+- Pagamento parcial.
+- Reversão de pagamento.
+- Quitação.
+- Cancelamento.
+- Auditoria.
+
+Casos de uso:
+
+- CreateLoan.
+- UpdateLoan.
+- CancelLoan.
+- ListLoans.
+- GetLoanDetails.
+- PreviewLoanSchedule.
+- GenerateLoanSchedule.
+- RegisterLoanPayment.
+- ReverseLoanPayment.
+- GetLoanPaymentHistory.
+
+==================================================
+21. DASHBOARD E RELATÓRIOS
+==================================================
+
+Dashboard:
+
+- Saudação.
+- Espaço selecionado.
+- Avatares.
+- Total das faturas do mês.
+- Valor pago.
+- Valor pendente.
+- Limite total.
+- Limite comprometido.
+- Limite disponível.
+- Carrossel de cartões.
+- Próximos vencimentos.
+- Atividades recentes.
+- Gastos por categoria.
+- Previsão dos próximos meses.
+- Ação rápida para compra.
+
+Queries:
+
+- GetDashboardSummary.
+- GetCurrentMonthInvoices.
+- GetCreditLimitSummary.
+- GetUpcomingDueItems.
+- GetSpendingByCategory.
+- GetFutureCommitmentForecast.
+- GetRecentActivity.
+
+Requisitos:
+
+- Queries eficientes.
+- Resultados limitados.
+- Paginação.
+- Sem carregar histórico completo.
+- Evitar listeners desnecessários.
+- Atualizar após mudanças de outro membro.
+- Usar subscriptions do SQL Connect apenas quando adequadas e suportadas.
+
+==================================================
+22. LEMBRETES E NOTIFICAÇÕES
+==================================================
+
+Eventos:
+
+- Fechamento de fatura.
+- Vencimento de fatura.
+- Vencimento de parcela de empréstimo.
+
+Configurações:
+
+- Ativar ou desativar.
+- Push.
+- Lembrete interno.
+- 7 dias antes.
+- 3 dias antes.
+- 1 dia antes.
+- No dia.
+- Horário preferido.
+- Configuração individual por usuário.
+
+Android:
+
+- Firebase Cloud Messaging nativo.
+- Token por dispositivo.
+- Atualização do token.
+- Recebimento em primeiro plano.
+- Recebimento em segundo plano.
+- Abrir a rota correta.
+- Canais de notificação.
+- Revogação apropriada.
+
+Web/PWA:
+
+- Feature detection.
+- Solicitar permissão somente após clique.
+- Explicar benefício.
+- Não pedir permissão no login.
+- Manter fallback interno.
+- Instruir instalação na tela inicial.
+- Não mostrar erro técnico quando indisponível.
+
+Backend:
+
+- Rotina agendada.
+- Buscar entregas pendentes.
+- Impedir duplicidade.
+- Registrar tentativas.
+- Registrar sucesso ou falha.
+- Não incluir informação sensível.
+- Idempotência.
+
+Casos de uso:
+
+- GetNotificationPreferences.
+- UpdateNotificationPreferences.
+- RegisterDeviceSubscription.
+- RevokeDeviceSubscription.
+- ScheduleNotifications.
+- SendPendingNotifications.
+- ListInAppReminders.
+
+==================================================
+23. INTERFACE
+==================================================
+
+Uma interface mobile compartilhada entre Android e Web.
+
+Dimensões:
+
+- 360 a 430 px.
+- Referência 390 x 844 px.
+- Orientação vertical.
+- Tema claro.
+- Material Design 3.
+- Safe areas.
+- Layout de uma coluna.
+- Sem desktop.
+- Sem tablet.
+- Sem interações dependentes de hover.
+
+Design tokens:
+
+- Primary: `#4F46E5`.
+- Primary dark: `#3730A3`.
+- Primary light: `#EEF2FF`.
+- Secondary: `#0F766E`.
+- Background: `#F8FAFC`.
+- Surface: `#FFFFFF`.
+- Text primary: `#0F172A`.
+- Text secondary: `#64748B`.
+- Border: `#E2E8F0`.
+- Success: `#15803D`.
+- Warning: `#B45309`.
+- Error: `#B91C1C`.
+
+Use:
+
+- Inter ou equivalente.
+- Grid de 8 pontos.
+- Margem de 16 px.
+- Cards com raio de 16 a 20 px.
+- Campos com aproximadamente 56 px.
+- Botões com aproximadamente 52 px.
+- Touch targets de no mínimo 44 x 44 px.
+- WCAG AA.
+- Ícones e textos para estados.
+
+Centralize tokens em ThemeData e ThemeExtension. Não espalhe valores hardcoded.
+
+Navegação inferior:
+
+- Início.
+- Cartões.
+- Botão central “+”.
+- Agenda.
+- Mais.
+
+==================================================
+24. TELAS
+==================================================
+
+Implementar:
+
+1. Splash.
+2. Login.
+3. Criar conta.
+4. Recuperar senha.
+5. Verificar e-mail.
+6. Criar ou entrar em espaço.
+7. Criar espaço.
+8. Aceitar convite.
+9. Convidar membro.
+10. Dashboard.
+11. Lista de cartões.
+12. Cadastro de cartão.
+13. Edição de cartão.
+14. Detalhes do cartão.
+15. Cadastro de compra.
+16. Prévia das parcelas.
+17. Detalhes da compra.
+18. Lista de faturas.
+19. Detalhes da fatura.
+20. Registrar pagamento.
+21. Histórico de pagamentos.
+22. Agenda.
+23. Lista de empréstimos.
+24. Cadastro de empréstimo.
+25. Prévia do cronograma.
+26. Detalhes do empréstimo.
+27. Registrar pagamento de empréstimo.
+28. Categorias.
+29. Membros.
+30. Convites pendentes.
+31. Preferências de notificações.
+32. Instalar PWA.
+33. Perfil.
+34. Mais.
+35. Estado offline.
+36. Erros.
+37. Estados vazios.
+
+A tela de instalar PWA:
+
+- Deve existir apenas no Web.
+- Nunca aparecer no Android nativo.
+- Explicar Safari:
+  1. Abrir no Safari.
+  2. Tocar em Compartilhar.
+  3. Adicionar à Tela de Início.
+  4. Ativar “Abrir como App da Web”.
+  5. Adicionar.
+
+==================================================
+25. COMPONENTES
+==================================================
+
+Criar componentes reutilizáveis:
+
+- AppBar.
+- BottomNavigationBar.
+- CentralAddButton.
+- PrimaryButton.
+- SecondaryButton.
+- DestructiveButton.
+- MonetaryInput.
+- PasswordInput.
+- DateSelector.
+- CardSelector.
+- CategorySelector.
+- InstallmentSelector.
+- MonthSelector.
+- BottomSheet.
+- ConfirmationDialog.
+- SuccessSnackbar.
+- ErrorSnackbar.
+- StatusBadge.
+- FinancialSummaryCard.
+- CreditCardView.
+- CreditLimitIndicator.
+- PaymentProgressIndicator.
+- PurchaseListItem.
+- InstallmentListItem.
+- DueItemCard.
+- MemberAvatar.
+- MemberAvatarGroup.
+- CategoryChart.
+- EmptyState.
+- LoadingSkeleton.
+- OfflineBanner.
+- ErrorState.
+
+==================================================
+26. ACESSIBILIDADE
+==================================================
+
+- Contraste WCAG AA.
+- Labels visíveis.
+- Não depender apenas de placeholder.
+- Mensagens de erro associadas ao campo.
+- Touch targets de 44 x 44 px.
+- Leitores de tela.
+- Semântica.
+- Ordem de foco.
+- Botões acessíveis com teclado no Web.
+- Não comunicar estado apenas por cor.
+- Textos legíveis.
+- Confirmação antes de ações destrutivas.
+- Respeitar safe areas.
+- Manter ação principal acessível com teclado aberto.
+
+==================================================
+27. OFFLINE E SINCRONIZAÇÃO
+==================================================
+
+Implementar inicialmente:
+
+- Detecção de conectividade.
+- Banner offline.
+- Cache seguro de leitura quando suportado.
+- Indicação de dados possivelmente desatualizados.
+- Recarregar ao reconectar.
+- Não prometer escrita offline sem suporte transacional seguro.
+- Documentar estratégia de conflito.
+- Evitar last-write-wins silencioso em dados financeiros.
+- Usar versionamento otimista.
+- Apresentar conflito de edição quando necessário.
+
+==================================================
+28. SEGURANÇA
+==================================================
+
+Nunca armazenar:
+
+- Senha do usuário.
+- Número completo do cartão.
+- CVV.
+- Senha do cartão.
+- Service account.
+- Chave privada.
+- Keystore Android.
+- Senha do keystore.
+- Token de convite puro.
+- Token de deploy.
+- Segredos no código.
+
+Implementar:
+
+- `.gitignore`.
+- Configurações por ambiente.
+- Logs sem dados sensíveis.
+- Validação de entrada.
+- Menor privilégio.
+- App Check.
+- Autorização por operação.
+- Isolamento por espaço.
+- Convites seguros.
+- Tokens de dispositivo sem exposição em logs.
+- Headers de segurança no Hosting.
+- Rotas protegidas.
+- Tratamento de sessão expirada.
+
+==================================================
+29. CASOS DE USO E RESULTADOS
+==================================================
+
+Todos os casos de uso devem:
+
+- Ter input tipado.
+- Ter output tipado.
+- Validar entrada.
+- Verificar autorização.
+- Aplicar regras de domínio.
+- Depender de interfaces.
+- Retornar sucesso ou Failure tipada.
+- Não conhecer widgets.
+- Não conhecer BuildContext.
+- Não conhecer Firebase diretamente.
+- Ser testáveis isoladamente.
+
+Use sealed classes do Dart para Result e Failure quando adequado.
+
+Falhas:
+
+- ValidationFailure.
+- AuthenticationFailure.
+- AuthorizationFailure.
+- NotFoundFailure.
+- ConflictFailure.
+- InfrastructureFailure.
+- NetworkFailure.
+- UnexpectedFailure.
+
+==================================================
+30. OPERAÇÕES ATÔMICAS E CONCORRÊNCIA
+==================================================
+
+Devem ser atômicas:
+
+- Criar espaço e primeiro Owner.
+- Aceitar convite e criar membership.
+- Criar compra, parcelas e faturas.
+- Cancelar compra e atualizar parcelas/faturas.
+- Registrar pagamento e atualizar fatura.
+- Reverter pagamento.
+- Criar empréstimo e cronograma.
+- Registrar pagamento de empréstimo.
+- Transferir propriedade.
+
+Use:
+
+- Constraints.
+- Idempotency keys.
+- Versionamento otimista.
+- Operações compostas do SQL Connect.
+- Função administrativa somente quando necessário.
+
+Não implemente operação crítica em várias chamadas independentes sem compensação.
+
+==================================================
+31. TESTES UNITÁRIOS
+==================================================
+
+Testar:
+
+Money:
+
+- Soma.
+- Subtração.
+- Comparação.
+- Formatação.
+- Valores grandes.
+- Sem perda de centavos.
+
+Parcelamento:
+
+- Compra à vista.
+- 2 parcelas.
+- 3 parcelas com resto.
+- 24 parcelas.
+- Soma exata.
+- Ordem determinística.
+- Data inicial.
+- Mudança de ano.
+- Fevereiro.
+- Ano bissexto.
+- Dias 29, 30 e 31.
+
+Fatura:
+
+- Compra antes do fechamento.
+- Compra no fechamento.
+- Compra depois do fechamento.
+- Fatura aberta.
+- Fechada.
+- Parcialmente paga.
+- Paga.
+- Vencida.
+- Pagamento total.
+- Pagamento parcial.
+- Reversão.
+
+Limite:
+
+- Compra à vista.
+- Parcelada.
+- Pagamento.
+- Reversão.
+- Cancelamento.
+- Limite nunca incorreto por arredondamento.
+
+Empréstimo:
+
+- Price.
+- SAC.
+- Manual.
+- Taxa zero.
+- Pagamento parcial.
+- Pagamento total.
+- Quitação.
+- Reversão.
+- Soma do cronograma.
+
+Autorização:
+
+- Owner.
+- Editor.
+- Viewer.
+- Usuário fora do espaço.
+- Último Owner.
+- Convite expirado.
+- Convite para outro e-mail.
+
+Notificação:
+
+- Datas de envio.
+- Dias antes.
+- Fuso horário.
+- Deduplicação.
+- Tentativas.
+
+==================================================
+32. TESTES DE APLICAÇÃO E INFRAESTRUTURA
+==================================================
+
+Testes de aplicação:
+
+- Use cases.
+- Repositórios falsos.
+- Autorização.
+- Validação.
+- Falhas de persistência.
+- Idempotência.
+
+Testes de integração:
+
+- Authentication Emulator.
+- SQL Connect Emulator.
+- Criar usuário.
+- Criar espaço.
+- Convidar usuário.
+- Aceitar convite.
+- Criar cartão.
+- Criar compra parcelada.
+- Consultar pelo segundo usuário.
+- Registrar pagamento.
+- Validar limite.
+- Bloquear outro espaço.
+- Criar empréstimo.
+- Registrar pagamento.
+
+Não afirmar que houve teste de integração se ele não foi executado.
+
+==================================================
+33. TESTES DE INTERFACE E PLATAFORMA
+==================================================
+
+Widgets:
+
+- Login.
+- Dashboard.
+- Cartões.
+- Cadastro de compra.
+- Prévia.
+- Fatura.
+- Pagamento.
+- Empréstimo.
+- Loading.
+- Vazio.
+- Erro.
+- Offline.
+
+Android:
+
+- Inicialização Firebase.
+- Sessão.
+- Botão voltar.
+- FCM.
+- Token.
+- Deep link.
+- Build APK.
+
+Web:
+
+- Inicialização Firebase.
+- Sessão após refresh.
+- Rota direta.
+- Refresh em rota protegida.
+- Viewport mobile.
+- Manifest.
+- Instalação PWA.
+- Feature detection.
+- Fallback de notificações.
+
+Fluxo compartilhado:
+
+1. Usuário A entra no Android.
+2. Usuário B entra no Web.
+3. Ambos acessam o mesmo espaço.
+4. A cria cartão no Android.
+5. B visualiza no Web.
+6. B cria compra no Web.
+7. A visualiza no Android.
+8. A paga fatura.
+9. B visualiza atualização.
+10. Outro espaço permanece isolado.
+
+==================================================
+34. BUILD ANDROID
+==================================================
+
+Validar:
+
+flutter build apk --debug
+flutter build apk --release
+
+Documentar:
+
+- Caminho do APK.
+- Instalação manual.
+- Instalação por USB.
+- Atualização.
+- versionCode.
+- versionName.
+- Criação de keystore.
+- Assinatura release.
+- Uso de secrets.
+
+Não versionar keystore.
+
+Se o release assinado estiver bloqueado, execute o build possível e documente exatamente o bloqueio.
+
+Não usar AAB como artefato principal inicialmente.
+
+==================================================
+35. BUILD WEB E HOSTING
+==================================================
+
+Validar:
+
+flutter build web --release
+
+Resultado:
+
+build/web
+
+Configurar Firebase Hosting:
+
+- `public: build/web`.
+- Rewrite para `/index.html`.
+- HTTPS.
+- Cache adequado.
+- Sem cache agressivo de index e manifest.
+- Headers seguros.
+- Manifest PWA.
+- Ícones.
+- `display: standalone`.
+- Theme color.
+- Background color.
+
+Comando de deploy:
+
+firebase deploy --only hosting
+
+Não executar deploy sem autorização.
+
+Testar antes:
+
+- Build.
+- Hosting Emulator.
+- Rotas.
+- Refresh.
+- Login.
+- SQL Connect.
+- Viewport de iPhone.
+- Manifest.
+- Ausência de segredos.
+
+==================================================
+36. CI/CD
+==================================================
+
+Criar GitHub Actions:
+
+1. Checkout.
+2. Instalar Flutter.
+3. Cache.
+4. `flutter pub get`.
+5. `dart format --set-exit-if-changed`.
+6. `flutter analyze`.
+7. `flutter test`.
+8. Testes Web viáveis.
+9. `flutter build apk --debug`.
+10. `flutter build web --release`.
+11. Validar manifest e arquivos.
+12. Publicar artefatos do CI apenas se seguro.
+
+Não fazer deploy automático inicialmente.
+
+Separar futuramente:
+
+- Workflow de validação.
+- Workflow de APK.
+- Workflow de preview Web.
+- Workflow de deploy aprovado.
+
+==================================================
+37. DOCUMENTAÇÃO
+==================================================
+
+README:
+
+- Produto.
+- Stack.
+- Arquitetura.
+- Pré-requisitos.
+- Instalação.
+- Android.
+- Web.
+- Firebase.
+- Emuladores.
+- SQL Connect.
+- SDK gerado.
+- Testes.
+- Build APK.
+- Build Web.
+- Hosting.
+- Instalar PWA no iPhone.
+- Segurança.
+- Custos.
+- Troubleshooting.
+
+Criar:
+
+docs/architecture.md
+- Camadas.
+- Bounded contexts.
+- Dependências.
+- Fluxo.
+- Diagrama.
+
+docs/domain-model.md
+- Agregados.
+- Entidades.
+- Value Objects.
+- Invariantes.
+- Serviços.
+
+docs/database-schema.md
+- Todas as tabelas.
+- Relacionamentos.
+- Índices.
+- Constraints.
+- Multi-tenancy.
+
+docs/security.md
+- Auth.
+- Membership.
+- Convites.
+- Tokens.
+- App Check.
+- Segredos.
+- Dados proibidos.
+
+docs/infrastructure-costs.md
+- Recursos.
+- Estimativa.
+- Reutilização.
+- Alertas.
+- Limite de R$ 60.
+
+docs/implementation-plan.md
+- Fases.
+- Concluído.
+- Em andamento.
+- Pendente.
+
+ADRs:
+
+- Flutter Android + Web.
+- SQL Connect.
+- Money em centavos.
+- Compartilhamento por FinancialSpace.
+- Autorização.
+- Notificações por plataforma.
+- Estratégia de concorrência.
+- Estratégia de Hosting.
+
+==================================================
+38. IMPLEMENTAÇÃO INCREMENTAL
+==================================================
+
+Fase 0 — Fundação:
+
+- Inspecionar.
+- Documentar.
+- Criar estrutura.
+- Configurar Flutter Android/Web.
+- Tema.
+- Router.
+- Result.
+- Failure.
+- Money.
+- Clock.
+- Emuladores.
+- CI.
+
+Fase 1 — Identidade e espaço:
+
+- Auth.
+- Perfil.
+- Criar espaço.
+- Membership.
+- Convites.
+- Papéis.
+- Categorias iniciais.
+
+Fase 2 — Cartões e compras:
+
+- Cartões.
+- Limites.
+- Compras.
+- Parcelamento.
+- Faturas.
+- Auditoria.
+
+Fase 3 — Pagamentos e dashboard:
+
+- Faturas.
+- Pagamentos.
+- Limite.
+- Dashboard.
+- Próximos vencimentos.
+- Relatórios.
+
+Fase 4 — Empréstimos:
+
+- Cadastro.
+- Price.
+- SAC.
+- Cronograma.
+- Pagamentos.
+- Quitação.
+
+Fase 5 — Notificações e PWA:
+
+- Preferências.
+- Android FCM.
+- Web Push.
+- Fallback interno.
+- Instalação PWA.
+- Rotina agendada.
+
+Fase 6 — Qualidade:
+
+- Integração.
+- Acessibilidade.
+- Segurança.
+- Performance.
+- Build.
+- Documentação.
+
+Continue entre fases enquanto houver trabalho seguro.
+
+Mantenha o repositório funcional ao final de cada etapa.
+
+==================================================
+39. REGRAS DE CÓDIGO
+==================================================
+
+- Código real.
+- Sem TODO.
+- Sem FIXME.
+- Sem `UnimplementedError`.
+- Sem funções vazias.
+- Sem mocks de produção.
+- Sem regras financeiras em widgets.
+- Sem DTOs na UI.
+- Sem Firebase no Domain.
+- Sem condicionais de plataforma no Domain.
+- Preferir composição.
+- Interfaces pequenas.
+- Responsabilidade única.
+- Dependências injetadas.
+- Falhas explícitas.
+- Vocabulário consistente.
+- Formatação obrigatória.
+- Imports válidos.
+- Dependências declaradas.
+- Nenhum segredo versionado.
+
+==================================================
+40. CRITÉRIOS DE ACEITE
+==================================================
+
+O MVP estará concluído quando:
+
+1. O projeto gera Android e Web.
+2. O APK instala no Android.
+3. O Web funciona no Safari do iPhone.
+4. O PWA pode ser adicionado à tela inicial.
+5. Dois usuários criam contas.
+6. Um cria um espaço.
+7. O outro entra por convite.
+8. Ambos visualizam o mesmo espaço.
+9. Um cadastra cartão.
+10. Um cadastra compra parcelada.
+11. A soma das parcelas é exata.
+12. O outro visualiza a compra.
+13. O dashboard mostra faturas e limites.
+14. Um registra pagamento parcial ou total.
+15. A fatura atualiza.
+16. O limite atualiza.
+17. Um cadastra empréstimo.
+18. O cronograma é gerado.
+19. Lembretes podem ser configurados.
+20. Android recebe notificação quando configurado.
+21. Web possui push ou fallback interno.
+22. Outro espaço não acessa os dados.
+23. Nenhum dado sensível é armazenado.
+24. `dart format` passa.
+25. `flutter analyze` passa.
+26. `flutter test` passa.
+27. `flutter build apk --debug` passa.
+28. `flutter build web --release` passa.
+29. README possui comandos executáveis.
+30. Nenhum segredo está versionado.
+
+==================================================
+41. ENTREGA AO FINAL
+==================================================
+
+Ao concluir cada execução:
+
+1. Informe o que foi implementado.
+2. Liste arquivos criados e alterados.
+3. Explique o fluxo resultante.
+4. Informe decisões arquiteturais.
+5. Informe comandos executados.
+6. Mostre resultados exatos.
+7. Não alegue validação não executada.
+8. Liste pendências reais.
+9. Informe bloqueios.
+10. Forneça caminhos completos.
+11. Informe custos ou recursos externos ainda necessários.
+12. Sugira apenas o próximo passo mais útil.
+
+Comece agora executando `git status`, inspecionando o workspace e verificando o toolchain.

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Criar Espaço Financeiro - Nossa Grana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "secondary": "#006a63",
+                        "on-primary-fixed": "#0f0069",
+                        "outline": "#777587",
+                        "tertiary-container": "#5551c2",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-secondary-container": "#006f67",
+                        "surface-container-high": "#eae6f4",
+                        "surface": "#fcf8ff",
+                        "inverse-surface": "#302f39",
+                        "secondary-container": "#99efe5",
+                        "on-surface": "#1b1b24",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dcd8e5",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-on-surface": "#f3effc",
+                        "tertiary-fixed": "#e2dfff",
+                        "tertiary": "#3d37a9",
+                        "surface-container-low": "#f5f2ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e4e1ee",
+                        "primary-container": "#4f46e5",
+                        "background": "#fcf8ff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4d44e3",
+                        "on-primary-container": "#dad7ff",
+                        "outline-variant": "#c7c4d8",
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1b1b24",
+                        "primary": "#3525cd",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#e2dfff",
+                        "surface-container": "#f0ecf9",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-tertiary-container": "#dbd7ff",
+                        "secondary-fixed": "#9cf2e8",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-bright": "#fcf8ff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "container-margin-desktop": "40px",
+                        "container-margin-mobile": "16px",
+                        "3xl": "64px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "2xl": "48px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "title-lg": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "label-lg": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "title-lg": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "500" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }]
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    
+    .animate-delay-100 { animation-delay: 100ms; }
+    .animate-delay-200 { animation-delay: 200ms; }
+    .animate-delay-300 { animation-delay: 300ms; }
+    .animate-delay-400 { animation-delay: 400ms; }
+    
+    /* Ensure initial state is hidden for animation */
+    .fade-enter-element {
+        opacity: 0;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary/20 selection:text-primary">
+<!-- Header (Task-focused, so no main nav shell) -->
+<header class="flex items-center justify-between px-container-margin-mobile h-16 shrink-0 w-full max-w-md mx-auto fade-enter-element animate-fade-in-up">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-container-low active:bg-surface-container-high active:scale-95 transition-all text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex-1"></div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-md mx-auto px-container-margin-mobile pb-xl flex flex-col">
+<!-- Hero Section -->
+<div class="flex flex-col items-center text-center mt-md mb-2xl fade-enter-element animate-fade-in-up animate-delay-100">
+<div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mb-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)] hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined text-on-primary-container" style="font-size: 36px; font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">Criar espaço</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+                Um lugar dedicado para organizar e acompanhar as finanças em conjunto.
+            </p>
+</div>
+<!-- Form -->
+<form class="flex flex-col flex-1" onsubmit="event.preventDefault();">
+<!-- Input Field -->
+<div class="mb-xl fade-enter-element animate-fade-in-up animate-delay-200">
+<label class="block font-label-md text-label-md text-on-surface mb-xs ml-1" for="space-name">Nome do espaço</label>
+<div class="relative">
+<input class="w-full h-[56px] px-lg bg-surface border border-outline-variant rounded-xl font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm" id="space-name" placeholder="Ex: Finanças da Família" type="text"/>
+</div>
+</div>
+<!-- Color Selector -->
+<div class="mb-2xl fade-enter-element animate-fade-in-up animate-delay-300">
+<label class="block font-label-md text-label-md text-on-surface mb-md ml-1">Personalize com uma cor</label>
+<div class="flex gap-md">
+<!-- Selected Color -->
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center ring-2 ring-offset-2 ring-background ring-primary transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-on-primary" style="font-size: 20px;">check</span>
+</button>
+<!-- Unselected Colors -->
+<button class="w-12 h-12 rounded-full bg-secondary hover:scale-105 active:scale-95 transition-all" type="button"></button>
+<button class="w-12 h-12 rounded-full bg-tertiary hover:scale-105 active:scale-95 transition-all" type="button"></button>
+<button class="w-12 h-12 rounded-full bg-secondary-container border border-outline-variant/30 hover:scale-105 active:scale-95 transition-all" type="button"></button>
+<button class="w-12 h-12 rounded-full bg-surface-variant border border-outline-variant/50 hover:scale-105 active:scale-95 transition-all" type="button"></button>
+</div>
+</div>
+<!-- Spacer to push info & button to bottom if screen is tall enough -->
+<div class="flex-1"></div>
+<!-- Info Box -->
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-xl p-md flex gap-md items-start mb-xl mt-xl fade-enter-element animate-fade-in-up animate-delay-400">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">group_add</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-label-lg text-label-lg text-on-surface mb-xs">Compartilhamento Simples</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Após criar este espaço, você poderá convidar seu parceiro(a). Ambos terão visibilidade e controle total sobre as transações adicionadas aqui.
+                    </p>
+</div>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full h-[52px] bg-primary rounded-xl text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-sm hover:bg-primary/90 active:scale-[0.98] active:bg-primary/80 transition-all shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.1)] hover:shadow-[0px_6px_8px_-1px_rgba(15,23,42,0.15)] fade-enter-element animate-fade-in-up animate-delay-400" type="submit">
+<span>Criar espaço</span>
+<span class="material-symbols-outlined transition-transform group-hover:translate-x-1" style="font-size: 20px;">arrow_forward</span>
+</button>
+</form>
+</main>
+<script>
+        // Simple script to handle color selection micro-interaction
+        document.addEventListener('DOMContentLoaded', () => {
+            const colorButtons = document.querySelectorAll('.mb-2xl .flex.gap-md button');
+            
+            colorButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove selected state from all
+                    colorButtons.forEach(btn => {
+                        btn.classList.remove('ring-2', 'ring-offset-2', 'ring-background', 'ring-primary');
+                        btn.innerHTML = '';
+                    });
+                    
+                    // Add selected state to clicked
+                    this.classList.add('ring-2', 'ring-offset-2', 'ring-background', 'ring-primary');
+                    
+                    // Add checkmark based on background lightness (simplified logic, assuming dark background for check)
+                    // If the color is very light (like secondary-container), we'd want a dark icon. 
+                    // For this demo, we'll just use on-primary or on-surface based on a simple check.
+                    const isLightBg = this.classList.contains('bg-secondary-container') || this.classList.contains('bg-surface-variant');
+                    const iconColorClass = isLightBg ? 'text-on-surface' : 'text-on-primary';
+                    
+                    this.innerHTML = `<span class="material-symbols-outlined ${iconColorClass} animate-fade-in-up" style="font-size: 20px;">check</span>`;
+                });
+            });
+        });
+    </script>
+</body></html>

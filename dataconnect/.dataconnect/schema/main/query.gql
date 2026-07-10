@@ -1,0 +1,956 @@
+extend type Query {
+  """
+  ✨ Look up a single `AuditEvent` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  auditEvent(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: AuditEvent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: AuditEvent_FirstRow
+  ): AuditEvent @fdc_generated(from: "AuditEvent", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Category` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  category(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Category_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Category_FirstRow
+  ): Category @fdc_generated(from: "Category", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `CreditCard` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  creditCard(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCard_FirstRow
+  ): CreditCard @fdc_generated(from: "CreditCard", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `CreditCardInvoice` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  creditCardInvoice(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCardInvoice_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCardInvoice_FirstRow
+  ): CreditCardInvoice @fdc_generated(from: "CreditCardInvoice", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `DeviceSubscription` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  deviceSubscription(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DeviceSubscription_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DeviceSubscription_FirstRow
+  ): DeviceSubscription @fdc_generated(from: "DeviceSubscription", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `FinancialSpace` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  financialSpace(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: FinancialSpace_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: FinancialSpace_FirstRow
+  ): FinancialSpace @fdc_generated(from: "FinancialSpace", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `InvoicePayment` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  invoicePayment(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: InvoicePayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: InvoicePayment_FirstRow
+  ): InvoicePayment @fdc_generated(from: "InvoicePayment", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Loan` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  loan(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Loan_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Loan_FirstRow
+  ): Loan @fdc_generated(from: "Loan", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `LoanInstallment` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  loanInstallment(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanInstallment_FirstRow
+  ): LoanInstallment @fdc_generated(from: "LoanInstallment", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `LoanPayment` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  loanPayment(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanPayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanPayment_FirstRow
+  ): LoanPayment @fdc_generated(from: "LoanPayment", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `NotificationDelivery` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  notificationDelivery(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationDelivery_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationDelivery_FirstRow
+  ): NotificationDelivery @fdc_generated(from: "NotificationDelivery", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `NotificationPreference` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  notificationPreference(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationPreference_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationPreference_FirstRow
+  ): NotificationPreference @fdc_generated(from: "NotificationPreference", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `NotificationRule` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  notificationRule(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationRule_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationRule_FirstRow
+  ): NotificationRule @fdc_generated(from: "NotificationRule", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Purchase` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  purchase(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Purchase_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Purchase_FirstRow
+  ): Purchase @fdc_generated(from: "Purchase", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `PurchaseInstallment` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  purchaseInstallment(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PurchaseInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PurchaseInstallment_FirstRow
+  ): PurchaseInstallment @fdc_generated(from: "PurchaseInstallment", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `SpaceInvitation` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  spaceInvitation(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceInvitation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceInvitation_FirstRow
+  ): SpaceInvitation @fdc_generated(from: "SpaceInvitation", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `SpaceMember` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  spaceMember(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceMember_FirstRow
+  ): SpaceMember @fdc_generated(from: "SpaceMember", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `UserProfile` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  userProfile(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: UserProfile_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: UserProfile_FirstRow
+  ): UserProfile @fdc_generated(from: "UserProfile", purpose: QUERY_SINGLE)
+  """
+  ✨ List `AuditEvent` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  auditEvents(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: AuditEvent_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [AuditEvent_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: AuditEvent_Having
+  ): [AuditEvent!]! @fdc_generated(from: "AuditEvent", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Category` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  categories(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Category_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Category_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Category_Having
+  ): [Category!]! @fdc_generated(from: "Category", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CreditCard` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  creditCards(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CreditCard_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CreditCard_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CreditCard_Having
+  ): [CreditCard!]! @fdc_generated(from: "CreditCard", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CreditCardInvoice` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  creditCardInvoices(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CreditCardInvoice_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CreditCardInvoice_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CreditCardInvoice_Having
+  ): [CreditCardInvoice!]! @fdc_generated(from: "CreditCardInvoice", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `DeviceSubscription` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  deviceSubscriptions(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DeviceSubscription_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DeviceSubscription_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DeviceSubscription_Having
+  ): [DeviceSubscription!]! @fdc_generated(from: "DeviceSubscription", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `FinancialSpace` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  financialSpaces(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: FinancialSpace_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [FinancialSpace_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: FinancialSpace_Having
+  ): [FinancialSpace!]! @fdc_generated(from: "FinancialSpace", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `InvoicePayment` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  invoicePayments(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: InvoicePayment_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [InvoicePayment_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: InvoicePayment_Having
+  ): [InvoicePayment!]! @fdc_generated(from: "InvoicePayment", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Loan` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  loans(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Loan_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Loan_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Loan_Having
+  ): [Loan!]! @fdc_generated(from: "Loan", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `LoanInstallment` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  loanInstallments(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: LoanInstallment_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [LoanInstallment_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: LoanInstallment_Having
+  ): [LoanInstallment!]! @fdc_generated(from: "LoanInstallment", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `LoanPayment` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  loanPayments(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: LoanPayment_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [LoanPayment_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: LoanPayment_Having
+  ): [LoanPayment!]! @fdc_generated(from: "LoanPayment", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `NotificationDelivery` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  notificationDeliveries(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: NotificationDelivery_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [NotificationDelivery_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: NotificationDelivery_Having
+  ): [NotificationDelivery!]! @fdc_generated(from: "NotificationDelivery", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `NotificationPreference` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  notificationPreferences(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: NotificationPreference_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [NotificationPreference_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: NotificationPreference_Having
+  ): [NotificationPreference!]! @fdc_generated(from: "NotificationPreference", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `NotificationRule` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  notificationRules(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: NotificationRule_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [NotificationRule_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: NotificationRule_Having
+  ): [NotificationRule!]! @fdc_generated(from: "NotificationRule", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Purchase` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  purchases(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Purchase_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Purchase_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Purchase_Having
+  ): [Purchase!]! @fdc_generated(from: "Purchase", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `PurchaseInstallment` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  purchaseInstallments(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PurchaseInstallment_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PurchaseInstallment_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PurchaseInstallment_Having
+  ): [PurchaseInstallment!]! @fdc_generated(from: "PurchaseInstallment", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `SpaceInvitation` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  spaceInvitations(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: SpaceInvitation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [SpaceInvitation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: SpaceInvitation_Having
+  ): [SpaceInvitation!]! @fdc_generated(from: "SpaceInvitation", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `SpaceMember` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  spaceMembers(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: SpaceMember_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [SpaceMember_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: SpaceMember_Having
+  ): [SpaceMember!]! @fdc_generated(from: "SpaceMember", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `UserProfile` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  userProfiles(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: UserProfile_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [UserProfile_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: UserProfile_Having
+  ): [UserProfile!]! @fdc_generated(from: "UserProfile", purpose: QUERY_MULTIPLE)
+}

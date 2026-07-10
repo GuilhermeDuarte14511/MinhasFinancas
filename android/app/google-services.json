@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1009636275698",
+    "project_id": "minhasfinancasofc",
+    "storage_bucket": "minhasfinancasofc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009636275698:android:743b3324028af14c5c276b",
+        "android_client_info": {
+          "package_name": "br.com.nossagrana.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcGErboOm4fSF7p1AsbM86qK6TMsYmKpM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

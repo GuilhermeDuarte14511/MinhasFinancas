@@ -1,0 +1,2018 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `AuditEvent` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  auditEvent_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: AuditEvent_Data!
+  ): AuditEvent_KeyOutput! @fdc_generated(from: "AuditEvent", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Category` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  category_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Category_Data!
+  ): Category_KeyOutput! @fdc_generated(from: "Category", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `CreditCard` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  creditCard_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CreditCard_Data!
+  ): CreditCard_KeyOutput! @fdc_generated(from: "CreditCard", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `CreditCardInvoice` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  creditCardInvoice_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CreditCardInvoice_Data!
+  ): CreditCardInvoice_KeyOutput! @fdc_generated(from: "CreditCardInvoice", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `DeviceSubscription` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  deviceSubscription_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: DeviceSubscription_Data!
+  ): DeviceSubscription_KeyOutput! @fdc_generated(from: "DeviceSubscription", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `FinancialSpace` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  financialSpace_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: FinancialSpace_Data!
+  ): FinancialSpace_KeyOutput! @fdc_generated(from: "FinancialSpace", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `InvoicePayment` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  invoicePayment_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: InvoicePayment_Data!
+  ): InvoicePayment_KeyOutput! @fdc_generated(from: "InvoicePayment", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Loan` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loan_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Loan_Data!
+  ): Loan_KeyOutput! @fdc_generated(from: "Loan", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `LoanInstallment` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loanInstallment_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: LoanInstallment_Data!
+  ): LoanInstallment_KeyOutput! @fdc_generated(from: "LoanInstallment", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `LoanPayment` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loanPayment_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: LoanPayment_Data!
+  ): LoanPayment_KeyOutput! @fdc_generated(from: "LoanPayment", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `NotificationDelivery` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationDelivery_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: NotificationDelivery_Data!
+  ): NotificationDelivery_KeyOutput! @fdc_generated(from: "NotificationDelivery", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `NotificationPreference` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationPreference_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: NotificationPreference_Data!
+  ): NotificationPreference_KeyOutput! @fdc_generated(from: "NotificationPreference", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `NotificationRule` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationRule_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: NotificationRule_Data!
+  ): NotificationRule_KeyOutput! @fdc_generated(from: "NotificationRule", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Purchase` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  purchase_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Purchase_Data!
+  ): Purchase_KeyOutput! @fdc_generated(from: "Purchase", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `PurchaseInstallment` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  purchaseInstallment_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: PurchaseInstallment_Data!
+  ): PurchaseInstallment_KeyOutput! @fdc_generated(from: "PurchaseInstallment", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `SpaceInvitation` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  spaceInvitation_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: SpaceInvitation_Data!
+  ): SpaceInvitation_KeyOutput! @fdc_generated(from: "SpaceInvitation", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `SpaceMember` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  spaceMember_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: SpaceMember_Data!
+  ): SpaceMember_KeyOutput! @fdc_generated(from: "SpaceMember", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `UserProfile` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  userProfile_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: UserProfile_Data!
+  ): UserProfile_KeyOutput! @fdc_generated(from: "UserProfile", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `AuditEvent` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  auditEvent_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [AuditEvent_Data!]!
+  ): [AuditEvent_KeyOutput!]! @fdc_generated(from: "AuditEvent", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Category` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  category_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Category_Data!]!
+  ): [Category_KeyOutput!]! @fdc_generated(from: "Category", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CreditCard` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  creditCard_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CreditCard_Data!]!
+  ): [CreditCard_KeyOutput!]! @fdc_generated(from: "CreditCard", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CreditCardInvoice` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  creditCardInvoice_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CreditCardInvoice_Data!]!
+  ): [CreditCardInvoice_KeyOutput!]! @fdc_generated(from: "CreditCardInvoice", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `DeviceSubscription` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  deviceSubscription_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [DeviceSubscription_Data!]!
+  ): [DeviceSubscription_KeyOutput!]! @fdc_generated(from: "DeviceSubscription", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `FinancialSpace` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  financialSpace_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [FinancialSpace_Data!]!
+  ): [FinancialSpace_KeyOutput!]! @fdc_generated(from: "FinancialSpace", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `InvoicePayment` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  invoicePayment_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [InvoicePayment_Data!]!
+  ): [InvoicePayment_KeyOutput!]! @fdc_generated(from: "InvoicePayment", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Loan` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loan_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Loan_Data!]!
+  ): [Loan_KeyOutput!]! @fdc_generated(from: "Loan", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `LoanInstallment` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loanInstallment_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [LoanInstallment_Data!]!
+  ): [LoanInstallment_KeyOutput!]! @fdc_generated(from: "LoanInstallment", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `LoanPayment` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  loanPayment_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [LoanPayment_Data!]!
+  ): [LoanPayment_KeyOutput!]! @fdc_generated(from: "LoanPayment", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `NotificationDelivery` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationDelivery_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [NotificationDelivery_Data!]!
+  ): [NotificationDelivery_KeyOutput!]! @fdc_generated(from: "NotificationDelivery", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `NotificationPreference` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationPreference_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [NotificationPreference_Data!]!
+  ): [NotificationPreference_KeyOutput!]! @fdc_generated(from: "NotificationPreference", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `NotificationRule` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  notificationRule_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [NotificationRule_Data!]!
+  ): [NotificationRule_KeyOutput!]! @fdc_generated(from: "NotificationRule", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Purchase` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  purchase_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Purchase_Data!]!
+  ): [Purchase_KeyOutput!]! @fdc_generated(from: "Purchase", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `PurchaseInstallment` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  purchaseInstallment_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [PurchaseInstallment_Data!]!
+  ): [PurchaseInstallment_KeyOutput!]! @fdc_generated(from: "PurchaseInstallment", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `SpaceInvitation` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  spaceInvitation_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [SpaceInvitation_Data!]!
+  ): [SpaceInvitation_KeyOutput!]! @fdc_generated(from: "SpaceInvitation", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `SpaceMember` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  spaceMember_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [SpaceMember_Data!]!
+  ): [SpaceMember_KeyOutput!]! @fdc_generated(from: "SpaceMember", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `UserProfile` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  userProfile_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [UserProfile_Data!]!
+  ): [UserProfile_KeyOutput!]! @fdc_generated(from: "UserProfile", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `AuditEvent` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `AuditEvent`.
+  """
+  auditEvent_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: AuditEvent_Data!
+  ): AuditEvent_KeyOutput! @fdc_generated(from: "AuditEvent", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Category` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Category`.
+  """
+  category_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Category_Data!
+  ): Category_KeyOutput! @fdc_generated(from: "Category", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `CreditCard` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CreditCard`.
+  """
+  creditCard_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CreditCard_Data!
+  ): CreditCard_KeyOutput! @fdc_generated(from: "CreditCard", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `CreditCardInvoice` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CreditCardInvoice`.
+  """
+  creditCardInvoice_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CreditCardInvoice_Data!
+  ): CreditCardInvoice_KeyOutput! @fdc_generated(from: "CreditCardInvoice", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `DeviceSubscription` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `DeviceSubscription`.
+  """
+  deviceSubscription_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: DeviceSubscription_Data!
+  ): DeviceSubscription_KeyOutput! @fdc_generated(from: "DeviceSubscription", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `FinancialSpace` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `FinancialSpace`.
+  """
+  financialSpace_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: FinancialSpace_Data!
+  ): FinancialSpace_KeyOutput! @fdc_generated(from: "FinancialSpace", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `InvoicePayment` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `InvoicePayment`.
+  """
+  invoicePayment_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: InvoicePayment_Data!
+  ): InvoicePayment_KeyOutput! @fdc_generated(from: "InvoicePayment", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Loan` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Loan`.
+  """
+  loan_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Loan_Data!
+  ): Loan_KeyOutput! @fdc_generated(from: "Loan", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `LoanInstallment` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LoanInstallment`.
+  """
+  loanInstallment_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: LoanInstallment_Data!
+  ): LoanInstallment_KeyOutput! @fdc_generated(from: "LoanInstallment", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `LoanPayment` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LoanPayment`.
+  """
+  loanPayment_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: LoanPayment_Data!
+  ): LoanPayment_KeyOutput! @fdc_generated(from: "LoanPayment", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `NotificationDelivery` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationDelivery`.
+  """
+  notificationDelivery_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: NotificationDelivery_Data!
+  ): NotificationDelivery_KeyOutput! @fdc_generated(from: "NotificationDelivery", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `NotificationPreference` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationPreference`.
+  """
+  notificationPreference_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: NotificationPreference_Data!
+  ): NotificationPreference_KeyOutput! @fdc_generated(from: "NotificationPreference", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `NotificationRule` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationRule`.
+  """
+  notificationRule_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: NotificationRule_Data!
+  ): NotificationRule_KeyOutput! @fdc_generated(from: "NotificationRule", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Purchase` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Purchase`.
+  """
+  purchase_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Purchase_Data!
+  ): Purchase_KeyOutput! @fdc_generated(from: "Purchase", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `PurchaseInstallment` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PurchaseInstallment`.
+  """
+  purchaseInstallment_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: PurchaseInstallment_Data!
+  ): PurchaseInstallment_KeyOutput! @fdc_generated(from: "PurchaseInstallment", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `SpaceInvitation` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `SpaceInvitation`.
+  """
+  spaceInvitation_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: SpaceInvitation_Data!
+  ): SpaceInvitation_KeyOutput! @fdc_generated(from: "SpaceInvitation", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `SpaceMember` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `SpaceMember`.
+  """
+  spaceMember_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: SpaceMember_Data!
+  ): SpaceMember_KeyOutput! @fdc_generated(from: "SpaceMember", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `UserProfile` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `UserProfile`.
+  """
+  userProfile_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: UserProfile_Data!
+  ): UserProfile_KeyOutput! @fdc_generated(from: "UserProfile", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `AuditEvent` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `AuditEvent`.
+  """
+  auditEvent_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [AuditEvent_Data!]!
+  ): [AuditEvent_KeyOutput!]! @fdc_generated(from: "AuditEvent", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Category` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Category`.
+  """
+  category_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Category_Data!]!
+  ): [Category_KeyOutput!]! @fdc_generated(from: "Category", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CreditCard` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CreditCard`.
+  """
+  creditCard_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CreditCard_Data!]!
+  ): [CreditCard_KeyOutput!]! @fdc_generated(from: "CreditCard", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CreditCardInvoice` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CreditCardInvoice`.
+  """
+  creditCardInvoice_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CreditCardInvoice_Data!]!
+  ): [CreditCardInvoice_KeyOutput!]! @fdc_generated(from: "CreditCardInvoice", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `DeviceSubscription` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `DeviceSubscription`.
+  """
+  deviceSubscription_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [DeviceSubscription_Data!]!
+  ): [DeviceSubscription_KeyOutput!]! @fdc_generated(from: "DeviceSubscription", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `FinancialSpace` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `FinancialSpace`.
+  """
+  financialSpace_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [FinancialSpace_Data!]!
+  ): [FinancialSpace_KeyOutput!]! @fdc_generated(from: "FinancialSpace", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `InvoicePayment` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `InvoicePayment`.
+  """
+  invoicePayment_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [InvoicePayment_Data!]!
+  ): [InvoicePayment_KeyOutput!]! @fdc_generated(from: "InvoicePayment", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Loan` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Loan`.
+  """
+  loan_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Loan_Data!]!
+  ): [Loan_KeyOutput!]! @fdc_generated(from: "Loan", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `LoanInstallment` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LoanInstallment`.
+  """
+  loanInstallment_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [LoanInstallment_Data!]!
+  ): [LoanInstallment_KeyOutput!]! @fdc_generated(from: "LoanInstallment", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `LoanPayment` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LoanPayment`.
+  """
+  loanPayment_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [LoanPayment_Data!]!
+  ): [LoanPayment_KeyOutput!]! @fdc_generated(from: "LoanPayment", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `NotificationDelivery` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationDelivery`.
+  """
+  notificationDelivery_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [NotificationDelivery_Data!]!
+  ): [NotificationDelivery_KeyOutput!]! @fdc_generated(from: "NotificationDelivery", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `NotificationPreference` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationPreference`.
+  """
+  notificationPreference_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [NotificationPreference_Data!]!
+  ): [NotificationPreference_KeyOutput!]! @fdc_generated(from: "NotificationPreference", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `NotificationRule` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `NotificationRule`.
+  """
+  notificationRule_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [NotificationRule_Data!]!
+  ): [NotificationRule_KeyOutput!]! @fdc_generated(from: "NotificationRule", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Purchase` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Purchase`.
+  """
+  purchase_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Purchase_Data!]!
+  ): [Purchase_KeyOutput!]! @fdc_generated(from: "Purchase", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `PurchaseInstallment` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PurchaseInstallment`.
+  """
+  purchaseInstallment_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [PurchaseInstallment_Data!]!
+  ): [PurchaseInstallment_KeyOutput!]! @fdc_generated(from: "PurchaseInstallment", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `SpaceInvitation` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `SpaceInvitation`.
+  """
+  spaceInvitation_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [SpaceInvitation_Data!]!
+  ): [SpaceInvitation_KeyOutput!]! @fdc_generated(from: "SpaceInvitation", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `SpaceMember` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `SpaceMember`.
+  """
+  spaceMember_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [SpaceMember_Data!]!
+  ): [SpaceMember_KeyOutput!]! @fdc_generated(from: "SpaceMember", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `UserProfile` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `UserProfile`.
+  """
+  userProfile_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [UserProfile_Data!]!
+  ): [UserProfile_KeyOutput!]! @fdc_generated(from: "UserProfile", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `AuditEvent` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `AuditEvent` or `null` if not found.
+  """
+  auditEvent_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: AuditEvent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: AuditEvent_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: AuditEvent_Data!
+  ): AuditEvent_KeyOutput @fdc_generated(from: "AuditEvent", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Category` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Category` or `null` if not found.
+  """
+  category_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Category_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Category_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Category_Data!
+  ): Category_KeyOutput @fdc_generated(from: "Category", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CreditCard` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CreditCard` or `null` if not found.
+  """
+  creditCard_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCard_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CreditCard_Data!
+  ): CreditCard_KeyOutput @fdc_generated(from: "CreditCard", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CreditCardInvoice` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CreditCardInvoice` or `null` if not found.
+  """
+  creditCardInvoice_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCardInvoice_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCardInvoice_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CreditCardInvoice_Data!
+  ): CreditCardInvoice_KeyOutput @fdc_generated(from: "CreditCardInvoice", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `DeviceSubscription` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `DeviceSubscription` or `null` if not found.
+  """
+  deviceSubscription_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DeviceSubscription_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DeviceSubscription_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: DeviceSubscription_Data!
+  ): DeviceSubscription_KeyOutput @fdc_generated(from: "DeviceSubscription", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `FinancialSpace` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `FinancialSpace` or `null` if not found.
+  """
+  financialSpace_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: FinancialSpace_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: FinancialSpace_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: FinancialSpace_Data!
+  ): FinancialSpace_KeyOutput @fdc_generated(from: "FinancialSpace", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `InvoicePayment` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `InvoicePayment` or `null` if not found.
+  """
+  invoicePayment_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: InvoicePayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: InvoicePayment_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: InvoicePayment_Data!
+  ): InvoicePayment_KeyOutput @fdc_generated(from: "InvoicePayment", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Loan` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Loan` or `null` if not found.
+  """
+  loan_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Loan_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Loan_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Loan_Data!
+  ): Loan_KeyOutput @fdc_generated(from: "Loan", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `LoanInstallment` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `LoanInstallment` or `null` if not found.
+  """
+  loanInstallment_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanInstallment_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: LoanInstallment_Data!
+  ): LoanInstallment_KeyOutput @fdc_generated(from: "LoanInstallment", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `LoanPayment` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `LoanPayment` or `null` if not found.
+  """
+  loanPayment_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanPayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanPayment_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: LoanPayment_Data!
+  ): LoanPayment_KeyOutput @fdc_generated(from: "LoanPayment", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `NotificationDelivery` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `NotificationDelivery` or `null` if not found.
+  """
+  notificationDelivery_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationDelivery_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationDelivery_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: NotificationDelivery_Data!
+  ): NotificationDelivery_KeyOutput @fdc_generated(from: "NotificationDelivery", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `NotificationPreference` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `NotificationPreference` or `null` if not found.
+  """
+  notificationPreference_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationPreference_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationPreference_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: NotificationPreference_Data!
+  ): NotificationPreference_KeyOutput @fdc_generated(from: "NotificationPreference", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `NotificationRule` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `NotificationRule` or `null` if not found.
+  """
+  notificationRule_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationRule_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationRule_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: NotificationRule_Data!
+  ): NotificationRule_KeyOutput @fdc_generated(from: "NotificationRule", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Purchase` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Purchase` or `null` if not found.
+  """
+  purchase_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Purchase_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Purchase_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Purchase_Data!
+  ): Purchase_KeyOutput @fdc_generated(from: "Purchase", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `PurchaseInstallment` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `PurchaseInstallment` or `null` if not found.
+  """
+  purchaseInstallment_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PurchaseInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PurchaseInstallment_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: PurchaseInstallment_Data!
+  ): PurchaseInstallment_KeyOutput @fdc_generated(from: "PurchaseInstallment", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `SpaceInvitation` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `SpaceInvitation` or `null` if not found.
+  """
+  spaceInvitation_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceInvitation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceInvitation_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: SpaceInvitation_Data!
+  ): SpaceInvitation_KeyOutput @fdc_generated(from: "SpaceInvitation", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `SpaceMember` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `SpaceMember` or `null` if not found.
+  """
+  spaceMember_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceMember_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: SpaceMember_Data!
+  ): SpaceMember_KeyOutput @fdc_generated(from: "SpaceMember", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `UserProfile` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `UserProfile` or `null` if not found.
+  """
+  userProfile_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: UserProfile_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: UserProfile_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: UserProfile_Data!
+  ): UserProfile_KeyOutput @fdc_generated(from: "UserProfile", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `AuditEvent` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  auditEvent_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: AuditEvent_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: AuditEvent_Data!
+  ): Int! @fdc_generated(from: "AuditEvent", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Category` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  category_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Category_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Category_Data!
+  ): Int! @fdc_generated(from: "Category", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `CreditCard` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  creditCard_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CreditCard_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CreditCard_Data!
+  ): Int! @fdc_generated(from: "CreditCard", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `CreditCardInvoice` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  creditCardInvoice_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CreditCardInvoice_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CreditCardInvoice_Data!
+  ): Int! @fdc_generated(from: "CreditCardInvoice", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `DeviceSubscription` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  deviceSubscription_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: DeviceSubscription_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: DeviceSubscription_Data!
+  ): Int! @fdc_generated(from: "DeviceSubscription", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `FinancialSpace` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  financialSpace_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: FinancialSpace_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: FinancialSpace_Data!
+  ): Int! @fdc_generated(from: "FinancialSpace", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `InvoicePayment` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  invoicePayment_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: InvoicePayment_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: InvoicePayment_Data!
+  ): Int! @fdc_generated(from: "InvoicePayment", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Loan` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  loan_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Loan_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Loan_Data!
+  ): Int! @fdc_generated(from: "Loan", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `LoanInstallment` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  loanInstallment_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: LoanInstallment_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: LoanInstallment_Data!
+  ): Int! @fdc_generated(from: "LoanInstallment", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `LoanPayment` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  loanPayment_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: LoanPayment_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: LoanPayment_Data!
+  ): Int! @fdc_generated(from: "LoanPayment", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `NotificationDelivery` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  notificationDelivery_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: NotificationDelivery_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: NotificationDelivery_Data!
+  ): Int! @fdc_generated(from: "NotificationDelivery", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `NotificationPreference` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  notificationPreference_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: NotificationPreference_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: NotificationPreference_Data!
+  ): Int! @fdc_generated(from: "NotificationPreference", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `NotificationRule` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  notificationRule_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: NotificationRule_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: NotificationRule_Data!
+  ): Int! @fdc_generated(from: "NotificationRule", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Purchase` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  purchase_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Purchase_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Purchase_Data!
+  ): Int! @fdc_generated(from: "Purchase", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `PurchaseInstallment` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  purchaseInstallment_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: PurchaseInstallment_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: PurchaseInstallment_Data!
+  ): Int! @fdc_generated(from: "PurchaseInstallment", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `SpaceInvitation` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  spaceInvitation_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: SpaceInvitation_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: SpaceInvitation_Data!
+  ): Int! @fdc_generated(from: "SpaceInvitation", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `SpaceMember` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  spaceMember_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: SpaceMember_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: SpaceMember_Data!
+  ): Int! @fdc_generated(from: "SpaceMember", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `UserProfile` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  userProfile_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: UserProfile_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: UserProfile_Data!
+  ): Int! @fdc_generated(from: "UserProfile", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `AuditEvent` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  auditEvent_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: AuditEvent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: AuditEvent_FirstRow
+  ): AuditEvent_KeyOutput @fdc_generated(from: "AuditEvent", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Category` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  category_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Category_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Category_FirstRow
+  ): Category_KeyOutput @fdc_generated(from: "Category", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `CreditCard` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  creditCard_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCard_FirstRow
+  ): CreditCard_KeyOutput @fdc_generated(from: "CreditCard", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `CreditCardInvoice` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  creditCardInvoice_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CreditCardInvoice_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CreditCardInvoice_FirstRow
+  ): CreditCardInvoice_KeyOutput @fdc_generated(from: "CreditCardInvoice", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `DeviceSubscription` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  deviceSubscription_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DeviceSubscription_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DeviceSubscription_FirstRow
+  ): DeviceSubscription_KeyOutput @fdc_generated(from: "DeviceSubscription", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `FinancialSpace` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  financialSpace_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: FinancialSpace_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: FinancialSpace_FirstRow
+  ): FinancialSpace_KeyOutput @fdc_generated(from: "FinancialSpace", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `InvoicePayment` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  invoicePayment_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: InvoicePayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: InvoicePayment_FirstRow
+  ): InvoicePayment_KeyOutput @fdc_generated(from: "InvoicePayment", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Loan` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  loan_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Loan_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Loan_FirstRow
+  ): Loan_KeyOutput @fdc_generated(from: "Loan", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `LoanInstallment` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  loanInstallment_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanInstallment_FirstRow
+  ): LoanInstallment_KeyOutput @fdc_generated(from: "LoanInstallment", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `LoanPayment` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  loanPayment_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: LoanPayment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LoanPayment_FirstRow
+  ): LoanPayment_KeyOutput @fdc_generated(from: "LoanPayment", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `NotificationDelivery` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  notificationDelivery_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationDelivery_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationDelivery_FirstRow
+  ): NotificationDelivery_KeyOutput @fdc_generated(from: "NotificationDelivery", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `NotificationPreference` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  notificationPreference_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationPreference_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationPreference_FirstRow
+  ): NotificationPreference_KeyOutput @fdc_generated(from: "NotificationPreference", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `NotificationRule` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  notificationRule_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: NotificationRule_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: NotificationRule_FirstRow
+  ): NotificationRule_KeyOutput @fdc_generated(from: "NotificationRule", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Purchase` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  purchase_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Purchase_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Purchase_FirstRow
+  ): Purchase_KeyOutput @fdc_generated(from: "Purchase", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `PurchaseInstallment` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  purchaseInstallment_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PurchaseInstallment_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PurchaseInstallment_FirstRow
+  ): PurchaseInstallment_KeyOutput @fdc_generated(from: "PurchaseInstallment", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `SpaceInvitation` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  spaceInvitation_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceInvitation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceInvitation_FirstRow
+  ): SpaceInvitation_KeyOutput @fdc_generated(from: "SpaceInvitation", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `SpaceMember` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  spaceMember_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: SpaceMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: SpaceMember_FirstRow
+  ): SpaceMember_KeyOutput @fdc_generated(from: "SpaceMember", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `UserProfile` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  userProfile_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: UserProfile_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: UserProfile_FirstRow
+  ): UserProfile_KeyOutput @fdc_generated(from: "UserProfile", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `AuditEvent` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  auditEvent_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: AuditEvent_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "AuditEvent", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Category` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  category_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Category_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Category", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CreditCard` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  creditCard_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CreditCard_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CreditCard", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CreditCardInvoice` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  creditCardInvoice_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CreditCardInvoice_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CreditCardInvoice", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `DeviceSubscription` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  deviceSubscription_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: DeviceSubscription_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "DeviceSubscription", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `FinancialSpace` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  financialSpace_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: FinancialSpace_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "FinancialSpace", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `InvoicePayment` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  invoicePayment_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: InvoicePayment_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "InvoicePayment", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Loan` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  loan_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Loan_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Loan", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `LoanInstallment` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  loanInstallment_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: LoanInstallment_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "LoanInstallment", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `LoanPayment` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  loanPayment_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: LoanPayment_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "LoanPayment", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `NotificationDelivery` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  notificationDelivery_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: NotificationDelivery_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "NotificationDelivery", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `NotificationPreference` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  notificationPreference_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: NotificationPreference_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "NotificationPreference", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `NotificationRule` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  notificationRule_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: NotificationRule_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "NotificationRule", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Purchase` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  purchase_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Purchase_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Purchase", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `PurchaseInstallment` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  purchaseInstallment_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: PurchaseInstallment_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "PurchaseInstallment", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `SpaceInvitation` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  spaceInvitation_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: SpaceInvitation_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "SpaceInvitation", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `SpaceMember` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  spaceMember_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: SpaceMember_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "SpaceMember", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `UserProfile` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  userProfile_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: UserProfile_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "UserProfile", purpose: DELETE_MULTIPLE)
+}

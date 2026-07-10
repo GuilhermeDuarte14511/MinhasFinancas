@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nossa Grana - Empréstimos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#c3c0ff",
+                      "secondary-fixed-dim": "#80d5cb",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#0f0069",
+                      "on-surface-variant": "#464555",
+                      "outline-variant": "#c7c4d8",
+                      "error": "#ba1a1a",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-container": "#006f67",
+                      "tertiary": "#3d37a9",
+                      "surface-bright": "#fcf8ff",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#4f46e5",
+                      "surface-dim": "#dcd8e5",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#e2dfff",
+                      "primary": "#3525cd",
+                      "secondary-fixed": "#9cf2e8",
+                      "on-secondary-fixed-variant": "#00504a",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-tertiary-fixed-variant": "#3b35a7",
+                      "on-primary-fixed": "#0f0069",
+                      "on-secondary-fixed": "#00201d",
+                      "inverse-on-surface": "#f3effc",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e4e1ee",
+                      "on-surface": "#1b1b24",
+                      "on-tertiary-container": "#dbd7ff",
+                      "inverse-surface": "#302f39",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface": "#fcf8ff",
+                      "on-background": "#1b1b24",
+                      "secondary-container": "#99efe5",
+                      "surface-variant": "#e4e1ee",
+                      "surface-container-low": "#f5f2ff",
+                      "surface-container-high": "#eae6f4",
+                      "on-primary-container": "#dad7ff",
+                      "outline": "#777587",
+                      "background": "#fcf8ff",
+                      "secondary": "#006a63",
+                      "inverse-primary": "#c3c0ff",
+                      "surface-container": "#f0ecf9",
+                      "tertiary-container": "#5551c2",
+                      "surface-tint": "#4d44e3",
+                      "primary-fixed": "#e2dfff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "gutter": "16px",
+                      "2xl": "48px",
+                      "container-margin-desktop": "40px",
+                      "3xl": "64px",
+                      "base": "8px",
+                      "container-margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                      "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                      "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                      "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                      "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                      "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                      "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                      "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        /* Custom scrollbar for desktop */
+        @media (min-width: 1024px) {
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #e4e1ee;
+                border-radius: 9999px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #c7c4d8;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface dark:bg-background text-on-surface antialiased min-h-screen pb-[100px] md:pb-0 pt-16 md:pt-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline md:hidden">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A small, professional portrait photo of a smiling modern couple, warmly lit in a bright, contemporary living space. Soft focus background, corporate modern aesthetic with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm2moyjw1S_Fw7ZYJsRjJeGn97zWt-kchUZUpUniOZOG7bkXfhIMIUbErlzBTdkb3Q9JKQ9Tf8rVjpiE4m5m8vcaWASDxGW4felZADwJxDQ_jl0n4uLPFIOaT49-UXMDXqDiORpWOdxda6bGq1ql7hImJO5fhQuzemiDpXHr_D7FAlR0DENA_2jgRzoI1SjRNnr4Xd4GojEpm2mNPC7yVdrIpHuKuk7L0KaRnSoczbSwPp-60rEUI"/>
+</div>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</h1>
+<button aria-label="Notifications" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Desktop Navigation Sidebar -->
+<nav class="hidden md:flex flex-col w-64 fixed h-full left-0 top-0 bg-surface-container border-r border-outline-variant p-lg z-50">
+<div class="flex items-center gap-md mb-3xl">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A professional portrait photo of a smiling modern couple, warmly lit in a bright, contemporary living space. Soft focus background, corporate modern aesthetic with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm2y14kC3ITRggG71NMMfLKwjCS_1y19TTZjwXXnO3R_aQUwq0PYsbEVIvoBzpV_MAestG0IXcANXHHpCf6PG6t7tRPIxP3WWZIP5MboFiJqpEXNTH_yFt_EVzbarOjGym8cBzizXRbG6FE_2YHZ6FYOFK7J2KqfDkuC253FluAfN8e_u6dkGnfY0smH22Y3UEjW5sj7GmTUL_5FGMAg7lyMag7vuQFs-hLzZOj3oxLMdja-8ZqBg"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Nossa Grana</h1>
+</div>
+<div class="flex flex-col gap-sm flex-1">
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-lg text-label-lg">Início</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
+<span class="font-label-lg text-label-lg">Cartões</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg bg-primary-container text-on-primary-container" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-label-lg text-label-lg">Empréstimos</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-lg text-label-lg">Agenda</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="w-full md:pl-64 flex flex-col items-center">
+<div class="w-full max-w-5xl px-container-margin-mobile md:px-container-margin-desktop py-lg md:py-3xl flex flex-col gap-xl">
+<!-- Page Header & Action -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md w-full">
+<div>
+<h2 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface mb-sm">Empréstimos</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Acompanhe seus financiamentos e créditos ativos.</p>
+</div>
+<button class="h-[52px] bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-all duration-200 rounded-full px-lg flex items-center justify-center gap-sm font-label-lg text-label-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Adicionar empréstimo
+                </button>
+</div>
+<!-- Total Overview Card (Glassmorphism) -->
+<div class="w-full rounded-[20px] bg-surface-container-lowest border border-outline-variant p-lg md:p-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/4"></div>
+<div class="relative z-10 flex flex-col md:flex-row justify-between gap-lg">
+<div class="flex flex-col gap-xs">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Saldo Devedor Total</span>
+<span class="font-display-lg text-display-lg text-primary tracking-tight">R$ 145.320,00</span>
+</div>
+<div class="flex flex-row md:flex-col gap-lg md:gap-xs justify-between md:justify-end border-t md:border-t-0 md:border-l border-outline-variant pt-md md:pt-0 md:pl-lg">
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Próximas Parcelas (Mês)</span>
+<span class="font-title-lg text-title-lg text-on-surface">R$ 2.450,00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Loans List -->
+<div class="flex flex-col gap-md">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xs">Contratos Ativos</h3>
+<!-- Loan Item 1 -->
+<div class="w-full bg-surface-container-lowest border border-outline-variant rounded-[16px] p-lg flex flex-col gap-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] hover:border-primary-fixed-dim transition-colors">
+<div class="flex flex-row justify-between items-start border-b border-surface-variant pb-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-lg text-title-lg text-on-surface">Banco do Brasil</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Financiamento Veículo</span>
+</div>
+</div>
+<div class="h-8 px-md rounded-full bg-surface-container flex items-center justify-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Venc. dia 15</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md w-full pt-sm">
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Valor Original</span>
+<span class="font-body-lg text-body-lg text-on-surface">R$ 45.000,00</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Saldo Devedor</span>
+<span class="font-body-lg text-body-lg text-primary font-semibold">R$ 22.500,00</span>
+</div>
+<div class="flex flex-col gap-xs col-span-2 md:col-span-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Próxima Parcela</span>
+<span class="font-body-lg text-body-lg text-on-surface">R$ 950,00</span>
+</div>
+<div class="flex flex-col gap-xs col-span-2 md:col-span-1">
+<div class="flex justify-between items-center w-full">
+<span class="font-label-md text-label-md text-on-surface-variant">Progresso</span>
+<span class="font-label-md text-label-md text-primary">24/48</span>
+</div>
+<div class="w-full h-3 bg-surface-variant rounded-full overflow-hidden mt-1">
+<div class="h-full bg-secondary rounded-full" style="width: 50%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Loan Item 2 -->
+<div class="w-full bg-surface-container-lowest border border-outline-variant rounded-[16px] p-lg flex flex-col gap-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] hover:border-primary-fixed-dim transition-colors">
+<div class="flex flex-row justify-between items-start border-b border-surface-variant pb-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="home_work">home_work</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-lg text-title-lg text-on-surface">Caixa Econômica</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Financiamento Imobiliário</span>
+</div>
+</div>
+<div class="h-8 px-md rounded-full bg-surface-container flex items-center justify-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Venc. dia 05</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md w-full pt-sm">
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Valor Original</span>
+<span class="font-body-lg text-body-lg text-on-surface">R$ 150.000,00</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Saldo Devedor</span>
+<span class="font-body-lg text-body-lg text-primary font-semibold">R$ 122.820,00</span>
+</div>
+<div class="flex flex-col gap-xs col-span-2 md:col-span-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Próxima Parcela</span>
+<span class="font-body-lg text-body-lg text-on-surface">R$ 1.500,00</span>
+</div>
+<div class="flex flex-col gap-xs col-span-2 md:col-span-1">
+<div class="flex justify-between items-center w-full">
+<span class="font-label-md text-label-md text-on-surface-variant">Progresso</span>
+<span class="font-label-md text-label-md text-primary">60/360</span>
+</div>
+<div class="w-full h-3 bg-surface-variant rounded-full overflow-hidden mt-1">
+<div class="h-full bg-secondary rounded-full" style="width: 16.6%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
+<span class="font-label-md text-label-md">Cartões</span>
+</a>
+<!-- Using "Mais" spot for Empréstimos visually as it maps closest to intent for this specific screen context if it were a 5 tab nav, but keeping label as Mais per JSON, just highlighting it to show we are not on Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md">Novo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md">Agenda</span>
+</a>
+<!-- Highlighting 'Mais' as a fallback since Emprestimos isn't in the default 5 -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+<span class="font-label-md text-label-md">Mais</span>
+</a>
+</nav>
+</body></html>

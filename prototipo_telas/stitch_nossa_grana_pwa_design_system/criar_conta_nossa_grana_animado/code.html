@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nossa Grana - Criar Conta</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "secondary": "#006a63",
+                        "on-primary-fixed": "#0f0069",
+                        "outline": "#777587",
+                        "tertiary-container": "#5551c2",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-secondary-container": "#006f67",
+                        "surface-container-high": "#eae6f4",
+                        "surface": "#fcf8ff",
+                        "inverse-surface": "#302f39",
+                        "secondary-container": "#99efe5",
+                        "on-surface": "#1b1b24",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dcd8e5",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-on-surface": "#f3effc",
+                        "tertiary-fixed": "#e2dfff",
+                        "tertiary": "#3d37a9",
+                        "surface-container-low": "#f5f2ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e4e1ee",
+                        "primary-container": "#4f46e5",
+                        "background": "#fcf8ff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4d44e3",
+                        "on-primary-container": "#dad7ff",
+                        "outline-variant": "#c7c4d8",
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1b1b24",
+                        "primary": "#3525cd",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#e2dfff",
+                        "surface-container": "#f0ecf9",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-tertiary-container": "#dbd7ff",
+                        "secondary-fixed": "#9cf2e8",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-bright": "#fcf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "container-margin-desktop": "40px",
+                        "container-margin-mobile": "16px",
+                        "3xl": "64px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-600 { animation-delay: 600ms; }
+        .delay-700 { animation-delay: 700ms; }
+        .delay-800 { animation-delay: 800ms; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center p-container-margin-mobile md:p-container-margin-desktop relative overflow-hidden text-on-background">
+<!-- Ambient Background Depth -->
+<div class="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary-fixed-dim opacity-40 blur-[120px] pointer-events-none animate-fade-in"></div>
+<div class="absolute bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-secondary-fixed-dim opacity-30 blur-[120px] pointer-events-none animate-fade-in"></div>
+<!-- Main Registration Card -->
+<main class="w-full max-w-[440px] bg-surface rounded-2xl border border-outline-variant p-lg md:p-xl relative z-10 flex flex-col gap-lg shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1),0px_8px_10px_-6px_rgba(15,23,42,0.1)] animate-fade-in">
+<!-- Header -->
+<header class="text-center flex flex-col items-center gap-xs animate-fade-in-up delay-100">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-primary flex items-center justify-center mb-sm shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 28px; font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary tracking-tight">Criar Conta</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Juntos rumo à harmonia financeira.</p>
+</header>
+<!-- Form -->
+<form class="flex flex-col gap-md mt-sm">
+<!-- Nome Field -->
+<div class="flex flex-col gap-xs animate-fade-in-up delay-200">
+<label class="font-label-md text-label-md text-on-surface ml-xs" for="name">Nome completo</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant">person</span>
+<input class="w-full h-[56px] pl-[48px] pr-md rounded-lg border border-outline-variant bg-surface text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow placeholder:text-outline-variant font-body-md text-body-md" id="name" placeholder="Ex: Maria Silva" type="text"/>
+</div>
+</div>
+<!-- E-mail Field -->
+<div class="flex flex-col gap-xs animate-fade-in-up delay-300">
+<label class="font-label-md text-label-md text-on-surface ml-xs" for="email">E-mail</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant">mail</span>
+<input class="w-full h-[56px] pl-[48px] pr-md rounded-lg border border-outline-variant bg-surface text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow placeholder:text-outline-variant font-body-md text-body-md" id="email" placeholder="seu@email.com" type="email"/>
+</div>
+</div>
+<!-- Senha Field -->
+<div class="flex flex-col gap-xs animate-fade-in-up delay-400">
+<label class="font-label-md text-label-md text-on-surface ml-xs" for="password">Senha</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant">lock</span>
+<input class="w-full h-[56px] pl-[48px] pr-[48px] rounded-lg border border-outline-variant bg-surface text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow placeholder:text-outline-variant font-body-md text-body-md" id="password" placeholder="••••••••" type="password"/>
+<button aria-label="Mostrar senha" class="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-all active:scale-90" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+<!-- Password Strength Indicator -->
+<div class="flex items-center gap-xs mt-1 px-xs">
+<div class="h-1.5 flex-1 rounded-full bg-error transition-colors duration-300"></div>
+<div class="h-1.5 flex-1 rounded-full bg-surface-variant transition-colors duration-300"></div>
+<div class="h-1.5 flex-1 rounded-full bg-surface-variant transition-colors duration-300"></div>
+<span class="font-label-md text-label-md text-error ml-2 w-12 text-right">Fraca</span>
+</div>
+</div>
+<!-- Confirmar Senha Field -->
+<div class="flex flex-col gap-xs animate-fade-in-up delay-500">
+<label class="font-label-md text-label-md text-on-surface ml-xs" for="confirm_password">Confirmação de Senha</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant">lock_clock</span>
+<input class="w-full h-[56px] pl-[48px] pr-md rounded-lg border border-outline-variant bg-surface text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow placeholder:text-outline-variant font-body-md text-body-md" id="confirm_password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Checkbox Termos -->
+<label class="flex items-start gap-sm mt-sm cursor-pointer group animate-fade-in-up delay-600 active:scale-[0.98] transition-transform">
+<div class="relative flex items-center justify-center mt-0.5">
+<input class="w-5 h-5 rounded border-2 border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 bg-surface transition-colors cursor-pointer group-hover:border-primary peer appearance-none checked:bg-primary checked:border-primary" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-on-primary text-[16px] pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant leading-tight pt-0.5">
+                    Li e concordo com os <a class="text-primary hover:underline font-label-lg transition-colors active:opacity-70" href="#">Termos de Uso</a> e <a class="text-primary hover:underline font-label-lg transition-colors active:opacity-70" href="#">Política de Privacidade</a>.
+                </span>
+</label>
+<!-- Submit Button -->
+<button class="mt-md h-[52px] w-full flex items-center justify-center bg-primary text-on-primary font-label-lg text-label-lg rounded-full hover:bg-tertiary shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)] transition-all active:scale-95 animate-fade-in-up delay-700" type="button">
+                Criar minha conta
+            </button>
+</form>
+<!-- Footer Actions -->
+<footer class="flex flex-col items-center gap-md text-center mt-sm animate-fade-in-up delay-800">
+<div class="flex items-center gap-xs bg-surface-container-low p-sm rounded-lg border border-surface-variant w-full justify-center">
+<span class="material-symbols-outlined text-outline text-[18px]">info</span>
+<p class="font-label-md text-label-md text-on-surface-variant">
+                    Um link será enviado para verificar seu e-mail.
+                </p>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                Já tem uma conta? 
+                <a class="font-label-lg text-label-lg text-primary hover:text-tertiary hover:underline transition-all active:scale-95 inline-block ml-xs" href="#">Entrar</a>
+</p>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Nossa Grana - Agenda Financeira</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-surface-variant": "#464555",
+                        "outline-variant": "#c7c4d8",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#006f67",
+                        "tertiary": "#3d37a9",
+                        "surface-bright": "#fcf8ff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "surface-dim": "#dcd8e5",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e2dfff",
+                        "primary": "#3525cd",
+                        "secondary-fixed": "#9cf2e8",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-primary-fixed": "#0f0069",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-on-surface": "#f3effc",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-surface": "#1b1b24",
+                        "on-tertiary-container": "#dbd7ff",
+                        "inverse-surface": "#302f39",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface": "#fcf8ff",
+                        "on-background": "#1b1b24",
+                        "secondary-container": "#99efe5",
+                        "surface-variant": "#e4e1ee",
+                        "surface-container-low": "#f5f2ff",
+                        "surface-container-high": "#eae6f4",
+                        "on-primary-container": "#dad7ff",
+                        "outline": "#777587",
+                        "background": "#fcf8ff",
+                        "secondary": "#006a63",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-container": "#f0ecf9",
+                        "tertiary-container": "#5551c2",
+                        "surface-tint": "#4d44e3",
+                        "primary-fixed": "#e2dfff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "2xl": "48px",
+                        "container-margin-desktop": "40px",
+                        "3xl": "64px",
+                        "base": "8px",
+                        "container-margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A small, professional profile picture of a modern couple smiling warmly against a clean, light background. High resolution, softly lit to fit a premium financial app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAki8JYzIzTShT5yzpQyPy8612QeDdNOl_8sTYc1LCTPbC4vCXKpu6gcbOIjkaejzjVrZ_BxHaoYoNpGFsZKaiOZTwVqgWdYPid-3XFv_uW3hvfj0xJVlgDLjK6jm6Zug0TWTWQFH0xJWSyBtmHCuVbKdzAAs1PQi5pAoQa4ClfI1VsfJtBlWfo1AgCnfAiiPCc2awiOy-cZia-fQx0GJLqvDOHe9991ywjDcf5LOgFTnixU7n_Ogg"/>
+<h1 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</h1>
+</div>
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full text-on-surface-variant dark:text-on-surface-variant active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 mt-16 mb-24 px-container-margin-mobile overflow-y-auto hide-scrollbar">
+<!-- Month Selector -->
+<div class="flex items-center justify-between py-lg">
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<h2 class="font-title-lg text-title-lg text-on-surface">Outubro 2023</h2>
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Compact Calendar -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] mb-lg">
+<div class="grid grid-cols-7 gap-1 text-center mb-2">
+<div class="font-label-md text-label-md text-outline">D</div>
+<div class="font-label-md text-label-md text-outline">S</div>
+<div class="font-label-md text-label-md text-outline">T</div>
+<div class="font-label-md text-label-md text-outline">Q</div>
+<div class="font-label-md text-label-md text-outline">Q</div>
+<div class="font-label-md text-label-md text-outline">S</div>
+<div class="font-label-md text-label-md text-outline">S</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center font-body-md text-body-md">
+<!-- Row 1 -->
+<div class="py-2 text-outline-variant">1</div>
+<div class="py-2">2</div>
+<div class="py-2">3</div>
+<div class="py-2">4</div>
+<div class="py-2 bg-error-container text-on-error-container rounded-full font-bold">5</div>
+<div class="py-2">6</div>
+<div class="py-2">7</div>
+<!-- Row 2 -->
+<div class="py-2">8</div>
+<div class="py-2">9</div>
+<div class="py-2 bg-primary-container text-on-primary-container rounded-full font-bold relative">
+                    10
+                    <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-on-primary-container rounded-full"></span>
+</div>
+<div class="py-2">11</div>
+<div class="py-2">12</div>
+<div class="py-2">13</div>
+<div class="py-2">14</div>
+</div>
+</div>
+<!-- Filters -->
+<div class="flex overflow-x-auto hide-scrollbar gap-sm mb-lg py-1">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-lg text-label-lg">Todos</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container">Faturas</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container">Empréstimos</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container">Vencidos</button>
+</div>
+<!-- Upcoming Bills Header -->
+<h3 class="font-title-lg text-title-lg text-on-surface mb-md">Próximos vencimentos</h3>
+<!-- Bills List -->
+<div class="flex flex-col gap-sm">
+<!-- Item 1: Overdue -->
+<div class="bg-surface-container-lowest rounded-xl border border-error p-md flex items-center justify-between shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">Aluguel</div>
+<div class="font-body-md text-body-md text-outline">Venceu em 05/10</div>
+<span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-md text-label-md">Vencido</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-title-lg text-title-lg text-error">R$ 2.500,00</div>
+</div>
+</div>
+<!-- Item 2: Due soon -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex items-center justify-between shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">Cartão Nubank</div>
+<div class="font-body-md text-body-md text-outline">Vence em 10/10</div>
+<span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">Vence em 2 dias</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-title-lg text-title-lg text-on-surface">R$ 845,30</div>
+</div>
+</div>
+<!-- Item 3: Paid -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex items-center justify-between shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)] opacity-60">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">Conta de Luz</div>
+<div class="font-body-md text-body-md text-outline">Venceu em 02/10</div>
+<span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md">Pago</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-title-lg text-title-lg text-on-surface">R$ 180,00</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="font-label-md text-label-md mt-1">Cartões</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-md text-label-md mt-1">Novo</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-md text-label-md mt-1">Agenda</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-md text-label-md mt-1">Mais</span>
+</a>
+</nav>
+</body></html>

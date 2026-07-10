@@ -1,0 +1,9 @@
+schema:
+  source: ./schema
+  datasource:
+    postgresql:
+      database: NOSSA_GRANA_DATABASE
+      cloudSql:
+        instanceId: SEU_CLOUD_SQL_INSTANCE_ID
+connectorDirs:
+  - ./connectors/client

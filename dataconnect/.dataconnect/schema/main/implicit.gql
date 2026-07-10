@@ -1,0 +1,226 @@
+extend type AuditEvent {
+  """
+  ✨ Implicit foreign key field based on `AuditEvent`.`actorUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  actorUserId: UUID! @fdc_generated(from: "AuditEvent.actorUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `AuditEvent`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "AuditEvent.financialSpace", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Category {
+  """
+  ✨ Implicit foreign key field based on `Category`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "Category.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Category`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "Category.financialSpace", purpose: IMPLICIT_REF_FIELD)
+}
+extend type CreditCard {
+  """
+  ✨ Implicit foreign key field based on `CreditCard`.`cardholderMember`. It must match the value of `SpaceMember`.`id`. See `@ref` for how to customize it.
+  """
+  cardholderMemberId: UUID! @fdc_generated(from: "CreditCard.cardholderMember", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CreditCard`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "CreditCard.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CreditCard`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "CreditCard.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CreditCard`.`updatedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  updatedByUserId: UUID! @fdc_generated(from: "CreditCard.updatedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type CreditCardInvoice {
+  """
+  ✨ Implicit foreign key field based on `CreditCardInvoice`.`creditCard`. It must match the value of `CreditCard`.`id`. See `@ref` for how to customize it.
+  """
+  creditCardId: UUID! @fdc_generated(from: "CreditCardInvoice.creditCard", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CreditCardInvoice`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "CreditCardInvoice.financialSpace", purpose: IMPLICIT_REF_FIELD)
+}
+extend type DeviceSubscription {
+  """
+  ✨ Implicit foreign key field based on `DeviceSubscription`.`user`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "DeviceSubscription.user", purpose: IMPLICIT_REF_FIELD)
+}
+extend type FinancialSpace {
+  """
+  ✨ Implicit foreign key field based on `FinancialSpace`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "FinancialSpace.createdByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type InvoicePayment {
+  """
+  ✨ Implicit foreign key field based on `InvoicePayment`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "InvoicePayment.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `InvoicePayment`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "InvoicePayment.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `InvoicePayment`.`invoice`. It must match the value of `CreditCardInvoice`.`id`. See `@ref` for how to customize it.
+  """
+  invoiceId: UUID! @fdc_generated(from: "InvoicePayment.invoice", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `InvoicePayment`.`reversedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  reversedByUserId: UUID @fdc_generated(from: "InvoicePayment.reversedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Loan {
+  """
+  ✨ Implicit foreign key field based on `Loan`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "Loan.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Loan`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "Loan.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Loan`.`updatedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  updatedByUserId: UUID! @fdc_generated(from: "Loan.updatedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type LoanInstallment {
+  """
+  ✨ Implicit foreign key field based on `LoanInstallment`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "LoanInstallment.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `LoanInstallment`.`loan`. It must match the value of `Loan`.`id`. See `@ref` for how to customize it.
+  """
+  loanId: UUID! @fdc_generated(from: "LoanInstallment.loan", purpose: IMPLICIT_REF_FIELD)
+}
+extend type LoanPayment {
+  """
+  ✨ Implicit foreign key field based on `LoanPayment`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "LoanPayment.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `LoanPayment`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "LoanPayment.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `LoanPayment`.`loan`. It must match the value of `Loan`.`id`. See `@ref` for how to customize it.
+  """
+  loanId: UUID! @fdc_generated(from: "LoanPayment.loan", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `LoanPayment`.`loanInstallment`. It must match the value of `LoanInstallment`.`id`. See `@ref` for how to customize it.
+  """
+  loanInstallmentId: UUID! @fdc_generated(from: "LoanPayment.loanInstallment", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `LoanPayment`.`reversedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  reversedByUserId: UUID @fdc_generated(from: "LoanPayment.reversedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type NotificationDelivery {
+  """
+  ✨ Implicit foreign key field based on `NotificationDelivery`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "NotificationDelivery.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `NotificationDelivery`.`notificationRule`. It must match the value of `NotificationRule`.`id`. See `@ref` for how to customize it.
+  """
+  notificationRuleId: UUID! @fdc_generated(from: "NotificationDelivery.notificationRule", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `NotificationDelivery`.`user`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "NotificationDelivery.user", purpose: IMPLICIT_REF_FIELD)
+}
+extend type NotificationPreference {
+  """
+  ✨ Implicit foreign key field based on `NotificationPreference`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "NotificationPreference.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `NotificationPreference`.`user`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "NotificationPreference.user", purpose: IMPLICIT_REF_FIELD)
+}
+extend type NotificationRule {
+  """
+  ✨ Implicit foreign key field based on `NotificationRule`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "NotificationRule.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `NotificationRule`.`notificationPreference`. It must match the value of `NotificationPreference`.`id`. See `@ref` for how to customize it.
+  """
+  notificationPreferenceId: UUID! @fdc_generated(from: "NotificationRule.notificationPreference", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Purchase {
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`cancelledByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  cancelledByUserId: UUID @fdc_generated(from: "Purchase.cancelledByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`category`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  categoryId: UUID! @fdc_generated(from: "Purchase.category", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "Purchase.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`creditCard`. It must match the value of `CreditCard`.`id`. See `@ref` for how to customize it.
+  """
+  creditCardId: UUID! @fdc_generated(from: "Purchase.creditCard", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "Purchase.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Purchase`.`updatedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  updatedByUserId: UUID! @fdc_generated(from: "Purchase.updatedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type PurchaseInstallment {
+  """
+  ✨ Implicit foreign key field based on `PurchaseInstallment`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "PurchaseInstallment.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `PurchaseInstallment`.`invoice`. It must match the value of `CreditCardInvoice`.`id`. See `@ref` for how to customize it.
+  """
+  invoiceId: UUID! @fdc_generated(from: "PurchaseInstallment.invoice", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `PurchaseInstallment`.`purchase`. It must match the value of `Purchase`.`id`. See `@ref` for how to customize it.
+  """
+  purchaseId: UUID! @fdc_generated(from: "PurchaseInstallment.purchase", purpose: IMPLICIT_REF_FIELD)
+}
+extend type SpaceInvitation {
+  """
+  ✨ Implicit foreign key field based on `SpaceInvitation`.`acceptedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  acceptedByUserId: UUID @fdc_generated(from: "SpaceInvitation.acceptedByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `SpaceInvitation`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "SpaceInvitation.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `SpaceInvitation`.`invitedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  invitedByUserId: UUID! @fdc_generated(from: "SpaceInvitation.invitedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type SpaceMember {
+  """
+  ✨ Implicit foreign key field based on `SpaceMember`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "SpaceMember.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `SpaceMember`.`invitedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  invitedByUserId: UUID @fdc_generated(from: "SpaceMember.invitedByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `SpaceMember`.`user`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "SpaceMember.user", purpose: IMPLICIT_REF_FIELD)
+}

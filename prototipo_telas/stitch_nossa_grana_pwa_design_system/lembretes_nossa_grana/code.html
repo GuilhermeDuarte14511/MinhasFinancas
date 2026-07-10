@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nossa Grana - Lembretes e Notificações</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "background": "#fcf8ff",
+                        "on-secondary-container": "#006f67",
+                        "on-primary-fixed": "#0f0069",
+                        "secondary-fixed": "#9cf2e8",
+                        "surface-dim": "#dcd8e5",
+                        "primary-fixed": "#e2dfff",
+                        "on-tertiary-container": "#dbd7ff",
+                        "secondary-container": "#99efe5",
+                        "surface-bright": "#fcf8ff",
+                        "primary-container": "#4f46e5",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-primary": "#c3c0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#eae6f4",
+                        "surface-container": "#f0ecf9",
+                        "secondary": "#006a63",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "surface-tint": "#4d44e3",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1b1b24",
+                        "on-primary-container": "#dad7ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary-fixed": "#0f0069",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "outline-variant": "#c7c4d8",
+                        "outline": "#777587",
+                        "surface-container-highest": "#e4e1ee",
+                        "inverse-surface": "#302f39",
+                        "inverse-on-surface": "#f3effc",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e2dfff",
+                        "surface-variant": "#e4e1ee",
+                        "primary": "#3525cd",
+                        "surface": "#fcf8ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#5551c2",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-surface": "#1b1b24",
+                        "surface-container-low": "#f5f2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#3d37a9",
+                        "secondary-fixed-dim": "#80d5cb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "container-margin-desktop": "40px",
+                        "gutter": "16px",
+                        "2xl": "48px",
+                        "base": "8px",
+                        "container-margin-mobile": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "3xl": "64px",
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #4f46e5;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4f46e5;
+        }
+        .toggle-checkbox {
+            right: 0;
+            z-index: 1;
+            border-color: #c7c4d8;
+            transition: all 0.3s;
+        }
+        .toggle-label {
+            background-color: #c7c4d8;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col pt-16 pb-24 md:pb-0 font-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="flex items-center gap-sm">
+<button aria-label="Voltar" class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</h1>
+</div>
+<div class="flex items-center gap-md">
+<button aria-label="Notificações" class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant">
+<img alt="Couple profile photo" class="w-full h-full object-cover" data-alt="A close up portrait photo of a smiling couple in their late twenties, looking happy and relaxed. The lighting is soft and natural, emphasizing a warm and welcoming mood. The image is cropped in a circle to serve as a profile avatar for a financial application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0anPXYJ99csTWem8UGqu12kNrW0Ix3Hhl0Pb4hmveJCpUUfbKRmUYYUXgcXt_X0DLUPE2yZRlTaiRIP6tyru5vYfgSGnpZCgrpTnoPAuZvuA_TF9jJZJC2LCYTpdNADW9xfUmmiZL4XcnuTeYL9ObGh92BmlLJPDWQ84wiKfz0XomszTlsCyYulwW1lwWke5GZfCc02OxjnR3jK_MqTkAS7bR4pIE-PHGPHTgkWvZ9UYQNTO_s4c"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-4xl mx-auto px-container-margin-mobile md:px-container-margin-desktop py-lg space-y-xl">
+<!-- Header Section -->
+<section class="space-y-sm">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Lembretes e Notificações</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Configure como e quando você quer ser avisado sobre seus compromissos financeiros.</p>
+</section>
+<!-- Permissions Warning -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-md flex items-start gap-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined text-secondary mt-1">info</span>
+<div class="space-y-xs flex-1">
+<h3 class="font-title-lg text-title-lg text-on-surface">Permissões do Navegador</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Para receber notificações no seu dispositivo, você precisa permitir que o Nossa Grana envie alertas através do seu navegador.</p>
+</div>
+<button class="px-md py-sm bg-primary-container text-on-primary-container font-label-lg text-label-lg rounded-full hover:bg-surface-tint hover:text-on-primary transition-colors active:scale-95 shadow-sm">
+                Permitir
+            </button>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Event Toggles Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg space-y-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<div class="border-b border-outline-variant pb-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">event</span>
+                        Tipos de Alerta
+                    </h3>
+</div>
+<div class="space-y-lg pt-sm">
+<!-- Toggle 1 -->
+<div class="flex justify-between items-center">
+<div class="space-y-xs">
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface">Fechamento da Fatura</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Aviso quando o cartão de crédito fecha.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle1" name="toggle1" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle1"></label>
+</div>
+</div>
+<!-- Toggle 2 -->
+<div class="flex justify-between items-center">
+<div class="space-y-xs">
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface">Vencimentos</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Aviso de contas e boletos a pagar.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle2" name="toggle2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle2"></label>
+</div>
+</div>
+<!-- Toggle 3 -->
+<div class="flex justify-between items-center">
+<div class="space-y-xs">
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface">Empréstimos</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Parcelas de empréstimos e financiamentos.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle3" name="toggle3" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle3"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Timing Configuration Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg space-y-md shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<div class="border-b border-outline-variant pb-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">schedule</span>
+                        Quando Avisar
+                    </h3>
+</div>
+<div class="space-y-md pt-sm">
+<p class="font-body-md text-body-md text-on-surface-variant">Selecione quantos dias antes do vencimento ou fechamento você deseja ser notificado.</p>
+<div class="grid grid-cols-2 gap-sm">
+<label class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-outline-variant bg-surface">
+<input checked="" class="rounded text-primary focus:ring-primary h-5 w-5 border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">7 dias antes</span>
+</label>
+<label class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-outline-variant bg-surface">
+<input class="rounded text-primary focus:ring-primary h-5 w-5 border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">3 dias antes</span>
+</label>
+<label class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-outline-variant bg-surface">
+<input checked="" class="rounded text-primary focus:ring-primary h-5 w-5 border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">1 dia antes</span>
+</label>
+<label class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-outline-variant bg-surface">
+<input checked="" class="rounded text-primary focus:ring-primary h-5 w-5 border-outline" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">No dia</span>
+</label>
+</div>
+<div class="pt-md border-t border-outline-variant mt-md">
+<label class="block font-label-lg text-label-lg text-on-surface mb-xs" for="preferred-time">Horário Preferido</label>
+<div class="relative">
+<select class="block w-full pl-sm pr-10 py-3 text-base border-outline-variant focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg bg-surface text-on-surface appearance-none h-[56px]" id="preferred-time">
+<option>08:00 (Manhã)</option>
+<option selected="">12:00 (Almoço)</option>
+<option>18:00 (Fim de tarde)</option>
+<option>20:00 (Noite)</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-sm text-on-surface-variant">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-outline mt-xs text-xs">As notificações serão enviadas neste horário.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Save Actions -->
+<div class="flex justify-end gap-md pt-md">
+<button class="px-lg py-3 rounded-full font-label-lg text-label-lg text-primary hover:bg-surface-container-low transition-colors active:scale-95 border border-outline-variant">
+                Cancelar
+            </button>
+<button class="px-lg py-3 rounded-full font-label-lg text-label-lg bg-primary-container text-on-primary-container hover:bg-surface-tint hover:text-on-primary transition-colors active:scale-95 shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] h-[52px]">
+                Salvar Preferências
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
+<span class="font-label-md text-label-md mt-1">Cartões</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md mt-1">Novo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md mt-1">Agenda</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 hover:bg-surface-container-high dark:hover:bg-inverse-surface active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined fill" data-icon="more_horiz">more_horiz</span>
+<span class="font-label-md text-label-md mt-1">Mais</span>
+</a>
+</nav>
+<!-- Floating Action Button - Contextually Suppressed for Settings Screen -->
+</body></html>

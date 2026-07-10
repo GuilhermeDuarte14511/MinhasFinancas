@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Novo Empréstimo - Nossa Grana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "background": "#fcf8ff",
+                      "on-secondary-container": "#006f67",
+                      "on-primary-fixed": "#0f0069",
+                      "secondary-fixed": "#9cf2e8",
+                      "surface-dim": "#dcd8e5",
+                      "primary-fixed": "#e2dfff",
+                      "on-tertiary-container": "#dbd7ff",
+                      "secondary-container": "#99efe5",
+                      "surface-bright": "#fcf8ff",
+                      "primary-container": "#4f46e5",
+                      "on-secondary-fixed": "#00201d",
+                      "inverse-primary": "#c3c0ff",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#eae6f4",
+                      "surface-container": "#f0ecf9",
+                      "secondary": "#006a63",
+                      "on-tertiary-fixed-variant": "#3b35a7",
+                      "surface-tint": "#4d44e3",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#1b1b24",
+                      "on-primary-container": "#dad7ff",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-surface-variant": "#464555",
+                      "on-tertiary-fixed": "#0f0069",
+                      "tertiary-fixed-dim": "#c3c0ff",
+                      "outline-variant": "#c7c4d8",
+                      "outline": "#777587",
+                      "surface-container-highest": "#e4e1ee",
+                      "inverse-surface": "#302f39",
+                      "inverse-on-surface": "#f3effc",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#e2dfff",
+                      "surface-variant": "#e4e1ee",
+                      "primary": "#3525cd",
+                      "surface": "#fcf8ff",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed-variant": "#00504a",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#5551c2",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-surface": "#1b1b24",
+                      "surface-container-low": "#f5f2ff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary": "#3d37a9",
+                      "secondary-fixed-dim": "#80d5cb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "container-margin-desktop": "40px",
+                      "gutter": "16px",
+                      "2xl": "48px",
+                      "base": "8px",
+                      "container-margin-mobile": "16px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "3xl": "64px"
+              },
+              "fontFamily": {
+                      "title-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      }
+              }
+            }
+          }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            height: 56px;
+            border: 1px solid theme('colors.outline-variant');
+            background-color: theme('colors.surface-container-lowest');
+            color: theme('colors.on-surface');
+            border-radius: theme('borderRadius.lg');
+            padding: 0 theme('spacing.md');
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .input-group textarea {
+            height: auto;
+            padding-top: theme('spacing.md');
+            padding-bottom: theme('spacing.md');
+            min-height: 120px;
+        }
+
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: theme('colors.primary-container');
+            box-shadow: 0 0 0 2px theme('colors.primary-fixed');
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: theme('spacing.xs');
+            color: theme('colors.on-surface-variant');
+        }
+        
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
+        /* Custom Scrollbar for desktop */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant');
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline-variant');
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-16 pb-20 md:pb-0 md:pt-0">
+<!-- Desktop Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex bg-surface dark:bg-background border-b border-outline-variant dark:border-outline fixed top-0 left-0 w-full z-50 justify-between items-center px-lg h-16">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img alt="Couple profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a diverse modern couple smiling warmly, soft studio lighting, high resolution, soft focus background, corporate modern aesthetic with light indigo and teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPsI_p1wBP7hns-kxp4O-uvP2lXzs8mnf56Ij-QuZXHt2rXAoMBBF_03D_HCmliAmm3yJNeqPX2Mp_3P5aUVQayd_5YHVSMYw9dtjfRjhg9vIOlJkY6uTCMoTR56njOly47RAe0BDLXC-3_TjpFQSrySiqNrDy9etNtwswq7m2UmFBhk6p9HXwurV-1iTF19_gAccD-v6JcoEQLeVhEoah6AjxLGXBq3YqGdgthfv0PNCqVMdwLwI"/>
+</div>
+<span class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</span>
+</div>
+<div class="flex gap-lg">
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-md text-label-md">Início</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">credit_card</span>
+<span class="font-label-md text-label-md">Cartões</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-primary dark:text-primary-fixed-dim bg-surface-container-low dark:bg-surface-container-highest transition-colors active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-md text-label-md">Novo</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_today</span>
+<span class="font-label-md text-label-md">Agenda</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">more_horiz</span>
+<span class="font-label-md text-label-md">Mais</span>
+</a>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</nav>
+<!-- Mobile TopAppBar -->
+<header class="md:hidden fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline pt-safe">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant">
+<img alt="Couple profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a diverse modern couple smiling warmly, soft studio lighting, high resolution, soft focus background, corporate modern aesthetic with light indigo and teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhON0iyx5UhdPKBhUxYqLULcQvDHSMb529VdsPhYkQlNylDlEzn2k9rxG8c7z3tMBjuOjwHVRJWbJ7ZaHN5GXiS3FDlX6gzHw564AWe39q4QcKes6jeW8HHlb8VVCMZc-Dv-Ww5mjRaaNapdRicnsY6TSENYFVjREuUq_CR791tsGdrHHAxK-4tvLYV_fbfdNWyvqwBwD9qdmN0F8YfW2rw6sXbg5EEFgOpuPtoArv287ermOFolg"/>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-container-margin-mobile md:px-container-margin-desktop py-lg md:py-3xl mt-0 md:mt-16 overflow-y-auto">
+<div class="mb-xl md:mb-2xl flex items-center gap-sm">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Adicionar Empréstimo</h2>
+</div>
+<!-- Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<!-- Form Section -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-lg">
+<form class="glass-card rounded-[20px] p-lg md:p-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="input-group md:col-span-2">
+<label class="font-label-md text-label-md" for="loanName">Nome do Empréstimo</label>
+<input class="font-body-lg text-body-lg" id="loanName" placeholder="Ex: Financiamento Carro" type="text"/>
+</div>
+<div class="input-group md:col-span-2">
+<label class="font-label-md text-label-md" for="institution">Instituição Financeira</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">account_balance</span>
+<input class="font-body-lg text-body-lg pl-12" id="institution" placeholder="Banco ou Financeira" type="text"/>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="input-group">
+<label class="font-label-md text-label-md" for="amount">Valor Recebido (R$)</label>
+<input class="font-body-lg text-body-lg text-right" id="amount" placeholder="0,00" type="number"/>
+</div>
+<div class="input-group">
+<label class="font-label-md text-label-md" for="interestRate">Taxa de Juros Mensal (%)</label>
+<input class="font-body-lg text-body-lg text-right" id="interestRate" placeholder="0.00" step="0.01" type="number"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="input-group">
+<label class="font-label-md text-label-md" for="installments">Número de Parcelas</label>
+<input class="font-body-lg text-body-lg" id="installments" placeholder="Ex: 48" type="number"/>
+</div>
+<div class="input-group">
+<label class="font-label-md text-label-md" for="firstPayment">Data da Primeira Parcela</label>
+<input class="font-body-lg text-body-lg text-on-surface-variant" id="firstPayment" type="date"/>
+</div>
+</div>
+<div class="input-group mb-lg">
+<label class="font-label-md text-label-md" for="notes">Observações (Opcional)</label>
+<textarea class="font-body-lg text-body-lg resize-y" id="notes" placeholder="Detalhes sobre o motivo, condições especiais, etc."></textarea>
+</div>
+<div class="flex justify-end gap-md pt-md border-t border-outline-variant/30">
+<button class="h-[52px] px-lg rounded-full font-title-lg text-title-lg text-primary hover:bg-surface-variant transition-colors" type="button">Cancelar</button>
+<button class="h-[52px] px-lg rounded-full font-title-lg text-title-lg bg-primary-container text-on-primary hover:shadow-lg transition-all active:scale-95 flex items-center gap-2" type="button">
+<span class="material-symbols-outlined">save</span>
+                            Salvar Empréstimo
+                        </button>
+</div>
+</form>
+</div>
+<!-- Real-time Preview Section (Bento Grid Style) -->
+<div class="lg:col-span-5 xl:col-span-4 sticky top-24 flex flex-col gap-md">
+<div class="bg-surface-container-low rounded-[24px] p-lg border border-outline-variant/20 shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1),0px_8px_10px_-6px_rgba(15,23,42,0.1)] relative overflow-hidden">
+<!-- Subtle background decoration -->
+<div class="absolute -right-12 -top-12 w-40 h-40 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute -left-12 -bottom-12 w-32 h-32 bg-primary/5 rounded-full blur-xl pointer-events-none"></div>
+<div class="relative z-10">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">calculate</span>
+                            Simulação do Custo
+                        </h3>
+<div class="flex flex-col gap-lg">
+<!-- Card: Valor da Parcela -->
+<div class="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/30 shadow-sm flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-on-error-container shrink-0">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Parcela Mensal Estimada</p>
+<p class="font-headline-md text-headline-md text-on-surface">R$ <span id="previewInstallment">0,00</span></p>
+</div>
+</div>
+<!-- Card: Custo Total -->
+<div class="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/30 shadow-sm flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+<span class="material-symbols-outlined">functions</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Custo Total Final</p>
+<p class="font-title-lg text-title-lg text-on-surface">R$ <span id="previewTotal">0,00</span></p>
+</div>
+</div>
+<!-- Card: Juros Pagos -->
+<div class="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/30 shadow-sm flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Total de Juros a Pagar</p>
+<p class="font-body-lg text-body-lg text-error">R$ <span id="previewInterest">0,00</span></p>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant/30">
+<p class="font-label-md text-label-md text-on-surface-variant text-center opacity-80 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">info</span>
+                                Cálculos baseados na Tabela Price.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="md:hidden bg-surface-container dark:bg-surface-container-highest shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] docked full-width bottom-0 rounded-t-xl shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="font-label-md text-label-md mt-1">Cartões</span>
+</a>
+<!-- Active Tab: Novo -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 hover:bg-surface-container-high dark:hover:bg-inverse-surface active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-md text-label-md mt-1">Novo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md mt-1">Agenda</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-md text-label-md mt-1">Mais</span>
+</a>
+</nav>
+<script>
+        // Simple Real-time Price Table Calculator for UI demonstration
+        const amountInput = document.getElementById('amount');
+        const rateInput = document.getElementById('interestRate');
+        const installmentsInput = document.getElementById('installments');
+        
+        const previewInstallment = document.getElementById('previewInstallment');
+        const previewTotal = document.getElementById('previewTotal');
+        const previewInterest = document.getElementById('previewInterest');
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function calculateLoan() {
+            const pv = parseFloat(amountInput.value) || 0; // Present Value (Amount)
+            const i = (parseFloat(rateInput.value) || 0) / 100; // Monthly Interest Rate
+            const n = parseInt(installmentsInput.value) || 0; // Number of periods
+
+            if (pv > 0 && i > 0 && n > 0) {
+                // Tabela Price Formula: PMT = PV * i / (1 - (1 + i)^-n)
+                const pmt = pv * i / (1 - Math.pow(1 + i, -n));
+                const totalCost = pmt * n;
+                const totalInterest = totalCost - pv;
+
+                previewInstallment.textContent = formatCurrency(pmt);
+                previewTotal.textContent = formatCurrency(totalCost);
+                previewInterest.textContent = formatCurrency(totalInterest);
+            } else {
+                previewInstallment.textContent = "0,00";
+                previewTotal.textContent = "0,00";
+                previewInterest.textContent = "0,00";
+            }
+        }
+
+        amountInput.addEventListener('input', calculateLoan);
+        rateInput.addEventListener('input', calculateLoan);
+        installmentsInput.addEventListener('input', calculateLoan);
+    </script>
+</body></html>

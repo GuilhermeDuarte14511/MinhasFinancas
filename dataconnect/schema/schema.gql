@@ -1,0 +1,441 @@
+enum MembershipRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REMOVED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+enum CreditCardStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum PurchaseStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum InstallmentStatus {
+  PLANNED
+  OPEN
+  PAID
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  OPEN
+  CLOSED
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentStatus {
+  CONFIRMED
+  REVERSED
+}
+
+enum LoanStatus {
+  ACTIVE
+  PAID_OFF
+  OVERDUE
+  CANCELLED
+}
+
+enum LoanInstallmentStatus {
+  PLANNED
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum LoanAmortizationMethod {
+  PRICE
+  SAC
+  MANUAL
+}
+
+enum NotificationPlatform {
+  ANDROID
+  WEB
+}
+
+enum NotificationEventType {
+  INVOICE_CLOSING
+  INVOICE_DUE
+  LOAN_INSTALLMENT_DUE
+}
+
+enum NotificationChannel {
+  PUSH
+  IN_APP
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+type UserProfile @table(name: "user_profile") @index(fields: ["normalizedEmail"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  firebaseUid: String! @unique @col(dataType: "varchar(128)")
+  email: String! @col(dataType: "varchar(320)")
+  normalizedEmail: String! @col(dataType: "varchar(320)")
+  displayName: String! @col(dataType: "varchar(120)")
+  photoUrl: String @col(dataType: "varchar(2048)")
+  locale: String! @default(value: "pt_BR") @col(dataType: "varchar(16)")
+  timezone: String! @default(value: "America/Sao_Paulo") @col(dataType: "varchar(64)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  lastSeenAt: Timestamp
+}
+
+type FinancialSpace @table(name: "financial_space") @index(fields: ["createdByUserId", "archivedAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String! @col(dataType: "varchar(120)")
+  colorHex: String! @default(value: "#3525CD") @col(dataType: "char(7)")
+  currencyCode: String! @default(value: "BRL") @col(dataType: "char(3)")
+  timezone: String! @default(value: "America/Sao_Paulo") @col(dataType: "varchar(64)")
+  createdByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  archivedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type SpaceMember
+  @table(name: "space_member")
+  @unique(fields: ["financialSpace", "user"])
+  @unique(fields: ["financialSpace", "memberFirebaseUid"])
+  @index(fields: ["memberFirebaseUid", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  user: UserProfile!
+  memberFirebaseUid: String! @col(dataType: "varchar(128)")
+  role: MembershipRole!
+  status: MembershipStatus!
+  invitedByUser: UserProfile
+  joinedAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  removedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type SpaceInvitation
+  @table(name: "space_invitation")
+  @index(fields: ["normalizedEmail", "status"])
+  @index(fields: ["financialSpaceId", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  email: String! @col(dataType: "varchar(320)")
+  normalizedEmail: String! @col(dataType: "varchar(320)")
+  role: MembershipRole!
+  tokenHash: String! @unique @col(dataType: "varchar(128)")
+  status: InvitationStatus!
+  expiresAt: Timestamp!
+  invitedByUser: UserProfile!
+  acceptedByUser: UserProfile
+  acceptedAt: Timestamp
+  revokedAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Category
+  @table(name: "category")
+  @unique(fields: ["financialSpace", "normalizedName"])
+  @index(fields: ["financialSpaceId", "archivedAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  name: String! @col(dataType: "varchar(80)")
+  normalizedName: String! @col(dataType: "varchar(80)")
+  icon: String! @col(dataType: "varchar(80)")
+  colorHex: String! @col(dataType: "char(7)")
+  isDefault: Boolean! @default(value: false)
+  createdByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  archivedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type CreditCard
+  @table(name: "credit_card")
+  @index(fields: ["financialSpaceId", "status"])
+  @index(fields: ["cardholderMemberId", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  cardholderMember: SpaceMember!
+  nickname: String! @col(dataType: "varchar(80)")
+  institutionName: String @col(dataType: "varchar(120)")
+  brand: String @col(dataType: "varchar(40)")
+  lastFourDigits: String! @col(dataType: "char(4)")
+  creditLimitCents: Int64!
+  closingDay: Int!
+  dueDay: Int!
+  colorHex: String! @col(dataType: "char(7)")
+  remindersEnabled: Boolean! @default(value: true)
+  status: CreditCardStatus!
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  archivedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type Purchase
+  @table(name: "purchase")
+  @index(fields: ["financialSpaceId", "status", "purchaseDate"])
+  @index(fields: ["creditCardId", "status", "purchaseDate"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  creditCard: CreditCard!
+  category: Category!
+  description: String! @col(dataType: "varchar(180)")
+  merchantName: String @col(dataType: "varchar(180)")
+  totalAmountCents: Int64!
+  purchaseDate: Date!
+  installmentCount: Int!
+  firstInvoiceReference: Date!
+  notes: String @col(dataType: "varchar(1000)")
+  status: PurchaseStatus!
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  cancelledByUser: UserProfile
+  cancelledAt: Timestamp
+  cancellationReason: String @col(dataType: "varchar(500)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
+}
+
+type CreditCardInvoice
+  @table(name: "credit_card_invoice")
+  @unique(fields: ["creditCard", "referenceMonth"])
+  @index(fields: ["financialSpaceId", "dueDate", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  creditCard: CreditCard!
+  referenceMonth: Date!
+  closingDate: Date!
+  dueDate: Date!
+  status: InvoiceStatus!
+  totalAmountCents: Int64! @default(value: 0)
+  paidAmountCents: Int64! @default(value: 0)
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  closedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type PurchaseInstallment
+  @table(name: "purchase_installment")
+  @unique(fields: ["purchase", "installmentNumber"])
+  @index(fields: ["financialSpaceId", "dueDate", "status"])
+  @index(fields: ["invoiceId", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  purchase: Purchase!
+  invoice: CreditCardInvoice!
+  installmentNumber: Int!
+  installmentCount: Int!
+  amountCents: Int64!
+  dueDate: Date!
+  status: InstallmentStatus!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type InvoicePayment
+  @table(name: "invoice_payment")
+  @unique(fields: ["financialSpace", "idempotencyKey"])
+  @index(fields: ["invoiceId", "status", "paidAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  invoice: CreditCardInvoice!
+  amountCents: Int64!
+  paidAt: Timestamp!
+  notes: String @col(dataType: "varchar(1000)")
+  status: PaymentStatus!
+  idempotencyKey: String! @col(dataType: "varchar(128)")
+  createdByUser: UserProfile!
+  reversedByUser: UserProfile
+  reversedAt: Timestamp
+  reversalReason: String @col(dataType: "varchar(500)")
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type Loan
+  @table(name: "loan")
+  @index(fields: ["financialSpaceId", "status"])
+  @index(fields: ["financialSpaceId", "firstDueDate"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  name: String! @col(dataType: "varchar(160)")
+  lender: String @col(dataType: "varchar(160)")
+  principalAmountCents: Int64!
+  monthlyInterestRateMicros: Int64!
+  amortizationMethod: LoanAmortizationMethod!
+  installmentCount: Int!
+  contractedAt: Date
+  firstDueDate: Date!
+  expectedInstallmentAmountCents: Int64
+  notes: String @col(dataType: "varchar(1000)")
+  status: LoanStatus!
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  cancelledAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type LoanInstallment
+  @table(name: "loan_installment")
+  @unique(fields: ["loan", "installmentNumber"])
+  @index(fields: ["financialSpaceId", "dueDate", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  loan: Loan!
+  installmentNumber: Int!
+  dueDate: Date!
+  openingBalanceCents: Int64!
+  principalAmountCents: Int64!
+  interestAmountCents: Int64!
+  totalAmountCents: Int64!
+  paidAmountCents: Int64! @default(value: 0)
+  status: LoanInstallmentStatus!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
+}
+
+type LoanPayment
+  @table(name: "loan_payment")
+  @unique(fields: ["financialSpace", "idempotencyKey"])
+  @index(fields: ["loanInstallmentId", "status", "paidAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  loan: Loan!
+  loanInstallment: LoanInstallment!
+  amountCents: Int64!
+  paidAt: Timestamp!
+  notes: String @col(dataType: "varchar(1000)")
+  status: PaymentStatus!
+  idempotencyKey: String! @col(dataType: "varchar(128)")
+  createdByUser: UserProfile!
+  reversedByUser: UserProfile
+  reversedAt: Timestamp
+  reversalReason: String @col(dataType: "varchar(500)")
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type NotificationPreference
+  @table(name: "notification_preference")
+  @unique(fields: ["financialSpace", "user"])
+  @unique(fields: ["financialSpace", "userFirebaseUid"])
+  @index(fields: ["userFirebaseUid", "enabled"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  user: UserProfile!
+  userFirebaseUid: String! @col(dataType: "varchar(128)")
+  enabled: Boolean! @default(value: true)
+  pushEnabled: Boolean! @default(value: false)
+  inAppEnabled: Boolean! @default(value: true)
+  preferredTime: String! @default(value: "09:00") @col(dataType: "varchar(8)")
+  timezone: String! @default(value: "America/Sao_Paulo") @col(dataType: "varchar(64)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
+}
+
+type NotificationRule
+  @table(name: "notification_rule")
+  @unique(fields: ["notificationPreference", "eventType"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  notificationPreference: NotificationPreference!
+  eventType: NotificationEventType!
+  daysBefore: Int!
+  enabled: Boolean! @default(value: true)
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type DeviceSubscription
+  @table(name: "device_subscription")
+  @unique(fields: ["user", "tokenHash"])
+  @index(fields: ["userFirebaseUid", "enabled"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  user: UserProfile!
+  userFirebaseUid: String! @col(dataType: "varchar(128)")
+  platform: NotificationPlatform!
+  tokenOrEndpoint: String! @col(dataType: "varchar(4096)")
+  tokenHash: String! @col(dataType: "varchar(128)")
+  deviceName: String @col(dataType: "varchar(160)")
+  enabled: Boolean! @default(value: true)
+  lastSeenAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  revokedAt: Timestamp
+}
+
+type NotificationDelivery
+  @table(name: "notification_delivery")
+  @index(fields: ["status", "scheduledFor"])
+  @index(fields: ["financialSpaceId", "userId", "scheduledFor"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  user: UserProfile!
+  notificationRule: NotificationRule!
+  entityType: String! @col(dataType: "varchar(80)")
+  entityId: UUID!
+  title: String! @col(dataType: "varchar(160)")
+  body: String! @col(dataType: "varchar(500)")
+  scheduledFor: Timestamp!
+  channel: NotificationChannel!
+  status: NotificationDeliveryStatus!
+  attemptCount: Int! @default(value: 0)
+  deduplicationKey: String! @unique @col(dataType: "varchar(180)")
+  sentAt: Timestamp
+  lastAttemptAt: Timestamp
+  failureCode: String @col(dataType: "varchar(80)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type AuditEvent
+  @table(name: "audit_event")
+  @index(fields: ["financialSpaceId", "occurredAt"])
+  @index(fields: ["actorUserId", "occurredAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  actorUser: UserProfile!
+  entityType: String! @col(dataType: "varchar(80)")
+  entityId: UUID!
+  action: String! @col(dataType: "varchar(80)")
+  summary: String! @col(dataType: "varchar(500)")
+  correlationId: String @col(dataType: "varchar(128)")
+  occurredAt: Timestamp! @default(expr: "request.time")
+}

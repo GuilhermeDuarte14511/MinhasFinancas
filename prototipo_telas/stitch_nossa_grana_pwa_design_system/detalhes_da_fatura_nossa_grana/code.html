@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nossa Grana - Detalhes da Fatura</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#eae6f4",
+                      "inverse-primary": "#c3c0ff",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-secondary-fixed": "#00201d",
+                      "tertiary-container": "#5551c2",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#e2dfff",
+                      "secondary-container": "#99efe5",
+                      "surface-container-highest": "#e4e1ee",
+                      "secondary": "#006a63",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#dcd8e5",
+                      "tertiary": "#3d37a9",
+                      "surface": "#fcf8ff",
+                      "inverse-on-surface": "#f3effc",
+                      "on-primary-container": "#dad7ff",
+                      "outline-variant": "#c7c4d8",
+                      "on-tertiary-fixed": "#0f0069",
+                      "surface-variant": "#e4e1ee",
+                      "on-secondary-fixed-variant": "#00504a",
+                      "secondary-fixed": "#9cf2e8",
+                      "on-primary-fixed": "#0f0069",
+                      "surface-container-low": "#f5f2ff",
+                      "on-tertiary-fixed-variant": "#3b35a7",
+                      "on-secondary": "#ffffff",
+                      "outline": "#777587",
+                      "on-tertiary-container": "#dbd7ff",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#1b1b24",
+                      "background": "#fcf8ff",
+                      "tertiary-fixed-dim": "#c3c0ff",
+                      "primary": "#3525cd",
+                      "on-secondary-container": "#006f67",
+                      "surface-tint": "#4d44e3",
+                      "secondary-fixed-dim": "#80d5cb",
+                      "inverse-surface": "#302f39",
+                      "on-primary": "#ffffff",
+                      "on-background": "#1b1b24",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container": "#f0ecf9",
+                      "primary-container": "#4f46e5",
+                      "primary-fixed": "#e2dfff",
+                      "on-surface-variant": "#464555",
+                      "surface-bright": "#fcf8ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-margin-desktop": "40px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "container-margin-mobile": "16px",
+                      "sm": "8px",
+                      "2xl": "48px",
+                      "md": "16px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "3xl": "64px"
+              },
+              "fontFamily": {
+                      "title-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background min-h-screen pt-16 pb-20 md:pb-0 font-body-lg">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline no shadows">
+<div class="flex items-center gap-md">
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="A bright, modern light-mode close-up portrait of a cheerful diverse couple smiling warmly in a beautifully lit contemporary home setting. Soft natural light, high-key photography, representing trust and collaborative financial harmony. 50-100 words minimum." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFXLHkqK4i5V9DQCGrGoMgZ9u_Baqx2Fxf3ozH1McR8vwlWJe1rMSgyWLcsX4IPt7dlnekOLKMIdF8s2Bp0wEoNds8XDi_W0gbjtm844Vgin6igX1GoqyLOQ2_SxnOL1CucPI2mSiEpRInHg8Iq_-lsVXV31rF13lycOwGDw3A7eYD-5qbqayQIcYUwSqNIDFUzpN__AC3odcyTqQyq3oCCyRKjunoD8mcNCMqtIK6SKQ57Uk1xM0"/>
+</div>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Nossa Grana</h1>
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-7xl mx-auto px-container-margin-mobile md:px-container-margin-desktop py-lg space-y-3xl">
+<!-- Header Section -->
+<section class="space-y-lg">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)]">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">Cartão Principal</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span> Fatura de Julho
+                        </p>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-[14px]">lock_open</span> Aberta
+                    </div>
+</div>
+<div class="flex flex-wrap gap-lg text-on-surface-variant font-body-md text-body-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-outline">Fechamento</span>
+<span class="font-title-lg text-title-lg text-on-surface">25/07</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-outline">Vencimento</span>
+<span class="font-title-lg text-title-lg text-on-surface">05/08</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Section (Bento Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Total -->
+<div class="bg-primary-container text-on-primary-container p-lg rounded-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] md:col-span-1">
+<div class="font-label-lg text-label-lg opacity-80 mb-sm">Valor Total</div>
+<div class="font-display-lg text-display-lg">R$ 3.842,70</div>
+</div>
+<!-- Paid / Pending -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] md:col-span-2 space-y-md">
+<div class="flex justify-between items-center">
+<div>
+<div class="font-label-md text-label-md text-outline">Valor Pago</div>
+<div class="font-title-lg text-title-lg text-secondary">R$ 1.500,00</div>
+</div>
+<div class="text-right">
+<div class="font-label-md text-label-md text-outline">Valor Pendente</div>
+<div class="font-title-lg text-title-lg text-error">R$ 2.342,70</div>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-secondary h-full" style="width: 39%"></div>
+<div class="bg-error h-full" style="width: 61%"></div>
+</div>
+</div>
+</section>
+<!-- Transaction List -->
+<section class="space-y-md pb-3xl">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-lg">Compras do Mês</h3>
+<!-- Date Group 1 -->
+<div class="space-y-sm">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider pl-sm">Hoje, 18 Jul</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="flex items-center justify-between p-md border-b border-outline-variant last:border-b-0 min-h-[72px] hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">Supermercado Silva</div>
+<div class="bg-[#EEF2FF] text-[#3525cd] px-2 py-0.5 rounded-full font-label-md text-label-md inline-flex mt-xs">Mercado</div>
+</div>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface font-semibold text-right">
+                            R$ 450,20
+                            <div class="font-label-md text-label-md text-outline font-normal">João</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-md border-b border-outline-variant last:border-b-0 min-h-[72px] hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_gas_station</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">Posto Ipiranga</div>
+<div class="bg-[#EEF2FF] text-[#3525cd] px-2 py-0.5 rounded-full font-label-md text-label-md inline-flex mt-xs">Transporte</div>
+</div>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface font-semibold text-right">
+                            R$ 150,00
+                            <div class="font-label-md text-label-md text-outline font-normal">Maria</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Date Group 2 -->
+<div class="space-y-sm">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider pl-sm mt-lg">Ontem, 17 Jul</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="flex items-center justify-between p-md border-b border-outline-variant last:border-b-0 min-h-[72px] hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">Pizzaria Bella Napoli</div>
+<div class="bg-[#EEF2FF] text-[#3525cd] px-2 py-0.5 rounded-full font-label-md text-label-md inline-flex mt-xs">Lazer</div>
+</div>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface font-semibold text-right">
+                            R$ 120,50
+                            <div class="font-label-md text-label-md text-outline font-normal">Conjunto</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Fixed Actions (Sticky Bottom on Desktop, Above Nav on Mobile) -->
+<div class="fixed md:sticky bottom-24 md:bottom-lg left-0 w-full px-container-margin-mobile md:px-0 z-40 pointer-events-none">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-md justify-end pointer-events-auto">
+<button class="h-[52px] bg-surface-container-lowest border border-outline-variant text-primary font-label-lg text-label-lg px-lg rounded-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] hover:bg-surface-container-low transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">share</span> Compartilhar Resumo
+                </button>
+<button class="h-[52px] bg-primary-container text-on-primary font-label-lg text-label-lg px-lg rounded-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] hover:brightness-110 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span> Registrar Pagamento
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container dark:bg-surface-container-highest rounded-t-xl shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] md:hidden">
+<!-- Item 1: Início -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 font-label-md text-label-md">
+<span class="material-symbols-outlined mb-xs">home</span>
+<span>Início</span>
+</button>
+<!-- Item 2: Cartões (ACTIVE) -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-tertiary-container text-on-primary-container dark:text-on-tertiary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150 font-label-md text-label-md">
+<span class="material-symbols-outlined mb-xs" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+<span>Cartões</span>
+</button>
+<!-- Item 3: Novo -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 font-label-md text-label-md">
+<span class="material-symbols-outlined mb-xs">add_circle</span>
+<span>Novo</span>
+</button>
+<!-- Item 4: Agenda -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 font-label-md text-label-md">
+<span class="material-symbols-outlined mb-xs">calendar_today</span>
+<span>Agenda</span>
+</button>
+<!-- Item 5: Mais -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full active:scale-90 transition-transform duration-150 font-label-md text-label-md">
+<span class="material-symbols-outlined mb-xs">more_horiz</span>
+<span>Mais</span>
+</button>
+</nav>
+<!-- Desktop Nav Cluster (Hidden on mobile, shown on md up in TopAppBar) -->
+<!-- Note: TopAppBar provided in JSON doesn't include the nav links for web, but the spec mentions handling them. Adding them contextually if needed, but per JSON strictly following structure. The Bottom Nav items are provided. -->
+</body></html>

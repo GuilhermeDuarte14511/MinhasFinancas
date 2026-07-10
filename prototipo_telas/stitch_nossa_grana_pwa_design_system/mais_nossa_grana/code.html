@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Menu Mais - Nossa Grana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-surface-variant": "#464555",
+                        "outline-variant": "#c7c4d8",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#006f67",
+                        "tertiary": "#3d37a9",
+                        "surface-bright": "#fcf8ff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "surface-dim": "#dcd8e5",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e2dfff",
+                        "primary": "#3525cd",
+                        "secondary-fixed": "#9cf2e8",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-primary-fixed": "#0f0069",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-on-surface": "#f3effc",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e1ee",
+                        "on-surface": "#1b1b24",
+                        "on-tertiary-container": "#dbd7ff",
+                        "inverse-surface": "#302f39",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface": "#fcf8ff",
+                        "on-background": "#1b1b24",
+                        "secondary-container": "#99efe5",
+                        "surface-variant": "#e4e1ee",
+                        "surface-container-low": "#f5f2ff",
+                        "surface-container-high": "#eae6f4",
+                        "on-primary-container": "#dad7ff",
+                        "outline": "#777587",
+                        "background": "#fcf8ff",
+                        "secondary": "#006a63",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-container": "#f0ecf9",
+                        "tertiary-container": "#5551c2",
+                        "surface-tint": "#4d44e3",
+                        "primary-fixed": "#e2dfff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "2xl": "48px",
+                        "container-margin-desktop": "40px",
+                        "3xl": "64px",
+                        "base": "8px",
+                        "container-margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen font-body-md antialiased pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16">
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular avatar portrait of a modern, smiling couple in an urban setting. They are warmly lit with soft natural sunlight. The background is a slightly blurred, bright, optimistic outdoor scene. The overall color palette is warm, human, and corporate modern, favoring soft skin tones and a clean aesthetic suitable for a financial wellness app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyD9o7Lbw8spxUx1tvwt0-pEeYG57uRk6eLsH3QUOmeLgx6P8y3Z3ctgxTKFV3yWK3f_W_1rxpnlNOq4bRC2u2oNTopej9845gaenvvyJ_0gSuOJm1d-xxlMuDUFT2_puuOmM6CJwuFZg6rtJgB1uL-r2YoS46ARZ5AzAnN4UStvlRHbLNqv4GIo15DU3E4qLphqeXBd0tr1HdUJJPQGwCunWpEa7_srDRRV2YvVrwsx1tZeI6TcE"/>
+</div>
+<div class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary tracking-tight">Nossa Grana</div>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-container-margin-mobile md:px-container-margin-desktop max-w-screen-md mx-auto">
+<!-- User Profile Card -->
+<section class="bg-white rounded-xl border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] mb-lg flex items-center gap-lg">
+<div class="w-16 h-16 rounded-full overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up, high-quality, circular avatar portrait of a cheerful person, warmly lit against a bright, clean, soft-focus background. The style is modern corporate, friendly, and approachable. The colors are well-balanced, emphasizing natural skin tones and a sense of calm reliability fitting for a financial management interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDboDR6dX50G1nvLvqGJ9IMLxwaMY7OZtq-XkthtGGe1xSSQrQgV25dHXQKNGfwAPj98tDSqjsWdAgsrOLp_0Xz-ZoUw-KfmmcYQUjX7uQIB9gjtpkRZ0ZABZK_1RtTUPwybL8OdMbIQWUrlI85OWuZoJvbjN9l41n2X231dwouKxSxP6Y3k1TKv0ZcybswFYaSA-l9Wr0QLOzdJ89KAi3osDo27efUQmJ5owWQ1aI-LNmdjjq0Cwk"/>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-xs">Ana Santos</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">ana.santos@email.com</p>
+<div class="mt-sm flex items-center gap-xs">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-accent_light text-primary font-label-md text-label-md bg-inverse-on-surface text-primary">Plano Conjunto</span>
+</div>
+</div>
+</section>
+<!-- Menu List (Bento-style list) -->
+<nav class="flex flex-col gap-sm">
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Empréstimos</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Simule ou acompanhe seus contratos</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Categorias</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Organize seus gastos e receitas</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Espaço financeiro e membros</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Gerencie quem acessa suas finanças</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="alarm">alarm</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Lembretes e notificações</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Configure seus alertas de contas</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Instalar aplicativo</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Adicione o Nossa Grana à tela inicial</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Perfil</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Meus dados pessoais e endereço</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Segurança</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Senhas, biometria e privacidade</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<a class="bg-white rounded-xl border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container-low transition-colors active:scale-95 duration-200" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium">Ajuda</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Central de atendimento e FAQs</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</a>
+<button class="bg-error-container text-on-error-container rounded-xl border border-transparent p-md flex items-center gap-md hover:bg-[#ffcdc9] transition-colors active:scale-95 duration-200 mt-md">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-body-lg text-body-lg font-medium">Sair</h3>
+<p class="font-body-md text-body-md opacity-80">Encerrar sessão com segurança</p>
+</div>
+</button>
+</nav>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-container shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 md:hidden rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Início</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
+<span class="font-label-md text-label-md mt-1">Cartões</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md mt-1">Novo</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md mt-1">Agenda</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150 hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="more_horiz" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-label-md text-label-md mt-1">Mais</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Adicionar Compra - Nossa Grana</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae6f4",
+                        "inverse-primary": "#c3c0ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-secondary-fixed": "#00201d",
+                        "tertiary-container": "#5551c2",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#e2dfff",
+                        "secondary-container": "#99efe5",
+                        "surface-container-highest": "#e4e1ee",
+                        "secondary": "#006a63",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dcd8e5",
+                        "tertiary": "#3d37a9",
+                        "surface": "#fcf8ff",
+                        "inverse-on-surface": "#f3effc",
+                        "on-primary-container": "#dad7ff",
+                        "outline-variant": "#c7c4d8",
+                        "on-tertiary-fixed": "#0f0069",
+                        "surface-variant": "#e4e1ee",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "secondary-fixed": "#9cf2e8",
+                        "on-primary-fixed": "#0f0069",
+                        "surface-container-low": "#f5f2ff",
+                        "on-tertiary-fixed-variant": "#3b35a7",
+                        "on-secondary": "#ffffff",
+                        "outline": "#777587",
+                        "on-tertiary-container": "#dbd7ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1b1b24",
+                        "background": "#fcf8ff",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "primary": "#3525cd",
+                        "on-secondary-container": "#006f67",
+                        "surface-tint": "#4d44e3",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "inverse-surface": "#302f39",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b24",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f0ecf9",
+                        "primary-container": "#4f46e5",
+                        "primary-fixed": "#e2dfff",
+                        "on-surface-variant": "#464555",
+                        "surface-bright": "#fcf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin-desktop": "40px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "container-margin-mobile": "16px",
+                        "sm": "8px",
+                        "2xl": "48px",
+                        "md": "16px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "3xl": "64px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }]
+                    },
+                    "animation": {
+                        "slide-up-fade": "slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                        "shimmer": "shimmer 2.5s infinite linear",
+                        "shake": "shake 0.5s cubic-bezier(.36,.07,.19,.97) both"
+                    },
+                    "keyframes": {
+                        "slideUpFade": {
+                            "0%": { opacity: "0", transform: "translateY(20px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" }
+                        },
+                        "shimmer": {
+                            "0%": { backgroundPosition: "-200% 0" },
+                            "100%": { backgroundPosition: "200% 0" }
+                        },
+                        "shake": {
+                            "10%, 90%": { transform: "translate3d(-1px, 0, 0)" },
+                            "20%, 80%": { transform: "translate3d(2px, 0, 0)" },
+                            "30%, 50%, 70%": { transform: "translate3d(-4px, 0, 0)" },
+                            "40%, 60%": { transform: "translate3d(4px, 0, 0)" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .animate-slide-up-fade {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            .animate-shimmer {
+                animation: none;
+            }
+        }
+
+        .stagger-1 { animation-delay: 50ms; opacity: 0; }
+        .stagger-2 { animation-delay: 100ms; opacity: 0; }
+        .stagger-3 { animation-delay: 150ms; opacity: 0; }
+        .stagger-4 { animation-delay: 200ms; opacity: 0; }
+        .stagger-5 { animation-delay: 250ms; opacity: 0; }
+        .stagger-6 { animation-delay: 300ms; opacity: 0; }
+        
+        .shimmer-effect {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-sans antialiased min-h-screen pb-40">
+<!-- TopAppBar (Shared Component) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="A macro photography shot of a smiling couple looking at a smartphone, bright daylight, shallow depth of field, warm and inviting mood, representing a profile avatar for a modern finance app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3Ty3mtZ0SeXds8k3daqVrrqGFYqCkAPZ7y8ouMYllcOEA46y3QiOAseEVRq_sc5jU2Y2AbocYj4rqqxYbxHab4pemqvuWni4NmogNrptqkGlsh76TuuAn5L0p1dQ48H9ee-uLxN7HHdg3GTQ19Hwzts5MBmKS9yMAJFbebutxbLxEfrP7vjK2Zsr0KewxHB0pwQ-KhffNy1lJuXnK8uZtfe1SECMLSDOtiWvSf11WY5pJYVg2TIU"/>
+</div>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">Nossa Grana</span>
+</div>
+<button aria-label="Notifications" class="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-container-margin-mobile md:px-container-margin-desktop max-w-3xl mx-auto">
+<div class="mb-xl flex items-center justify-between">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Nova Compra</h1>
+<button class="text-primary hover:bg-surface-container-low p-2 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<form class="flex flex-col gap-lg">
+<!-- Value Field -->
+<div class="flex flex-col items-center py-xl bg-error-container/10 rounded-xl shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05),0px_2px_4px_-2px_rgba(15,23,42,0.05)] border-2 border-error animate-shake">
+<span class="font-label-md text-label-md text-error mb-2">Valor da compra</span>
+<div class="flex items-baseline gap-2 text-error">
+<span class="font-headline-md text-headline-md">R$</span>
+<input class="font-display-lg text-display-lg bg-transparent border-none outline-none text-center w-64 text-error placeholder-error/50 focus:ring-0 p-0 transition-transform focus:scale-105 duration-300" inputmode="numeric" placeholder="0,00" type="text" value="0,00"/>
+</div>
+<span class="font-label-md text-label-md text-error mt-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">error</span> O valor deve ser maior que zero
+</span>
+</div>
+<!-- Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Description -->
+<div class="flex flex-col gap-xs animate-shake">
+<label class="font-label-md text-label-md text-error ml-1">Descrição</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-error">edit</span>
+<input class="w-full h-[56px] pl-12 pr-10 bg-error-container/5 border-2 border-error rounded-lg font-body-lg text-body-lg text-on-surface focus:border-error focus:ring-1 focus:ring-error outline-none transition-all duration-300" placeholder="Ex: Mercado da semana" type="text" value=""/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-error pointer-events-none">error</span>
+</div>
+<span class="font-label-md text-label-md text-error ml-1 mt-1 flex items-center gap-1">A descrição é obrigatória</span>
+</div>
+<!-- Date -->
+<div class="flex flex-col gap-xs animate-slide-up-fade stagger-2">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Data</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">calendar_today</span>
+<input class="w-full h-[56px] pl-12 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300" type="date" value="2023-10-25"/>
+</div>
+</div>
+<!-- Card Dropdown -->
+<div class="flex flex-col gap-xs md:col-span-2 animate-slide-up-fade stagger-3">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Cartão utilizado</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">credit_card</span>
+<select class="w-full h-[56px] pl-12 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none appearance-none transition-all duration-300">
+<option value="nubank">Nubank Compartilhado (Final 4598)</option>
+<option value="itau">Itaú Pessoal (Final 1204)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Category -->
+<div class="flex flex-col gap-xs md:col-span-2 animate-slide-up-fade stagger-4">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Categoria</label>
+<div class="flex gap-sm overflow-x-auto hide-scrollbar py-1">
+<button class="flex items-center gap-2 h-8 px-4 rounded-full bg-surface-container border border-outline-variant text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-lg text-label-lg">Mercado</span>
+</button>
+<button class="flex items-center gap-2 h-8 px-4 rounded-full bg-inverse-primary text-primary-fixed border border-transparent whitespace-nowrap transition-colors duration-200 transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="restaurant">restaurant</span>
+<span class="font-label-lg text-label-lg">Alimentação</span>
+</button>
+<button class="flex items-center gap-2 h-8 px-4 rounded-full bg-surface-container border border-outline-variant text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="home">home</span>
+<span class="font-label-lg text-label-lg">Casa</span>
+</button>
+<button class="flex items-center gap-2 h-8 px-4 rounded-full bg-surface-container border border-outline-variant text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="directions_car">directions_car</span>
+<span class="font-label-lg text-label-lg">Transporte</span>
+</button>
+<button class="flex items-center gap-2 h-8 px-4 rounded-full bg-surface-container border border-outline-variant text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="more_horiz">more_horiz</span>
+<span class="font-label-lg text-label-lg">Outros</span>
+</button>
+</div>
+</div>
+<!-- Payment Type -->
+<div class="flex flex-col gap-xs md:col-span-2 mt-md animate-slide-up-fade stagger-5">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Tipo de pagamento</label>
+<div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant relative">
+<button class="flex-1 py-2 text-center rounded-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors duration-300 z-10" type="button">
+                            À vista
+                        </button>
+<button class="flex-1 py-2 text-center rounded-md font-label-lg text-label-lg text-primary transition-all duration-300 z-10" type="button">
+                            Parcelado
+                        </button>
+<div class="absolute inset-y-1 right-1 left-1/2 rounded-md bg-surface-container-lowest shadow-sm transition-transform duration-300"></div>
+</div>
+</div>
+<!-- Installments Selector (Conditional) -->
+<div class="flex flex-col gap-xs md:col-span-2 animate-slide-up-fade stagger-6">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Número de parcelas</label>
+<div class="flex items-center justify-between bg-surface-container-lowest border border-outline-variant rounded-lg h-[56px] px-4 transition-all duration-300 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-low rounded-full transition-all duration-200 active:scale-90" type="button">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="font-headline-md text-headline-md text-on-surface transition-all duration-200">10x</span>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-low rounded-full transition-all duration-200 active:scale-90" type="button">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Automatic Preview -->
+<div class="mt-md p-lg bg-surface-container-low rounded-xl border border-surface-variant flex flex-col gap-md relative overflow-hidden animate-slide-up-fade stagger-6 group">
+<!-- Decorative element -->
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-secondary-container opacity-20 rounded-full blur-2xl transition-transform duration-1000 group-hover:scale-125"></div>
+<div class="absolute inset-0 shimmer-effect animate-shimmer pointer-events-none"></div>
+<div class="flex items-start gap-md relative z-10">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container shrink-0 transition-transform duration-500 group-hover:rotate-12">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-title-lg text-title-lg text-on-surface transition-all duration-300">10 parcelas de R$ 129,90</span>
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 transition-all duration-300">
+<span class="material-symbols-outlined text-[16px]" data-icon="event">event</span> Primeira parcela em agosto de 2026
+                        </span>
+<span class="font-body-md text-body-md text-secondary flex items-center gap-1 mt-1 font-medium transition-all duration-300">
+<span class="material-symbols-outlined text-[16px]" data-icon="account_balance_wallet">account_balance_wallet</span> Limite disponível após a compra: R$ 4.131,00
+                        </span>
+</div>
+</div>
+</div>
+</form>
+</main>
+<!-- Fixed Action Button area -->
+<div class="fixed bottom-24 left-0 w-full px-container-margin-mobile md:px-container-margin-desktop z-40 flex justify-center pointer-events-none">
+<div class="w-full max-w-3xl pointer-events-auto">
+<button class="w-full h-[52px] bg-primary text-on-primary font-title-lg text-title-lg rounded-full shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.05)] hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="check">check</span>
+                Salvar compra
+            </button>
+</div>
+</div>
+<!-- BottomNavBar (Shared Component) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 h-20 bg-surface-container shadow-[0px_-4px_6px_-1px_rgba(15,23,42,0.05)] rounded-t-xl rounded-t-xl md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Início</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
+<span class="font-label-md text-label-md mt-1">Cartões</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-150 relative -top-2 shadow-lg">
+<span class="material-symbols-outlined text-[28px]" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md hidden">Novo</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md mt-1">Agenda</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+<span class="font-label-md text-label-md mt-1">Mais</span>
+</button>
+</nav>
+</body></html>

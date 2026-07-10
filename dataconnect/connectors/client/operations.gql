@@ -1,0 +1,1060 @@
+# Identity
+
+query GetMyProfile @auth(level: USER) {
+  userProfiles(where: {firebaseUid: {eq_expr: "auth.uid"}}, limit: 1) {
+    id
+    firebaseUid
+    email
+    normalizedEmail
+    displayName
+    photoUrl
+    locale
+    timezone
+  }
+}
+
+mutation CreateMyProfile($displayName: String!) @auth(level: USER) {
+  userProfile_insert(
+    data: {
+      firebaseUid_expr: "auth.uid"
+      email_expr: "auth.token.email"
+      normalizedEmail_expr: "auth.token.email"
+      displayName: $displayName
+      updatedAt_expr: "request.time"
+      lastSeenAt_expr: "request.time"
+    }
+  )
+}
+
+mutation UpdateMyProfile($displayName: String!, $photoUrl: String)
+@auth(level: USER_EMAIL_VERIFIED) {
+  userProfile_update(
+    first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}
+    data: {
+      displayName: $displayName
+      photoUrl: $photoUrl
+      updatedAt_expr: "request.time"
+      lastSeenAt_expr: "request.time"
+    }
+  )
+}
+
+# Spaces and complete client projection
+
+query ListMySpaces @auth(level: USER_EMAIL_VERIFIED) {
+  spaceMembers(
+    where: {
+      memberFirebaseUid: {eq_expr: "auth.uid"}
+      status: {eq: ACTIVE}
+      removedAt: {isNull: true}
+    }
+    limit: 20
+  ) {
+    id
+    role
+    joinedAt
+    financialSpace {
+      id
+      name
+      colorHex
+      currencyCode
+      timezone
+      updatedAt
+    }
+  }
+}
+
+query GetWorkspaceSnapshot($spaceId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(
+    first: {
+      where: {
+        financialSpaceId: {eq: $spaceId}
+        memberFirebaseUid: {eq_expr: "auth.uid"}
+        status: {eq: ACTIVE}
+        removedAt: {isNull: true}
+      }
+    }
+  ) @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    id
+  }
+
+  financialSpace(id: $spaceId) {
+    id
+    name
+    colorHex
+    currencyCode
+    timezone
+    updatedAt
+  }
+
+  spaceMembers(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {in: [ACTIVE, INVITED]}
+      removedAt: {isNull: true}
+    }
+    limit: 50
+  ) {
+    id
+    memberFirebaseUid
+    role
+    status
+    joinedAt
+    user {
+      id
+      displayName
+      email
+      photoUrl
+    }
+  }
+
+  categories(
+    where: {financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}
+    limit: 100
+  ) {
+    id
+    name
+    normalizedName
+    icon
+    colorHex
+    isDefault
+  }
+
+  creditCards(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}
+    limit: 100
+  ) {
+    id
+    nickname
+    institutionName
+    brand
+    lastFourDigits
+    creditLimitCents
+    closingDay
+    dueDay
+    colorHex
+    remindersEnabled
+    status
+    cardholderMember {
+      id
+      user {
+        displayName
+      }
+    }
+  }
+
+  purchases(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}
+    limit: 300
+  ) {
+    id
+    description
+    merchantName
+    totalAmountCents
+    purchaseDate
+    installmentCount
+    firstInvoiceReference
+    notes
+    status
+    creditCard { id }
+    category { id name }
+    createdByUser { id displayName }
+  }
+
+  creditCardInvoices(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    limit: 300
+  ) {
+    id
+    referenceMonth
+    closingDate
+    dueDate
+    status
+    totalAmountCents
+    paidAmountCents
+    creditCard { id nickname }
+  }
+
+  purchaseInstallments(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    limit: 1000
+  ) {
+    id
+    installmentNumber
+    installmentCount
+    amountCents
+    dueDate
+    status
+    purchase { id }
+    invoice { id }
+  }
+
+  invoicePayments(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: CONFIRMED}}
+    limit: 500
+  ) {
+    id
+    amountCents
+    paidAt
+    notes
+    status
+    invoice { id }
+    createdByUser { displayName }
+  }
+
+  loans(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    limit: 100
+  ) {
+    id
+    name
+    lender
+    principalAmountCents
+    monthlyInterestRateMicros
+    amortizationMethod
+    installmentCount
+    contractedAt
+    firstDueDate
+    expectedInstallmentAmountCents
+    notes
+    status
+    createdByUser { displayName }
+  }
+
+  loanInstallments(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    limit: 1000
+  ) {
+    id
+    installmentNumber
+    dueDate
+    openingBalanceCents
+    principalAmountCents
+    interestAmountCents
+    totalAmountCents
+    paidAmountCents
+    status
+    loan { id }
+  }
+
+  notificationPreferences(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      userFirebaseUid: {eq_expr: "auth.uid"}
+    }
+    limit: 1
+  ) {
+    id
+    enabled
+    pushEnabled
+    inAppEnabled
+    preferredTime
+    timezone
+  }
+
+  auditEvents(
+    where: {financialSpaceId: {eq: $spaceId}}
+    orderBy: [{occurredAt: DESC}]
+    limit: 50
+  ) {
+    id
+    entityType
+    entityId
+    action
+    summary
+    occurredAt
+    actorUser { displayName }
+  }
+}
+
+mutation CreateFinancialSpace($name: String!, $colorHex: String!)
+@auth(level: USER_EMAIL_VERIFIED)
+@transaction {
+  query @redact {
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}})
+    @check(expr: "this != null", message: "Perfil do usuário não encontrado.") {
+      id
+    }
+  }
+
+  space: financialSpace_insert(
+    data: {
+      name: $name
+      colorHex: $colorHex
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+
+  owner: spaceMember_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      userId_expr: "response.query.me.id"
+      memberFirebaseUid_expr: "auth.uid"
+      role: OWNER
+      status: ACTIVE
+      joinedAt_expr: "request.time"
+      updatedAt_expr: "request.time"
+    }
+  )
+
+  market: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Mercado"
+      normalizedName: "mercado"
+      icon: "shopping_cart"
+      colorHex: "#006A63"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  home: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Casa"
+      normalizedName: "casa"
+      icon: "home"
+      colorHex: "#3525CD"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  food: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Alimentação"
+      normalizedName: "alimentação"
+      icon: "restaurant"
+      colorHex: "#4F46E5"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  transport: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Transporte"
+      normalizedName: "transporte"
+      icon: "directions_car"
+      colorHex: "#3D37A9"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  health: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Saúde"
+      normalizedName: "saúde"
+      icon: "health_and_safety"
+      colorHex: "#006A63"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  leisure: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Lazer"
+      normalizedName: "lazer"
+      icon: "movie"
+      colorHex: "#777587"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  subscriptions: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Assinaturas"
+      normalizedName: "assinaturas"
+      icon: "subscriptions"
+      colorHex: "#4F46E5"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  education: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Educação"
+      normalizedName: "educação"
+      icon: "school"
+      colorHex: "#3D37A9"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  other: category_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      name: "Outros"
+      normalizedName: "outros"
+      icon: "category"
+      colorHex: "#777587"
+      isDefault: true
+      createdByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+
+  preference: notificationPreference_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      userId_expr: "response.query.me.id"
+      userFirebaseUid_expr: "auth.uid"
+      enabled: true
+      pushEnabled: false
+      inAppEnabled: true
+      updatedAt_expr: "request.time"
+    }
+  )
+  closingRule: notificationRule_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      notificationPreferenceId_expr: "response.preference.id"
+      eventType: INVOICE_CLOSING
+      daysBefore: 3
+      enabled: true
+      updatedAt_expr: "request.time"
+    }
+  )
+  dueRule: notificationRule_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      notificationPreferenceId_expr: "response.preference.id"
+      eventType: INVOICE_DUE
+      daysBefore: 3
+      enabled: true
+      updatedAt_expr: "request.time"
+    }
+  )
+  loanRule: notificationRule_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      notificationPreferenceId_expr: "response.preference.id"
+      eventType: LOAN_INSTALLMENT_DUE
+      daysBefore: 3
+      enabled: true
+      updatedAt_expr: "request.time"
+    }
+  )
+  audit: auditEvent_insert(
+    data: {
+      financialSpaceId_expr: "response.space.id"
+      actorUserId_expr: "response.query.me.id"
+      entityType: "financial_space"
+      entityId_expr: "response.space.id"
+      action: "created"
+      summary_expr: "'criou o espaço ' + vars.name + '.'"
+    }
+  )
+}
+
+# Membership and invitations
+
+query ListSpaceInvitations($spaceId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}})
+  @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    role @check(
+      expr: "this == 'OWNER' || this == 'EDITOR'"
+      message: "Você não pode visualizar convites."
+    )
+  }
+  spaceInvitations(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: PENDING}}
+    limit: 50
+  ) {
+    id
+    email
+    role
+    expiresAt
+  }
+}
+
+mutation CreateSpaceInvitation(
+  $spaceId: UUID!
+  $email: String!
+  $normalizedEmail: String!
+  $role: MembershipRole!
+  $tokenHash: String!
+  $expiresAt: Timestamp!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(
+      first: {
+        where: {
+          financialSpaceId: {eq: $spaceId}
+          memberFirebaseUid: {eq_expr: "auth.uid"}
+          status: {eq: ACTIVE}
+        }
+      }
+    ) @check(expr: "this != null", message: "Você não participa deste espaço.") {
+      role @check(
+        expr: "this == 'OWNER' || this == 'EDITOR'"
+        message: "Você não pode convidar membros."
+      )
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) {
+      id
+    }
+  }
+  invitation: spaceInvitation_insert(
+    data: {
+      financialSpaceId: $spaceId
+      email: $email
+      normalizedEmail: $normalizedEmail
+      role: $role
+      tokenHash: $tokenHash
+      status: PENDING
+      expiresAt: $expiresAt
+      invitedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+    }
+  )
+  audit: auditEvent_insert(
+    data: {
+      financialSpaceId: $spaceId
+      actorUserId_expr: "response.query.me.id"
+      entityType: "space_invitation"
+      entityId_expr: "response.invitation.id"
+      action: "invited"
+      summary_expr: "'convidou ' + vars.email + ' para o espaço.'"
+    }
+  )
+}
+
+mutation AcceptSpaceInvitation($tokenHash: String!)
+@auth(level: USER_EMAIL_VERIFIED)
+@transaction {
+  query @redact {
+    invitation: spaceInvitation(
+      first: {where: {tokenHash: {eq: $tokenHash}, status: {eq: PENDING}}}
+    ) @check(expr: "this != null", message: "Convite inválido ou já utilizado.") {
+      id
+      normalizedEmail @check(
+        expr: "this == auth.token.email"
+        message: "Este convite pertence a outro e-mail."
+      )
+      expiresAt @check(
+        expr: "this > request.time"
+        message: "Este convite expirou."
+      )
+      role
+      financialSpace { id }
+      invitedByUser { id }
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) {
+      id
+    }
+  }
+  member: spaceMember_insert(
+    data: {
+      financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+      userId_expr: "response.query.me.id"
+      memberFirebaseUid_expr: "auth.uid"
+      role_expr: "response.query.invitation.role"
+      status: ACTIVE
+      invitedByUserId_expr: "response.query.invitation.invitedByUser.id"
+      joinedAt_expr: "request.time"
+      updatedAt_expr: "request.time"
+    }
+  )
+  invitation: spaceInvitation_update(
+    first: {where: {tokenHash: {eq: $tokenHash}, status: {eq: PENDING}}}
+    data: {
+      status: ACCEPTED
+      acceptedByUserId_expr: "response.query.me.id"
+      acceptedAt_expr: "request.time"
+      updatedAt_expr: "request.time"
+    }
+  )
+  preference: notificationPreference_insert(
+    data: {
+      financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+      userId_expr: "response.query.me.id"
+      userFirebaseUid_expr: "auth.uid"
+      updatedAt_expr: "request.time"
+    }
+  )
+  audit: auditEvent_insert(
+    data: {
+      financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+      actorUserId_expr: "response.query.me.id"
+      entityType: "space_member"
+      entityId_expr: "response.member.id"
+      action: "joined"
+      summary: "entrou no espaço por convite."
+    }
+  )
+}
+
+# Categories and cards
+
+mutation CreateCategory(
+  $spaceId: UUID!
+  $name: String!
+  $normalizedName: String!
+  $icon: String!
+  $colorHex: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  category: category_insert(data: {
+    financialSpaceId: $spaceId
+    name: $name
+    normalizedName: $normalizedName
+    icon: $icon
+    colorHex: $colorHex
+    isDefault: false
+    createdByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation CreateCreditCard(
+  $spaceId: UUID!
+  $nickname: String!
+  $institutionName: String
+  $brand: String
+  $lastFourDigits: String!
+  $creditLimitCents: Int64!
+  $closingDay: Int!
+  $dueDay: Int!
+  $colorHex: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      id
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  card: creditCard_insert(data: {
+    financialSpaceId: $spaceId
+    cardholderMemberId_expr: "response.query.membership.id"
+    nickname: $nickname
+    institutionName: $institutionName
+    brand: $brand
+    lastFourDigits: $lastFourDigits
+    creditLimitCents: $creditLimitCents
+    closingDay: $closingDay
+    dueDay: $dueDay
+    colorHex: $colorHex
+    status: ACTIVE
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "credit_card"
+    entityId_expr: "response.card.id"
+    action: "created"
+    summary_expr: "'adicionou o cartão ' + vars.nickname + '.'"
+  })
+}
+
+# Purchases, invoices, installments and payments
+
+mutation CreatePurchase(
+  $spaceId: UUID!
+  $cardId: UUID!
+  $categoryId: UUID!
+  $description: String!
+  $merchantName: String
+  $totalAmountCents: Int64!
+  $purchaseDate: Date!
+  $installmentCount: Int!
+  $firstInvoiceReference: Date!
+  $notes: String
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    card: creditCard(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}) @check(expr: "this != null", message: "Cartão inválido.") { id }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}}) @check(expr: "this != null", message: "Categoria inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  purchase: purchase_insert(data: {
+    financialSpaceId: $spaceId
+    creditCardId: $cardId
+    categoryId: $categoryId
+    description: $description
+    merchantName: $merchantName
+    totalAmountCents: $totalAmountCents
+    purchaseDate: $purchaseDate
+    installmentCount: $installmentCount
+    firstInvoiceReference: $firstInvoiceReference
+    notes: $notes
+    status: ACTIVE
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "purchase"
+    entityId_expr: "response.purchase.id"
+    action: "created"
+    summary_expr: "'adicionou uma compra em ' + vars.description + '.'"
+  })
+}
+
+query FindCreditCardInvoice($spaceId: UUID!, $cardId: UUID!, $referenceMonth: Date!)
+@auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}})
+  @redact @check(expr: "this != null", message: "Você não participa deste espaço.") { id }
+  creditCardInvoices(where: {financialSpaceId: {eq: $spaceId}, creditCardId: {eq: $cardId}, referenceMonth: {eq: $referenceMonth}}, limit: 1) {
+    id
+    totalAmountCents
+    paidAmountCents
+    status
+  }
+}
+
+mutation CreateCreditCardInvoice(
+  $spaceId: UUID!
+  $cardId: UUID!
+  $referenceMonth: Date!
+  $closingDate: Date!
+  $dueDate: Date!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    card: creditCard(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}) @check(expr: "this != null") { id }
+  }
+  invoice: creditCardInvoice_insert(data: {
+    financialSpaceId: $spaceId
+    creditCardId: $cardId
+    referenceMonth: $referenceMonth
+    closingDate: $closingDate
+    dueDate: $dueDate
+    status: OPEN
+    totalAmountCents: 0
+    paidAmountCents: 0
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation AddPurchaseInstallment(
+  $spaceId: UUID!
+  $purchaseId: UUID!
+  $invoiceId: UUID!
+  $installmentNumber: Int!
+  $installmentCount: Int!
+  $amountCents: Int64!
+  $dueDate: Date!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    purchase: purchase(first: {where: {id: {eq: $purchaseId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}) @check(expr: "this != null") { id }
+    invoice: creditCardInvoice(first: {where: {id: {eq: $invoiceId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}) @check(expr: "this != null") { id }
+  }
+  installment: purchaseInstallment_insert(data: {
+    financialSpaceId: $spaceId
+    purchaseId: $purchaseId
+    invoiceId: $invoiceId
+    installmentNumber: $installmentNumber
+    installmentCount: $installmentCount
+    amountCents: $amountCents
+    dueDate: $dueDate
+    status: OPEN
+    updatedAt_expr: "request.time"
+  })
+  invoice: creditCardInvoice_update(id: $invoiceId, data: {
+    totalAmountCents_update: {inc: $amountCents}
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation UpdatePurchaseDetails($spaceId: UUID!, $purchaseId: UUID!, $description: String!, $categoryId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}}}) @check(expr: "this != null") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  purchase: purchase_update(first: {where: {id: {eq: $purchaseId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {
+    description: $description
+    categoryId: $categoryId
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  }) @check(expr: "this != null", message: "Compra não encontrada.")
+}
+
+query GetPurchaseInstallmentsForCancellation($spaceId: UUID!, $purchaseId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}})
+  @redact @check(expr: "this != null", message: "Você não participa deste espaço.") { id }
+  purchaseInstallments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      purchaseId: {eq: $purchaseId}
+      status: {ne: CANCELLED}
+    }
+    limit: 24
+  ) {
+    id
+    amountCents
+    invoice { id }
+  }
+}
+
+mutation CancelPurchaseInstallment(
+  $spaceId: UUID!
+  $installmentId: UUID!
+  $invoiceId: UUID!
+  $amountCents: Int64!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    installment: purchaseInstallment(first: {where: {id: {eq: $installmentId}, invoiceId: {eq: $invoiceId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}) @check(expr: "this != null") {
+      amountCents @check(expr: "this == vars.amountCents", message: "Valor da parcela divergente.")
+    }
+  }
+  installment: purchaseInstallment_update(id: $installmentId, data: {
+    status: CANCELLED
+    updatedAt_expr: "request.time"
+  })
+  invoice: creditCardInvoice_update(id: $invoiceId, data: {
+    totalAmountCents_update: {dec: $amountCents}
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+mutation CancelPurchase($spaceId: UUID!, $purchaseId: UUID!, $reason: String!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  purchase: purchase_update(first: {where: {id: {eq: $purchaseId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {
+    status: CANCELLED
+    cancelledByUserId_expr: "response.query.me.id"
+    cancelledAt_expr: "request.time"
+    cancellationReason: $reason
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  }) @check(expr: "this != null", message: "Compra não encontrada.")
+  installments: purchaseInstallment_updateMany(where: {purchaseId: {eq: $purchaseId}, financialSpaceId: {eq: $spaceId}}, data: {status: CANCELLED, updatedAt_expr: "request.time"})
+}
+
+mutation RegisterInvoicePayment(
+  $spaceId: UUID!
+  $invoiceId: UUID!
+  $amountCents: Int64!
+  $paidAt: Timestamp!
+  $notes: String
+  $idempotencyKey: String!
+  $resultingStatus: InvoiceStatus!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    invoice: creditCardInvoice(first: {where: {id: {eq: $invoiceId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}) @check(expr: "this != null") {
+      totalAmountCents
+      paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents <= response.query.invoice.totalAmountCents - this", message: "Valor de pagamento inválido.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  payment: invoicePayment_insert(data: {
+    financialSpaceId: $spaceId
+    invoiceId: $invoiceId
+    amountCents: $amountCents
+    paidAt: $paidAt
+    notes: $notes
+    status: CONFIRMED
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+  })
+  invoice: creditCardInvoice_update(id: $invoiceId, data: {
+    paidAmountCents_update: {inc: $amountCents}
+    status: $resultingStatus
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "invoice_payment"
+    entityId_expr: "response.payment.id"
+    action: "paid"
+    summary: "registrou um pagamento de fatura."
+  })
+}
+
+# Loans
+
+mutation CreateLoan(
+  $spaceId: UUID!
+  $name: String!
+  $lender: String
+  $principalAmountCents: Int64!
+  $monthlyInterestRateMicros: Int64!
+  $amortizationMethod: LoanAmortizationMethod!
+  $installmentCount: Int!
+  $contractedAt: Date
+  $firstDueDate: Date!
+  $expectedInstallmentAmountCents: Int64
+  $notes: String
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  loan: loan_insert(data: {
+    financialSpaceId: $spaceId
+    name: $name
+    lender: $lender
+    principalAmountCents: $principalAmountCents
+    monthlyInterestRateMicros: $monthlyInterestRateMicros
+    amortizationMethod: $amortizationMethod
+    installmentCount: $installmentCount
+    contractedAt: $contractedAt
+    firstDueDate: $firstDueDate
+    expectedInstallmentAmountCents: $expectedInstallmentAmountCents
+    notes: $notes
+    status: ACTIVE
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "loan"
+    entityId_expr: "response.loan.id"
+    action: "created"
+    summary_expr: "'cadastrou o empréstimo ' + vars.name + '.'"
+  })
+}
+
+mutation AddLoanInstallment(
+  $spaceId: UUID!
+  $loanId: UUID!
+  $installmentNumber: Int!
+  $dueDate: Date!
+  $openingBalanceCents: Int64!
+  $principalAmountCents: Int64!
+  $interestAmountCents: Int64!
+  $totalAmountCents: Int64!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    loan: loan(first: {where: {id: {eq: $loanId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}) @check(expr: "this != null") { id }
+  }
+  installment: loanInstallment_insert(data: {
+    financialSpaceId: $spaceId
+    loanId: $loanId
+    installmentNumber: $installmentNumber
+    dueDate: $dueDate
+    openingBalanceCents: $openingBalanceCents
+    principalAmountCents: $principalAmountCents
+    interestAmountCents: $interestAmountCents
+    totalAmountCents: $totalAmountCents
+    paidAmountCents: 0
+    status: OPEN
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation RegisterLoanPayment(
+  $spaceId: UUID!
+  $loanId: UUID!
+  $loanInstallmentId: UUID!
+  $amountCents: Int64!
+  $paidAt: Timestamp!
+  $notes: String
+  $idempotencyKey: String!
+  $resultingStatus: LoanInstallmentStatus!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    installment: loanInstallment(first: {where: {id: {eq: $loanInstallmentId}, loanId: {eq: $loanId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}) @check(expr: "this != null") {
+      totalAmountCents
+      paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents <= response.query.installment.totalAmountCents - this", message: "Valor de pagamento inválido.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  payment: loanPayment_insert(data: {
+    financialSpaceId: $spaceId
+    loanId: $loanId
+    loanInstallmentId: $loanInstallmentId
+    amountCents: $amountCents
+    paidAt: $paidAt
+    notes: $notes
+    status: CONFIRMED
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+  })
+  installment: loanInstallment_update(id: $loanInstallmentId, data: {
+    paidAmountCents_update: {inc: $amountCents}
+    status: $resultingStatus
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+# Notification preferences
+
+mutation UpdateNotificationPreference(
+  $spaceId: UUID!
+  $enabled: Boolean!
+  $pushEnabled: Boolean!
+  $inAppEnabled: Boolean!
+  $preferredTime: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) @check(expr: "this != null", message: "Você não participa deste espaço.") { id }
+  }
+  preference: notificationPreference_update(
+    first: {where: {financialSpaceId: {eq: $spaceId}, userFirebaseUid: {eq_expr: "auth.uid"}}}
+    data: {
+      enabled: $enabled
+      pushEnabled: $pushEnabled
+      inAppEnabled: $inAppEnabled
+      preferredTime: $preferredTime
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  ) @check(expr: "this != null", message: "Preferência não encontrada.")
+}
