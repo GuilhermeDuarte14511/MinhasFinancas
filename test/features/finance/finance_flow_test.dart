@@ -49,12 +49,31 @@ void main() {
       expect(repository.invitedEmail, 'bia@example.com');
     },
   );
+
+  test(
+    'viewer is blocked before a financial mutation reaches the backend',
+    () async {
+      final repository = _FakeFinanceRepository();
+      final container = ProviderContainer.test(
+        overrides: [financeRepositoryProvider.overrideWithValue(repository)],
+      );
+      addTearDown(container.dispose);
+      final controller = container.read(financeControllerProvider.notifier);
+
+      await controller.createSpace('Família Silva');
+      repository.currentRole = MembershipRole.viewer;
+      await controller.refresh();
+
+      await expectLater(controller.addCategory('Viagens'), throwsStateError);
+    },
+  );
 }
 
 final class _FakeFinanceRepository implements FinanceRepository {
   WorkspaceSummary? _space;
   String? invitedEmail;
   MembershipRole? invitedRole;
+  MembershipRole currentRole = MembershipRole.owner;
 
   @override
   Future<List<WorkspaceSummary>> listMySpaces() async =>
@@ -71,11 +90,33 @@ final class _FakeFinanceRepository implements FinanceRepository {
       purchases: const [],
       invoices: const [],
       loans: const [],
+      purchaseInstallments: const [],
+      loanInstallments: const [],
       activities: const [],
       categories: const ['Outros'],
       categoryIdsByName: const {'Outros': 'category-other'},
-      members: const ['Guilherme'],
-      notificationsEnabled: true,
+      members: [
+        MemberRecord(
+          id: 'member-1',
+          name: 'Guilherme',
+          email: 'gui@example.com',
+          role: currentRole,
+          status: MembershipStatus.active,
+          isCurrentUser: true,
+        ),
+      ],
+      invitations: const [],
+      currentRole: currentRole,
+      notificationSettings: const NotificationSettings(
+        enabled: true,
+        pushEnabled: false,
+        inAppEnabled: true,
+        preferredTime: '09:00',
+        invoiceClosing: true,
+        invoiceDue: true,
+        loanDue: true,
+        daysBefore: 3,
+      ),
     );
   }
 
@@ -88,6 +129,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
       id: 'space-1',
       name: name,
       colorValue: colorValue,
+      role: MembershipRole.owner,
     );
     return _space!.id;
   }
@@ -107,9 +149,51 @@ final class _FakeFinanceRepository implements FinanceRepository {
   Future<String> acceptInvitation(String tokenOrLink) async => 'member-1';
 
   @override
+  Future<void> updateSpace({
+    required String spaceId,
+    required String name,
+    required int colorValue,
+  }) async {}
+
+  @override
+  Future<void> archiveSpace({required String spaceId}) async {}
+
+  @override
+  Future<void> revokeInvitation({
+    required String spaceId,
+    required String invitationId,
+  }) async {}
+
+  @override
+  Future<void> updateMemberRole({
+    required String spaceId,
+    required String memberId,
+    required MembershipRole role,
+  }) async {}
+
+  @override
+  Future<void> removeMember({
+    required String spaceId,
+    required String memberId,
+  }) async {}
+
+  @override
   Future<void> createCategory({
     required String spaceId,
     required String name,
+  }) async {}
+
+  @override
+  Future<void> updateCategory({
+    required String spaceId,
+    required String categoryId,
+    required String name,
+  }) async {}
+
+  @override
+  Future<void> archiveCategory({
+    required String spaceId,
+    required String categoryId,
   }) async {}
 
   @override
@@ -120,6 +204,24 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required Money limit,
     required int closingDay,
     required int dueDay,
+    required int colorValue,
+  }) async {}
+
+  @override
+  Future<void> updateCard({
+    required String spaceId,
+    required String cardId,
+    required String nickname,
+    required Money limit,
+    required int closingDay,
+    required int dueDay,
+    required int colorValue,
+  }) async {}
+
+  @override
+  Future<void> archiveCard({
+    required String spaceId,
+    required String cardId,
   }) async {}
 
   @override
@@ -170,8 +272,25 @@ final class _FakeFinanceRepository implements FinanceRepository {
   }) async {}
 
   @override
+  Future<void> registerLoanPayment({
+    required String spaceId,
+    required String loanId,
+    required String installmentId,
+    required Money amount,
+    required Money pendingBeforePayment,
+    required DateTime paidAt,
+  }) async {}
+
+  @override
   Future<void> updateNotificationPreference({
     required String spaceId,
-    required bool enabled,
+    required NotificationSettings settings,
+  }) async {}
+
+  @override
+  Future<void> registerNotificationDevice({
+    required String token,
+    required bool isWeb,
+    required String deviceName,
   }) async {}
 }

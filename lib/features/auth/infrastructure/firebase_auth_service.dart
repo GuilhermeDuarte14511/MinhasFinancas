@@ -76,6 +76,15 @@ final class FirebaseAuthService {
 
   Future<void> signOut() => _auth.signOut();
 
+  Future<void> updateProfile({required String displayName}) async {
+    final user = _auth.currentUser;
+    if (user == null) throw StateError('Nenhuma conta autenticada.');
+    final name = displayName.trim();
+    if (name.length < 3) throw StateError('Informe seu nome completo.');
+    await user.updateDisplayName(name);
+    await ClientConnector.instance.updateMyProfile(displayName: name).execute();
+  }
+
   Future<void> ensureProfile(User user, {String? fallbackDisplayName}) async {
     final result = await ClientConnector.instance.getMyProfile().execute(
       fetchPolicy: QueryFetchPolicy.serverOnly,

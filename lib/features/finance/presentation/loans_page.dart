@@ -68,7 +68,9 @@ class LoansPage extends ConsumerWidget {
                   const SizedBox(height: 14),
                 ],
                 OutlinedButton.icon(
-                  onPressed: () => context.push('/new-loan'),
+                  onPressed: finance.canEdit
+                      ? () => context.push('/new-loan')
+                      : null,
                   icon: const Icon(Icons.add_rounded),
                   label: const Text('Adicionar empréstimo'),
                 ),
@@ -90,74 +92,78 @@ class _LoanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final progress = loan.paidInstallments / loan.installmentCount;
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  radius: 24,
-                  backgroundColor: AppColors.surfaceContainer,
-                  child: Icon(
-                    Icons.account_balance_rounded,
-                    color: AppColors.primary,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.push('/loans/${loan.id}'),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 24,
+                    backgroundColor: AppColors.surfaceContainer,
+                    child: Icon(
+                      Icons.account_balance_rounded,
+                      color: AppColors.primary,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        loan.lender,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(loan.description),
-                    ],
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          loan.lender,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(loan.description),
+                      ],
+                    ),
                   ),
-                ),
-                StatusPill(label: 'Venc. dia ${loan.dueDay}'),
-              ],
-            ),
-            const SizedBox(height: 18),
-            const Divider(),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: _LoanMetric(
-                    label: 'Saldo devedor',
-                    value: loan.outstandingBalance.format(),
-                  ),
-                ),
-                Expanded(
-                  child: _LoanMetric(
-                    label: 'Próxima parcela',
-                    value: loan.installmentAmount.format(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Row(
-              children: [
-                const Text('Progresso'),
-                const Spacer(),
-                Text('${loan.paidInstallments}/${loan.installmentCount}'),
-              ],
-            ),
-            const SizedBox(height: 7),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(99),
-              child: LinearProgressIndicator(
-                value: progress.clamp(0, 1),
-                minHeight: 11,
-                color: AppColors.secondary,
-                backgroundColor: AppColors.surfaceContainer,
+                  StatusPill(label: 'Venc. dia ${loan.dueDay}'),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 18),
+              const Divider(),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _LoanMetric(
+                      label: 'Saldo devedor',
+                      value: loan.outstandingBalance.format(),
+                    ),
+                  ),
+                  Expanded(
+                    child: _LoanMetric(
+                      label: 'Próxima parcela',
+                      value: loan.installmentAmount.format(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  const Text('Progresso'),
+                  const Spacer(),
+                  Text('${loan.paidInstallments}/${loan.installmentCount}'),
+                ],
+              ),
+              const SizedBox(height: 7),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: LinearProgressIndicator(
+                  value: progress.clamp(0, 1),
+                  minHeight: 11,
+                  color: AppColors.secondary,
+                  backgroundColor: AppColors.surfaceContainer,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

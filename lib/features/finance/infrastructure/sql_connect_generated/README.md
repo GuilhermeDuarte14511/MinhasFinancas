@@ -1233,6 +1233,68 @@ ref.execute();
 ```
 
 
+### RegisterFullInvoicePayment
+#### Required Arguments
+```dart
+String spaceId = ...;
+String invoiceId = ...;
+BigInt amountCents = ...;
+Timestamp paidAt = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.registerFullInvoicePayment(
+  spaceId: spaceId,
+  invoiceId: invoiceId,
+  amountCents: amountCents,
+  paidAt: paidAt,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<RegisterFullInvoicePaymentData, RegisterFullInvoicePaymentVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.registerFullInvoicePayment(
+  spaceId: spaceId,
+  invoiceId: invoiceId,
+  amountCents: amountCents,
+  paidAt: paidAt,
+  idempotencyKey: idempotencyKey,
+);
+RegisterFullInvoicePaymentData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String invoiceId = ...;
+BigInt amountCents = ...;
+Timestamp paidAt = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.registerFullInvoicePayment(
+  spaceId: spaceId,
+  invoiceId: invoiceId,
+  amountCents: amountCents,
+  paidAt: paidAt,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
 ### CreateLoan
 #### Required Arguments
 ```dart
@@ -1517,6 +1579,53 @@ ref.execute();
 ```
 
 
+### CancelLoan
+#### Required Arguments
+```dart
+String spaceId = ...;
+String loanId = ...;
+ClientConnector.instance.cancelLoan(
+  spaceId: spaceId,
+  loanId: loanId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<CancelLoanData, CancelLoanVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.cancelLoan(
+  spaceId: spaceId,
+  loanId: loanId,
+);
+CancelLoanData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String loanId = ...;
+
+final ref = ClientConnector.instance.cancelLoan(
+  spaceId: spaceId,
+  loanId: loanId,
+).ref();
+ref.execute();
+```
+
+
 ### UpdateNotificationPreference
 #### Required Arguments
 ```dart
@@ -1574,6 +1683,609 @@ final ref = ClientConnector.instance.updateNotificationPreference(
   pushEnabled: pushEnabled,
   inAppEnabled: inAppEnabled,
   preferredTime: preferredTime,
+).ref();
+ref.execute();
+```
+
+
+### UpdateNotificationRules
+#### Required Arguments
+```dart
+String spaceId = ...;
+bool invoiceClosing = ...;
+bool invoiceDue = ...;
+bool loanDue = ...;
+int daysBefore = ...;
+ClientConnector.instance.updateNotificationRules(
+  spaceId: spaceId,
+  invoiceClosing: invoiceClosing,
+  invoiceDue: invoiceDue,
+  loanDue: loanDue,
+  daysBefore: daysBefore,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateNotificationRulesData, UpdateNotificationRulesVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateNotificationRules(
+  spaceId: spaceId,
+  invoiceClosing: invoiceClosing,
+  invoiceDue: invoiceDue,
+  loanDue: loanDue,
+  daysBefore: daysBefore,
+);
+UpdateNotificationRulesData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+bool invoiceClosing = ...;
+bool invoiceDue = ...;
+bool loanDue = ...;
+int daysBefore = ...;
+
+final ref = ClientConnector.instance.updateNotificationRules(
+  spaceId: spaceId,
+  invoiceClosing: invoiceClosing,
+  invoiceDue: invoiceDue,
+  loanDue: loanDue,
+  daysBefore: daysBefore,
+).ref();
+ref.execute();
+```
+
+
+### RegisterDeviceSubscription
+#### Required Arguments
+```dart
+String id = ...;
+NotificationPlatform platform = ...;
+String tokenOrEndpoint = ...;
+String tokenHash = ...;
+ClientConnector.instance.registerDeviceSubscription(
+  id: id,
+  platform: platform,
+  tokenOrEndpoint: tokenOrEndpoint,
+  tokenHash: tokenHash,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For RegisterDeviceSubscription, we created `RegisterDeviceSubscriptionBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class RegisterDeviceSubscriptionVariablesBuilder {
+  ...
+   RegisterDeviceSubscriptionVariablesBuilder deviceName(String? t) {
+   _deviceName.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.registerDeviceSubscription(
+  id: id,
+  platform: platform,
+  tokenOrEndpoint: tokenOrEndpoint,
+  tokenHash: tokenHash,
+)
+.deviceName(deviceName)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<RegisterDeviceSubscriptionData, RegisterDeviceSubscriptionVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.registerDeviceSubscription(
+  id: id,
+  platform: platform,
+  tokenOrEndpoint: tokenOrEndpoint,
+  tokenHash: tokenHash,
+);
+RegisterDeviceSubscriptionData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String id = ...;
+NotificationPlatform platform = ...;
+String tokenOrEndpoint = ...;
+String tokenHash = ...;
+
+final ref = ClientConnector.instance.registerDeviceSubscription(
+  id: id,
+  platform: platform,
+  tokenOrEndpoint: tokenOrEndpoint,
+  tokenHash: tokenHash,
+).ref();
+ref.execute();
+```
+
+
+### UpdateFinancialSpace
+#### Required Arguments
+```dart
+String spaceId = ...;
+String name = ...;
+String colorHex = ...;
+ClientConnector.instance.updateFinancialSpace(
+  spaceId: spaceId,
+  name: name,
+  colorHex: colorHex,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateFinancialSpaceData, UpdateFinancialSpaceVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateFinancialSpace(
+  spaceId: spaceId,
+  name: name,
+  colorHex: colorHex,
+);
+UpdateFinancialSpaceData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String name = ...;
+String colorHex = ...;
+
+final ref = ClientConnector.instance.updateFinancialSpace(
+  spaceId: spaceId,
+  name: name,
+  colorHex: colorHex,
+).ref();
+ref.execute();
+```
+
+
+### ArchiveFinancialSpace
+#### Required Arguments
+```dart
+String spaceId = ...;
+ClientConnector.instance.archiveFinancialSpace(
+  spaceId: spaceId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<ArchiveFinancialSpaceData, ArchiveFinancialSpaceVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.archiveFinancialSpace(
+  spaceId: spaceId,
+);
+ArchiveFinancialSpaceData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+
+final ref = ClientConnector.instance.archiveFinancialSpace(
+  spaceId: spaceId,
+).ref();
+ref.execute();
+```
+
+
+### RevokeSpaceInvitation
+#### Required Arguments
+```dart
+String spaceId = ...;
+String invitationId = ...;
+ClientConnector.instance.revokeSpaceInvitation(
+  spaceId: spaceId,
+  invitationId: invitationId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<RevokeSpaceInvitationData, RevokeSpaceInvitationVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.revokeSpaceInvitation(
+  spaceId: spaceId,
+  invitationId: invitationId,
+);
+RevokeSpaceInvitationData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String invitationId = ...;
+
+final ref = ClientConnector.instance.revokeSpaceInvitation(
+  spaceId: spaceId,
+  invitationId: invitationId,
+).ref();
+ref.execute();
+```
+
+
+### UpdateMemberRole
+#### Required Arguments
+```dart
+String spaceId = ...;
+String memberId = ...;
+MembershipRole role = ...;
+ClientConnector.instance.updateMemberRole(
+  spaceId: spaceId,
+  memberId: memberId,
+  role: role,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateMemberRoleData, UpdateMemberRoleVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateMemberRole(
+  spaceId: spaceId,
+  memberId: memberId,
+  role: role,
+);
+UpdateMemberRoleData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String memberId = ...;
+MembershipRole role = ...;
+
+final ref = ClientConnector.instance.updateMemberRole(
+  spaceId: spaceId,
+  memberId: memberId,
+  role: role,
+).ref();
+ref.execute();
+```
+
+
+### RemoveSpaceMember
+#### Required Arguments
+```dart
+String spaceId = ...;
+String memberId = ...;
+ClientConnector.instance.removeSpaceMember(
+  spaceId: spaceId,
+  memberId: memberId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<RemoveSpaceMemberData, RemoveSpaceMemberVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.removeSpaceMember(
+  spaceId: spaceId,
+  memberId: memberId,
+);
+RemoveSpaceMemberData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String memberId = ...;
+
+final ref = ClientConnector.instance.removeSpaceMember(
+  spaceId: spaceId,
+  memberId: memberId,
+).ref();
+ref.execute();
+```
+
+
+### UpdateCategory
+#### Required Arguments
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String name = ...;
+String normalizedName = ...;
+ClientConnector.instance.updateCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  name: name,
+  normalizedName: normalizedName,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateCategoryData, UpdateCategoryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  name: name,
+  normalizedName: normalizedName,
+);
+UpdateCategoryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String name = ...;
+String normalizedName = ...;
+
+final ref = ClientConnector.instance.updateCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  name: name,
+  normalizedName: normalizedName,
+).ref();
+ref.execute();
+```
+
+
+### ArchiveCategory
+#### Required Arguments
+```dart
+String spaceId = ...;
+String categoryId = ...;
+ClientConnector.instance.archiveCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<ArchiveCategoryData, ArchiveCategoryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.archiveCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+);
+ArchiveCategoryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String categoryId = ...;
+
+final ref = ClientConnector.instance.archiveCategory(
+  spaceId: spaceId,
+  categoryId: categoryId,
+).ref();
+ref.execute();
+```
+
+
+### UpdateCreditCard
+#### Required Arguments
+```dart
+String spaceId = ...;
+String cardId = ...;
+String nickname = ...;
+BigInt creditLimitCents = ...;
+int closingDay = ...;
+int dueDay = ...;
+String colorHex = ...;
+ClientConnector.instance.updateCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+  nickname: nickname,
+  creditLimitCents: creditLimitCents,
+  closingDay: closingDay,
+  dueDay: dueDay,
+  colorHex: colorHex,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateCreditCardData, UpdateCreditCardVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+  nickname: nickname,
+  creditLimitCents: creditLimitCents,
+  closingDay: closingDay,
+  dueDay: dueDay,
+  colorHex: colorHex,
+);
+UpdateCreditCardData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String cardId = ...;
+String nickname = ...;
+BigInt creditLimitCents = ...;
+int closingDay = ...;
+int dueDay = ...;
+String colorHex = ...;
+
+final ref = ClientConnector.instance.updateCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+  nickname: nickname,
+  creditLimitCents: creditLimitCents,
+  closingDay: closingDay,
+  dueDay: dueDay,
+  colorHex: colorHex,
+).ref();
+ref.execute();
+```
+
+
+### ArchiveCreditCard
+#### Required Arguments
+```dart
+String spaceId = ...;
+String cardId = ...;
+ClientConnector.instance.archiveCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<ArchiveCreditCardData, ArchiveCreditCardVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.archiveCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+);
+ArchiveCreditCardData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String cardId = ...;
+
+final ref = ClientConnector.instance.archiveCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
 ).ref();
 ref.execute();
 ```

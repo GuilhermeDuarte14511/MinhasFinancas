@@ -18,6 +18,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _acceptedTerms = false;
   bool _isLoading = false;
   String? _errorMessage;
@@ -28,6 +29,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -136,6 +138,25 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                       validator: (value) => (value?.length ?? 0) >= 8
                           ? null
                           : 'Use pelo menos 8 caracteres.',
+                    ),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _isLoading ? null : _submit(),
+                      decoration: const InputDecoration(
+                        labelText: 'Confirme sua senha',
+                        prefixIcon: Icon(Icons.lock_reset_rounded),
+                      ),
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Confirme sua senha.';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'As senhas não são iguais.';
+                        }
+                        return null;
+                      },
                     ),
                     CheckboxListTile(
                       contentPadding: EdgeInsets.zero,

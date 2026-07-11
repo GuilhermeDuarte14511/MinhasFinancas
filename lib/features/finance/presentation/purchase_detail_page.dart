@@ -165,6 +165,11 @@ class PurchaseDetailPage extends ConsumerWidget {
       );
     }
     final purchase = matches.first;
+    final installments =
+        finance.purchaseInstallments
+            .where((item) => item.purchaseId == purchase.id)
+            .toList()
+          ..sort((a, b) => a.number.compareTo(b.number));
     final card = finance.cards.firstWhere(
       (item) => item.id == purchase.cardId,
       orElse: () => const CreditCardAccount(
@@ -280,11 +285,11 @@ class PurchaseDetailPage extends ConsumerWidget {
                     children: [
                       for (
                         var index = 0;
-                        index < purchase.installmentCount;
+                        index < installments.length;
                         index++
                       ) ...[
-                        _InstallmentTile(purchase: purchase, index: index),
-                        if (index < purchase.installmentCount - 1)
+                        _InstallmentTile(installment: installments[index]),
+                        if (index < installments.length - 1)
                           const Divider(height: 1),
                       ],
                     ],
@@ -357,23 +362,16 @@ class _InfoCard extends StatelessWidget {
 }
 
 class _InstallmentTile extends StatelessWidget {
-  const _InstallmentTile({required this.purchase, required this.index});
+  const _InstallmentTile({required this.installment});
 
-  final PurchaseRecord purchase;
-  final int index;
+  final PurchaseInstallmentRecord installment;
 
   @override
   Widget build(BuildContext context) {
-    final base = purchase.total.cents ~/ purchase.installmentCount;
-    final remainder = purchase.total.cents % purchase.installmentCount;
-    final amount = Money.fromCents(base + (index < remainder ? 1 : 0));
-    final month = DateTime(
-      purchase.purchaseDate.year,
-      purchase.purchaseDate.month + index,
-      purchase.purchaseDate.day,
-    );
-    final isPaid = index == 0 && purchase.installmentCount > 1;
-    final isNext = index == (purchase.installmentCount > 1 ? 1 : 0);
+    final isPaid = installment.status == InstallmentStatus.paid;
+    final isNext =
+        installment.status == InstallmentStatus.open &&
+        !installment.dueDate.isBefore(DateTime.now());
     final color = isPaid
         ? AppColors.secondary
         : isNext
@@ -386,29 +384,27 @@ class _InstallmentTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: color.withValues(alpha: .12),
           child: Text(
-            '${index + 1}/${purchase.installmentCount}',
+            '${installment.number}/${installment.count}',
             style: TextStyle(color: color, fontSize: 12),
           ),
         ),
-        title: Text(DateFormat('MMMM', 'pt_BR').format(month)),
-        subtitle: Text(DateFormat('dd/MM/yyyy').format(month)),
+        title: Text(DateFormat('MMMM', 'pt_BR').format(installment.dueDate)),
+        subtitle: Text(DateFormat('dd/MM/yyyy').format(installment.dueDate)),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              amount.format(),
+              installment.amount.format(),
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 3),
-            Text(
-              isPaid
-                  ? 'Pago'
-                  : isNext
-                  ? 'Próxima'
-                  : 'Pendente',
-              style: TextStyle(color: color, fontSize: 12),
-            ),
+            Text(switch (installment.status) {
+              InstallmentStatus.paid => 'Pago',
+              InstallmentStatus.cancelled => 'Cancelada',
+              InstallmentStatus.planned => 'Planejada',
+              InstallmentStatus.open => isNext ? 'Próxima' : 'Pendente',
+            }, style: TextStyle(color: color, fontSize: 12)),
           ],
         ),
       ),

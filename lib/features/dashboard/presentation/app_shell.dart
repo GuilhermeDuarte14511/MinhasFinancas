@@ -8,6 +8,7 @@ import '../../finance/application/finance_controller.dart';
 import '../../finance/presentation/agenda_page.dart';
 import '../../finance/presentation/cards_page.dart';
 import '../../finance/presentation/more_page.dart';
+import '../../onboarding/presentation/entry_gate_page.dart';
 import 'dashboard_page.dart';
 
 class AppShell extends ConsumerWidget {
@@ -29,7 +30,11 @@ class AppShell extends ConsumerWidget {
     _ => const DashboardPage(),
   };
 
-  void _showSpaceMenu(BuildContext context, FinanceState finance) {
+  void _showSpaceMenu(
+    BuildContext context,
+    WidgetRef ref,
+    FinanceState finance,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -44,26 +49,43 @@ class AppShell extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
-            Card(
-              color: AppColors.surfaceLow,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(
-                    finance.spaceColorValue,
-                  ).withValues(alpha: .14),
-                  child: Icon(
-                    Icons.home_work_rounded,
-                    color: Color(finance.spaceColorValue),
+            for (final space in finance.availableSpaces)
+              Card(
+                color: space.id == finance.spaceId
+                    ? AppColors.surfaceLow
+                    : Colors.white,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Color(
+                      space.colorValue,
+                    ).withValues(alpha: .14),
+                    child: Icon(
+                      Icons.home_work_rounded,
+                      color: Color(space.colorValue),
+                    ),
                   ),
-                ),
-                title: Text(finance.spaceName),
-                subtitle: const Text('Espaço ativo'),
-                trailing: const Icon(
-                  Icons.check_circle,
-                  color: AppColors.secondary,
+                  title: Text(space.name),
+                  subtitle: Text(
+                    space.id == finance.spaceId
+                        ? 'Espaço ativo'
+                        : 'Tocar para selecionar',
+                  ),
+                  trailing: space.id == finance.spaceId
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: AppColors.secondary,
+                        )
+                      : null,
+                  onTap: space.id == finance.spaceId
+                      ? null
+                      : () async {
+                          Navigator.pop(sheetContext);
+                          await ref
+                              .read(financeControllerProvider.notifier)
+                              .selectWorkspace(space.id);
+                        },
                 ),
               ),
-            ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: () {
@@ -87,9 +109,78 @@ class AppShell extends ConsumerWidget {
     );
   }
 
+  void _showCreateMenu(BuildContext context, FinanceState finance) {
+    final canEdit = finance.canEdit;
+    final canCreatePurchase = canEdit && finance.cards.isNotEmpty;
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'O que você quer adicionar?',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Escolha uma opção para manter as finanças em dia.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              _CreateOption(
+                icon: Icons.shopping_bag_outlined,
+                title: 'Nova compra',
+                subtitle: canCreatePurchase
+                    ? 'Registre uma compra à vista ou parcelada'
+                    : !canEdit
+                    ? 'Seu acesso é somente leitura'
+                    : 'Cadastre um cartão antes de registrar compras',
+                enabled: canCreatePurchase,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  context.push('/new-purchase');
+                },
+              ),
+              _CreateOption(
+                icon: Icons.add_card_rounded,
+                title: 'Novo cartão',
+                subtitle: canEdit
+                    ? 'Adicione limite, fechamento e vencimento'
+                    : 'Seu acesso é somente leitura',
+                enabled: canEdit,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  context.push('/new-card');
+                },
+              ),
+              _CreateOption(
+                icon: Icons.account_balance_outlined,
+                title: 'Novo empréstimo',
+                subtitle: canEdit
+                    ? 'Cadastre um contrato e suas parcelas'
+                    : 'Seu acesso é somente leitura',
+                enabled: canEdit,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  context.push('/new-loan');
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final finance = ref.watch(financeControllerProvider);
+    if (!finance.hasFinancialSpace) return const EntryGatePage();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
@@ -119,7 +210,7 @@ class AppShell extends ConsumerWidget {
                   ),
                   InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap: () => _showSpaceMenu(context, finance),
+                    onTap: () => _showSpaceMenu(context, ref, finance),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
@@ -173,7 +264,7 @@ class AppShell extends ConsumerWidget {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {
           if (index == 2) {
-            context.push(finance.cards.isEmpty ? '/new-card' : '/new-purchase');
+            _showCreateMenu(context, finance);
             return;
           }
           context.go(switch (index) {
@@ -210,6 +301,43 @@ class AppShell extends ConsumerWidget {
             label: 'Mais',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CreateOption extends StatelessWidget {
+  const _CreateOption({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.enabled = true,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = enabled ? AppColors.primary : AppColors.textMuted;
+    return Card(
+      color: enabled ? null : AppColors.surfaceLow,
+      child: ListTile(
+        enabled: enabled,
+        onTap: enabled ? onTap : null,
+        leading: CircleAvatar(
+          backgroundColor: color.withValues(alpha: .12),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: enabled
+            ? const Icon(Icons.chevron_right_rounded)
+            : const Icon(Icons.lock_outline_rounded, size: 20),
       ),
     );
   }

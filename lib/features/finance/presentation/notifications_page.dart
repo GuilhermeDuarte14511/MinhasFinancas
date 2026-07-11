@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../app/widgets/app_widgets.dart';
@@ -17,10 +19,20 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   bool _invoiceDue = true;
   bool _loanDue = true;
   double _daysBefore = 3;
+  bool _initialized = false;
+  bool _saving = false;
 
   @override
   Widget build(BuildContext context) {
     final enabled = ref.watch(financeControllerProvider).notificationsEnabled;
+    final saved = ref.watch(financeControllerProvider).notificationSettings;
+    if (!_initialized) {
+      _invoiceClosing = saved.invoiceClosing;
+      _invoiceDue = saved.invoiceDue;
+      _loanDue = saved.loanDue;
+      _daysBefore = saved.daysBefore.toDouble();
+      _initialized = true;
+    }
     return Scaffold(
       appBar: const BrandAppBar(title: 'Lembretes', showBack: true),
       body: SafeArea(
@@ -52,9 +64,47 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                     value: enabled,
                     onChanged: (value) async {
                       try {
+                        var next = ref
+                            .read(financeControllerProvider)
+                            .notificationSettings
+                            .copyWith(enabled: value);
+                        if (value) {
+                          final permission = await FirebaseMessaging.instance
+                              .requestPermission(
+                                alert: true,
+                                badge: true,
+                                sound: true,
+                              );
+                          next = next.copyWith(
+                            pushEnabled:
+                                permission.authorizationStatus ==
+                                    AuthorizationStatus.authorized ||
+                                permission.authorizationStatus ==
+                                    AuthorizationStatus.provisional,
+                          );
+                          if (next.pushEnabled) {
+                            try {
+                              final token = await FirebaseMessaging.instance
+                                  .getToken();
+                              if (token != null) {
+                                await ref
+                                    .read(financeControllerProvider.notifier)
+                                    .registerNotificationDevice(
+                                      token: token,
+                                      isWeb: kIsWeb,
+                                      deviceName: kIsWeb
+                                          ? 'Navegador Web'
+                                          : 'Dispositivo Android',
+                                    );
+                              }
+                            } catch (_) {
+                              next = next.copyWith(pushEnabled: false);
+                            }
+                          }
+                        }
                         await ref
                             .read(financeControllerProvider.notifier)
-                            .setNotificationsEnabled(value);
+                            .updateNotificationSettings(next);
                       } catch (_) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -140,13 +190,42 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                 ),
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: enabled
-                      ? () => showSuccessMessage(
-                          context,
-                          'Preferências de lembrete salvas.',
-                        )
+                  onPressed: enabled && !_saving
+                      ? () async {
+                          setState(() => _saving = true);
+                          try {
+                            await ref
+                                .read(financeControllerProvider.notifier)
+                                .updateNotificationSettings(
+                                  saved.copyWith(
+                                    invoiceClosing: _invoiceClosing,
+                                    invoiceDue: _invoiceDue,
+                                    loanDue: _loanDue,
+                                    daysBefore: _daysBefore.round(),
+                                  ),
+                                );
+                            if (context.mounted) {
+                              showSuccessMessage(
+                                context,
+                                'Preferências de lembrete salvas.',
+                              );
+                            }
+                          } catch (_) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Não foi possível salvar as preferências.',
+                                  ),
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) setState(() => _saving = false);
+                          }
+                        }
                       : null,
-                  child: const Text('Salvar preferências'),
+                  child: Text(_saving ? 'Salvando...' : 'Salvar preferências'),
                 ),
                 const SizedBox(height: 12),
                 Text(

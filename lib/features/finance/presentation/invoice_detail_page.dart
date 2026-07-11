@@ -17,8 +17,15 @@ class InvoiceDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final finance = ref.watch(financeControllerProvider);
     final invoice = finance.invoices.firstWhere((item) => item.id == invoiceId);
+    final installments = finance.purchaseInstallments
+        .where((item) => item.invoiceId == invoice.id)
+        .toList();
+    final installmentByPurchase = {
+      for (final installment in installments)
+        installment.purchaseId: installment,
+    };
     final purchases = finance.purchases
-        .where((purchase) => purchase.cardId == invoice.cardId)
+        .where((purchase) => installmentByPurchase.containsKey(purchase.id))
         .toList();
     final fraction = invoice.total.isZero
         ? 0.0
@@ -144,7 +151,9 @@ class InvoiceDetailPage extends ConsumerWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  purchases[index].total.format(),
+                                  installmentByPurchase[purchases[index].id]!
+                                      .amount
+                                      .format(),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                   ),

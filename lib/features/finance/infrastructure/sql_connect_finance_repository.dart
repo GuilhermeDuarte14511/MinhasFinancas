@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import '../../../core/money/money.dart';
@@ -28,6 +29,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
           id: membership.financialSpace.id,
           name: membership.financialSpace.name,
           colorValue: _colorValue(membership.financialSpace.colorHex),
+          role: _membershipRole(membership.role),
         ),
     ];
   }
@@ -40,14 +42,19 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     final data = result.data;
     final space = data.financialSpace;
     if (space == null) throw StateError('Espaço financeiro não encontrado.');
-    var pendingInvitations = const <String>[];
+    var pendingInvitations = const <domain.InvitationRecord>[];
     try {
       final invitations = await _client
           .listSpaceInvitations(spaceId: spaceId)
           .execute(fetchPolicy: QueryFetchPolicy.serverOnly);
       pendingInvitations = [
         for (final invitation in invitations.data.spaceInvitations)
-          '${invitation.email} (convite pendente)',
+          domain.InvitationRecord(
+            id: invitation.id,
+            email: invitation.email,
+            role: _membershipRole(invitation.role),
+            expiresAt: invitation.expiresAt.toDateTime(),
+          ),
       ];
     } catch (_) {
       // Viewers can load the workspace but cannot inspect invitation e-mails.
@@ -108,6 +115,16 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         if (b.role.stringValue == 'OWNER') return 1;
         return a.user.displayName.compareTo(b.user.displayName);
       });
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    final currentMember = spaceMembers.firstWhere(
+      (member) => member.memberFirebaseUid == currentUid,
+      orElse: () => spaceMembers.first,
+    );
+    final rulesByType = {
+      for (final rule in data.notificationRules)
+        rule.eventType.stringValue: rule,
+    };
+    final preference = data.notificationPreferences.firstOrNull;
 
     return WorkspaceSnapshot(
       id: space.id,
@@ -127,6 +144,19 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
             createdBy: purchase.createdByUser.displayName,
           ),
       ],
+      purchaseInstallments: [
+        for (final installment in data.purchaseInstallments)
+          domain.PurchaseInstallmentRecord(
+            id: installment.id,
+            purchaseId: installment.purchase.id,
+            invoiceId: installment.invoice.id,
+            number: installment.installmentNumber,
+            count: installment.installmentCount,
+            amount: Money.fromCents(installment.amountCents.toInt()),
+            dueDate: installment.dueDate,
+            status: _installmentStatus(installment.status),
+          ),
+      ],
       invoices: [
         for (final invoice in data.creditCardInvoices)
           domain.InvoiceSummary(
@@ -144,6 +174,18 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         for (final loan in data.loans)
           _mapLoan(loan, installmentsByLoan[loan.id] ?? const []),
       ],
+      loanInstallments: [
+        for (final installment in data.loanInstallments)
+          domain.LoanInstallmentRecord(
+            id: installment.id,
+            loanId: installment.loan.id,
+            number: installment.installmentNumber,
+            dueDate: installment.dueDate,
+            total: Money.fromCents(installment.totalAmountCents.toInt()),
+            paid: Money.fromCents(installment.paidAmountCents.toInt()),
+            status: _loanInstallmentStatus(installment.status),
+          ),
+      ],
       activities: [
         for (final event in data.auditEvents)
           domain.ActivityEntry(
@@ -158,13 +200,27 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
       },
       members: [
         for (final member in spaceMembers)
-          member.status.stringValue == 'INVITED'
-              ? '${member.user.displayName} (convite pendente)'
-              : member.user.displayName,
-        ...pendingInvitations,
+          domain.MemberRecord(
+            id: member.id,
+            name: member.user.displayName,
+            email: member.user.email,
+            role: _membershipRole(member.role),
+            status: _membershipStatus(member.status),
+            isCurrentUser: member.memberFirebaseUid == currentUid,
+          ),
       ],
-      notificationsEnabled:
-          data.notificationPreferences.firstOrNull?.enabled ?? true,
+      invitations: pendingInvitations,
+      currentRole: _membershipRole(currentMember.role),
+      notificationSettings: domain.NotificationSettings(
+        enabled: preference?.enabled ?? true,
+        pushEnabled: preference?.pushEnabled ?? false,
+        inAppEnabled: preference?.inAppEnabled ?? true,
+        preferredTime: preference?.preferredTime ?? '09:00',
+        invoiceClosing: rulesByType['INVOICE_CLOSING']?.enabled ?? true,
+        invoiceDue: rulesByType['INVOICE_DUE']?.enabled ?? true,
+        loanDue: rulesByType['LOAN_INSTALLMENT_DUE']?.enabled ?? true,
+        daysBefore: rulesByType['INVOICE_DUE']?.daysBefore ?? 3,
+      ),
     );
   }
 
@@ -177,6 +233,26 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         .createFinancialSpace(name: name, colorHex: _colorHex(colorValue))
         .execute();
     return result.data.space.id;
+  }
+
+  @override
+  Future<void> updateSpace({
+    required String spaceId,
+    required String name,
+    required int colorValue,
+  }) async {
+    await _client
+        .updateFinancialSpace(
+          spaceId: spaceId,
+          name: name.trim(),
+          colorHex: _colorHex(colorValue),
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> archiveSpace({required String spaceId}) async {
+    await _client.archiveFinancialSpace(spaceId: spaceId).execute();
   }
 
   @override
@@ -216,6 +292,41 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
   }
 
   @override
+  Future<void> revokeInvitation({
+    required String spaceId,
+    required String invitationId,
+  }) async {
+    await _client
+        .revokeSpaceInvitation(spaceId: spaceId, invitationId: invitationId)
+        .execute();
+  }
+
+  @override
+  Future<void> updateMemberRole({
+    required String spaceId,
+    required String memberId,
+    required domain.MembershipRole role,
+  }) async {
+    await _client
+        .updateMemberRole(
+          spaceId: spaceId,
+          memberId: memberId,
+          role: _sqlMembershipRole(role),
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> removeMember({
+    required String spaceId,
+    required String memberId,
+  }) async {
+    await _client
+        .removeSpaceMember(spaceId: spaceId, memberId: memberId)
+        .execute();
+  }
+
+  @override
   Future<void> createCategory({
     required String spaceId,
     required String name,
@@ -232,6 +343,32 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
   }
 
   @override
+  Future<void> updateCategory({
+    required String spaceId,
+    required String categoryId,
+    required String name,
+  }) async {
+    await _client
+        .updateCategory(
+          spaceId: spaceId,
+          categoryId: categoryId,
+          name: name.trim(),
+          normalizedName: name.trim().toLowerCase(),
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> archiveCategory({
+    required String spaceId,
+    required String categoryId,
+  }) async {
+    await _client
+        .archiveCategory(spaceId: spaceId, categoryId: categoryId)
+        .execute();
+  }
+
+  @override
   Future<void> createCard({
     required String spaceId,
     required String nickname,
@@ -239,6 +376,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required Money limit,
     required int closingDay,
     required int dueDay,
+    required int colorValue,
   }) async {
     await _client
         .createCreditCard(
@@ -248,9 +386,40 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
           creditLimitCents: BigInt.from(limit.cents),
           closingDay: closingDay,
           dueDay: dueDay,
-          colorHex: '#3525CD',
+          colorHex: _colorHex(colorValue),
         )
         .execute();
+  }
+
+  @override
+  Future<void> updateCard({
+    required String spaceId,
+    required String cardId,
+    required String nickname,
+    required Money limit,
+    required int closingDay,
+    required int dueDay,
+    required int colorValue,
+  }) async {
+    await _client
+        .updateCreditCard(
+          spaceId: spaceId,
+          cardId: cardId,
+          nickname: nickname.trim(),
+          creditLimitCents: BigInt.from(limit.cents),
+          closingDay: closingDay,
+          dueDay: dueDay,
+          colorHex: _colorHex(colorValue),
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> archiveCard({
+    required String spaceId,
+    required String cardId,
+  }) async {
+    await _client.archiveCreditCard(spaceId: spaceId, cardId: cardId).execute();
   }
 
   @override
@@ -267,7 +436,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
   }) async {
     final firstReference = DateTime(
       purchaseDate.year,
-      purchaseDate.month + 1,
+      purchaseDate.month + (purchaseDate.day > cardClosingDay ? 1 : 0),
       1,
     );
     final purchaseResult = await _client
@@ -289,30 +458,35 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
       firstReferenceMonth: firstReference,
     );
 
-    for (final installment in schedule) {
-      final reference = DateTime(
-        installment.referenceMonth.year,
-        installment.referenceMonth.month,
-        1,
-      );
-      final invoiceId = await _ensureInvoice(
-        spaceId: spaceId,
-        cardId: cardId,
-        referenceMonth: reference,
-        closingDay: cardClosingDay,
-        dueDay: cardDueDay,
-      );
-      await _client
-          .addPurchaseInstallment(
-            spaceId: spaceId,
-            purchaseId: purchaseId,
-            invoiceId: invoiceId,
-            installmentNumber: installment.number,
-            installmentCount: installmentCount,
-            amountCents: BigInt.from(installment.amount.cents),
-            dueDate: _invoiceDueDate(reference, cardClosingDay, cardDueDay),
-          )
-          .execute();
+    try {
+      for (final installment in schedule) {
+        final reference = DateTime(
+          installment.referenceMonth.year,
+          installment.referenceMonth.month,
+          1,
+        );
+        final invoiceId = await _ensureInvoice(
+          spaceId: spaceId,
+          cardId: cardId,
+          referenceMonth: reference,
+          closingDay: cardClosingDay,
+          dueDay: cardDueDay,
+        );
+        await _client
+            .addPurchaseInstallment(
+              spaceId: spaceId,
+              purchaseId: purchaseId,
+              invoiceId: invoiceId,
+              installmentNumber: installment.number,
+              installmentCount: installmentCount,
+              amountCents: BigInt.from(installment.amount.cents),
+              dueDate: _invoiceDueDate(reference, cardClosingDay, cardDueDay),
+            )
+            .execute();
+      }
+    } catch (_) {
+      await cancelPurchase(spaceId: spaceId, purchaseId: purchaseId);
+      rethrow;
     }
   }
 
@@ -371,9 +545,18 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required Money pendingBeforePayment,
     required DateTime paidAt,
   }) async {
-    final status = amount.cents >= pendingBeforePayment.cents
-        ? sql.InvoiceStatus.PAID
-        : sql.InvoiceStatus.PARTIALLY_PAID;
+    if (amount.cents >= pendingBeforePayment.cents) {
+      await _client
+          .registerFullInvoicePayment(
+            spaceId: spaceId,
+            invoiceId: invoiceId,
+            amountCents: BigInt.from(amount.cents),
+            paidAt: _timestamp(paidAt),
+            idempotencyKey: _secureToken(),
+          )
+          .execute();
+      return;
+    }
     await _client
         .registerInvoicePayment(
           spaceId: spaceId,
@@ -381,7 +564,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
           amountCents: BigInt.from(amount.cents),
           paidAt: _timestamp(paidAt),
           idempotencyKey: _secureToken(),
-          resultingStatus: status,
+          resultingStatus: sql.InvoiceStatus.PARTIALLY_PAID,
         )
         .execute();
   }
@@ -421,43 +604,99 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     final basePrincipal = amount.cents ~/ installmentCount;
     final remainder = amount.cents % installmentCount;
     var opening = amount.cents;
-    for (var index = 0; index < installmentCount; index++) {
-      final principal = basePrincipal + (index < remainder ? 1 : 0);
-      final interest = max(0, installmentAmount.cents - principal);
-      await _client
-          .addLoanInstallment(
-            spaceId: spaceId,
-            loanId: loanId,
-            installmentNumber: index + 1,
-            dueDate: _safeDate(
-              firstDueDate.year,
-              firstDueDate.month + index,
-              dueDay,
-            ),
-            openingBalanceCents: BigInt.from(opening),
-            principalAmountCents: BigInt.from(principal),
-            interestAmountCents: BigInt.from(interest),
-            totalAmountCents: BigInt.from(principal + interest),
-          )
-          .execute();
-      opening -= principal;
+    try {
+      for (var index = 0; index < installmentCount; index++) {
+        final principal = basePrincipal + (index < remainder ? 1 : 0);
+        final interest = max(0, installmentAmount.cents - principal);
+        await _client
+            .addLoanInstallment(
+              spaceId: spaceId,
+              loanId: loanId,
+              installmentNumber: index + 1,
+              dueDate: _safeDate(
+                firstDueDate.year,
+                firstDueDate.month + index,
+                dueDay,
+              ),
+              openingBalanceCents: BigInt.from(opening),
+              principalAmountCents: BigInt.from(principal),
+              interestAmountCents: BigInt.from(interest),
+              totalAmountCents: BigInt.from(principal + interest),
+            )
+            .execute();
+        opening -= principal;
+      }
+    } catch (_) {
+      await _client.cancelLoan(spaceId: spaceId, loanId: loanId).execute();
+      rethrow;
     }
+  }
+
+  @override
+  Future<void> registerLoanPayment({
+    required String spaceId,
+    required String loanId,
+    required String installmentId,
+    required Money amount,
+    required Money pendingBeforePayment,
+    required DateTime paidAt,
+  }) async {
+    await _client
+        .registerLoanPayment(
+          spaceId: spaceId,
+          loanId: loanId,
+          loanInstallmentId: installmentId,
+          amountCents: BigInt.from(amount.cents),
+          paidAt: _timestamp(paidAt),
+          idempotencyKey: _secureToken(),
+          resultingStatus: amount.cents >= pendingBeforePayment.cents
+              ? sql.LoanInstallmentStatus.PAID
+              : sql.LoanInstallmentStatus.PARTIALLY_PAID,
+        )
+        .execute();
   }
 
   @override
   Future<void> updateNotificationPreference({
     required String spaceId,
-    required bool enabled,
+    required domain.NotificationSettings settings,
   }) async {
     await _client
         .updateNotificationPreference(
           spaceId: spaceId,
-          enabled: enabled,
-          pushEnabled: false,
-          inAppEnabled: enabled,
-          preferredTime: '09:00',
+          enabled: settings.enabled,
+          pushEnabled: settings.pushEnabled,
+          inAppEnabled: settings.inAppEnabled,
+          preferredTime: settings.preferredTime,
         )
         .execute();
+    await _client
+        .updateNotificationRules(
+          spaceId: spaceId,
+          invoiceClosing: settings.invoiceClosing,
+          invoiceDue: settings.invoiceDue,
+          loanDue: settings.loanDue,
+          daysBefore: settings.daysBefore,
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> registerNotificationDevice({
+    required String token,
+    required bool isWeb,
+    required String deviceName,
+  }) async {
+    final hash = _hashToken(token);
+    final builder = _client.registerDeviceSubscription(
+      id: _uuidFromHash(hash),
+      platform: isWeb
+          ? sql.NotificationPlatform.WEB
+          : sql.NotificationPlatform.ANDROID,
+      tokenOrEndpoint: token,
+      tokenHash: hash,
+    )..deviceName(deviceName);
+    await builder.execute();
   }
 
   Future<String> _ensureInvoice({
@@ -512,9 +751,10 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     final paid = installments
         .where((item) => item.status.stringValue == 'PAID')
         .length;
-    final paidPrincipal = installments
-        .where((item) => item.status.stringValue == 'PAID')
-        .fold<int>(0, (sum, item) => sum + item.principalAmountCents.toInt());
+    final totalPaid = installments.fold<int>(
+      0,
+      (sum, item) => sum + item.paidAmountCents.toInt(),
+    );
     final expected =
         loan.expectedInstallmentAmountCents?.toInt() ??
         installments.firstOrNull?.totalAmountCents.toInt() ??
@@ -525,7 +765,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
       description: loan.name,
       originalAmount: Money.fromCents(loan.principalAmountCents.toInt()),
       outstandingBalance: Money.fromCents(
-        max(0, loan.principalAmountCents.toInt() - paidPrincipal),
+        max(0, loan.principalAmountCents.toInt() - totalPaid),
       ),
       installmentAmount: Money.fromCents(expected),
       paidInstallments: paid,
@@ -544,6 +784,50 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     'OVERDUE' => domain.InvoiceStatus.overdue,
     'CANCELLED' => domain.InvoiceStatus.cancelled,
     _ => domain.InvoiceStatus.open,
+  };
+
+  static domain.MembershipRole _membershipRole(
+    sql.EnumValue<sql.MembershipRole> role,
+  ) => switch (role.stringValue) {
+    'OWNER' => domain.MembershipRole.owner,
+    'VIEWER' => domain.MembershipRole.viewer,
+    _ => domain.MembershipRole.editor,
+  };
+
+  static sql.MembershipRole _sqlMembershipRole(domain.MembershipRole role) =>
+      switch (role) {
+        domain.MembershipRole.owner => sql.MembershipRole.OWNER,
+        domain.MembershipRole.editor => sql.MembershipRole.EDITOR,
+        domain.MembershipRole.viewer => sql.MembershipRole.VIEWER,
+      };
+
+  static domain.MembershipStatus _membershipStatus(
+    sql.EnumValue<sql.MembershipStatus> status,
+  ) => switch (status.stringValue) {
+    'INVITED' => domain.MembershipStatus.invited,
+    'SUSPENDED' => domain.MembershipStatus.suspended,
+    'REMOVED' => domain.MembershipStatus.removed,
+    _ => domain.MembershipStatus.active,
+  };
+
+  static domain.InstallmentStatus _installmentStatus(
+    sql.EnumValue<sql.InstallmentStatus> status,
+  ) => switch (status.stringValue) {
+    'PLANNED' => domain.InstallmentStatus.planned,
+    'PAID' => domain.InstallmentStatus.paid,
+    'CANCELLED' => domain.InstallmentStatus.cancelled,
+    _ => domain.InstallmentStatus.open,
+  };
+
+  static domain.LoanInstallmentStatus _loanInstallmentStatus(
+    sql.EnumValue<sql.LoanInstallmentStatus> status,
+  ) => switch (status.stringValue) {
+    'PLANNED' => domain.LoanInstallmentStatus.planned,
+    'PARTIALLY_PAID' => domain.LoanInstallmentStatus.partiallyPaid,
+    'PAID' => domain.LoanInstallmentStatus.paid,
+    'OVERDUE' => domain.LoanInstallmentStatus.overdue,
+    'CANCELLED' => domain.LoanInstallmentStatus.cancelled,
+    _ => domain.LoanInstallmentStatus.open,
   };
 
   static DateTime _invoiceDueDate(
@@ -574,6 +858,9 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
 
   static String _hashToken(String token) =>
       sha256.convert(utf8.encode(token)).toString();
+
+  static String _uuidFromHash(String hash) =>
+      '${hash.substring(0, 8)}-${hash.substring(8, 12)}-4${hash.substring(13, 16)}-a${hash.substring(17, 20)}-${hash.substring(20, 32)}';
 
   static String _extractToken(String input) {
     final value = input.trim();

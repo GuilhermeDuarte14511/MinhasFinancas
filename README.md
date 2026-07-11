@@ -5,22 +5,23 @@ O mesmo código gera um APK Android e uma PWA para Safari no iPhone.
 
 ## Estado atual
 
-Esta entrega implementa um MVP demonstrável com dados locais em memória:
+Esta entrega implementa o fluxo funcional do aplicativo com autenticação
+Firebase e persistência no Firebase Data Connect:
 
 - login, criação de conta e onboarding;
-- criação de espaço financeiro;
+- criação, edição, arquivamento e troca de espaço financeiro;
 - dashboard com faturas, limites, vencimentos e atividades;
-- cartões, compras à vista/parceladas e atualização de limite;
+- cartões com detalhe/edição, compras à vista/parceladas e atualização de limite;
 - detalhes da fatura e pagamento parcial/total;
-- agenda, empréstimos, categorias, membros e convites;
-- preferências de lembretes e instruções de instalação PWA;
-- schema inicial das 18 tabelas do SQL Connect;
+- agenda, empréstimos/pagamentos, categorias, membros, papéis e convites;
+- preferências detalhadas, registro FCM/Web e instalação PWA;
+- schema relacional, operações seguras e SDK Flutter gerado pelo Data Connect;
 - testes unitários das regras de dinheiro e parcelamento.
 
-Os formulários são funcionais durante a sessão, mas ainda não persistem no
-Firebase. Esse comportamento é explícito na tela de login. A autenticação,
-sincronização entre usuários, push e SDK gerado entram após a definição do
-projeto Firebase e da instância PostgreSQL.
+Usuários, espaços, membros, convites, categorias, cartões, compras, parcelas,
+faturas, pagamentos, empréstimos e preferências de notificação são persistidos
+no projeto `minhasfinancasofc`. Convites geram um link seguro compartilhável;
+o envio automático por e-mail e push ainda depende de um serviço de entrega.
 
 ## Stack e arquitetura
 
@@ -29,9 +30,11 @@ projeto Firebase e da instância PostgreSQL.
 - GoRouter para rotas e URLs diretas;
 - Intl em `pt_BR`;
 - monólito modular com Domain, Application, Infrastructure e Presentation;
-- Firebase Authentication e SQL Connect como infraestrutura planejada.
+- Firebase Authentication e Data Connect como infraestrutura de produção.
 
 Decisões e dependências estão em [docs/architecture.md](docs/architecture.md).
+O fluxo completo de telas e navegação está em
+[docs/workflow-do-app.md](docs/workflow-do-app.md).
 
 ## Pré-requisitos
 
@@ -39,7 +42,7 @@ Decisões e dependências estão em [docs/architecture.md](docs/architecture.md)
 - Dart fornecido pelo Flutter;
 - Chrome para desenvolvimento Web;
 - Android SDK 36/JDK 17 para Android;
-- Firebase CLI e FlutterFire CLI somente para integrar o backend.
+- Firebase CLI e FlutterFire CLI para gerar SDKs e publicar o backend.
 
 ## Instalação e execução
 
@@ -98,32 +101,28 @@ rotas inexistentes para `index.html`.
 No iPhone, abra a URL no Safari, toque em Compartilhar, escolha **Adicionar à
 Tela de Início**, ative **Abrir como App da Web** e confirme em **Adicionar**.
 
-## Firebase e SQL Connect
+## Firebase Data Connect
 
-As CLIs não estão instaladas neste workspace e não há credenciais do projeto.
-Quando os IDs reais estiverem disponíveis:
+O projeto está configurado para `minhasfinancasofc`, com o serviço Data Connect
+em `southamerica-east1`. Para atualizar o SDK após alterar schema ou operações:
 
 ```bash
-dart pub global activate flutterfire_cli
-flutterfire configure --platforms=android,web
-firebase init dataconnect:sdk
-firebase dataconnect:sdk:generate
+firebase dataconnect:sdk:generate --project minhasfinancasofc
 firebase emulators:start --only auth,dataconnect,hosting
 ```
 
-Copie `.firebaserc.example` para `.firebaserc` e preencha o project ID. Faça o
-mesmo com os YAMLs em `dataconnect/`. O SDK gerado deve permanecer na camada
-`infrastructure`; DTOs gerados não devem chegar aos widgets ou ao domínio.
+O SDK gerado permanece em
+`lib/features/finance/infrastructure/sql_connect_generated`; o repositório da
+camada de infraestrutura converte os DTOs antes de entregá-los à aplicação.
 
-O deploy é manual e não foi executado:
+Publicação manual:
 
 ```bash
 firebase deploy --only hosting
 firebase deploy --only dataconnect
 ```
 
-Revise custo e autorização antes do segundo comando. Consulte
-[dataconnect/README.md](dataconnect/README.md).
+Consulte [dataconnect/README.md](dataconnect/README.md) para detalhes do modelo.
 
 Referências oficiais: [SDK Flutter do SQL Connect](https://firebase.google.com/docs/sql-connect/flutter-sdk)
 e [configuração do Firebase Hosting](https://firebase.google.com/docs/hosting/full-config).

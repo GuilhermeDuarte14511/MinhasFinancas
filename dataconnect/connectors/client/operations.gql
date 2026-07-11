@@ -47,7 +47,9 @@ query ListMySpaces @auth(level: USER_EMAIL_VERIFIED) {
       memberFirebaseUid: {eq_expr: "auth.uid"}
       status: {eq: ACTIVE}
       removedAt: {isNull: true}
+      financialSpace: {archivedAt: {isNull: true}}
     }
+    orderBy: [{joinedAt: DESC}]
     limit: 20
   ) {
     id
@@ -251,6 +253,19 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     inAppEnabled
     preferredTime
     timezone
+  }
+
+  notificationRules(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      notificationPreference: {userFirebaseUid: {eq_expr: "auth.uid"}}
+    }
+    limit: 3
+  ) {
+    id
+    eventType
+    daysBefore
+    enabled
   }
 
   auditEvents(
@@ -588,6 +603,27 @@ mutation AcceptSpaceInvitation($tokenHash: String!)
       updatedAt_expr: "request.time"
     }
   )
+  closingRule: notificationRule_insert(data: {
+    financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+    notificationPreferenceId_expr: "response.preference.id"
+    eventType: INVOICE_CLOSING
+    daysBefore: 3
+    enabled: true
+  })
+  dueRule: notificationRule_insert(data: {
+    financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+    notificationPreferenceId_expr: "response.preference.id"
+    eventType: INVOICE_DUE
+    daysBefore: 3
+    enabled: true
+  })
+  loanRule: notificationRule_insert(data: {
+    financialSpaceId_expr: "response.query.invitation.financialSpace.id"
+    notificationPreferenceId_expr: "response.preference.id"
+    eventType: LOAN_INSTALLMENT_DUE
+    daysBefore: 3
+    enabled: true
+  })
   audit: auditEvent_insert(
     data: {
       financialSpaceId_expr: "response.query.invitation.financialSpace.id"
@@ -916,6 +952,52 @@ mutation RegisterInvoicePayment(
   })
 }
 
+mutation RegisterFullInvoicePayment(
+  $spaceId: UUID!
+  $invoiceId: UUID!
+  $amountCents: Int64!
+  $paidAt: Timestamp!
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    invoice: creditCardInvoice(first: {where: {id: {eq: $invoiceId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}) @check(expr: "this != null") {
+      totalAmountCents
+      paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents == response.query.invoice.totalAmountCents - this", message: "O valor deve quitar exatamente o saldo pendente.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  payment: invoicePayment_insert(data: {
+    financialSpaceId: $spaceId
+    invoiceId: $invoiceId
+    amountCents: $amountCents
+    paidAt: $paidAt
+    status: CONFIRMED
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+  })
+  invoice: creditCardInvoice_update(id: $invoiceId, data: {
+    paidAmountCents_update: {inc: $amountCents}
+    status: PAID
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  installments: purchaseInstallment_updateMany(
+    where: {invoiceId: {eq: $invoiceId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    data: {status: PAID, updatedAt_expr: "request.time"}
+  )
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "invoice_payment"
+    entityId_expr: "response.payment.id"
+    action: "paid"
+    summary: "quitou uma fatura."
+  })
+}
+
 # Loans
 
 mutation CreateLoan(
@@ -1034,6 +1116,18 @@ mutation RegisterLoanPayment(
   })
 }
 
+mutation CancelLoan($spaceId: UUID!, $loanId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  loan: loan_update(first: {where: {id: {eq: $loanId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {status: CANCELLED, cancelledAt_expr: "request.time", updatedByUserId_expr: "response.query.me.id", updatedAt_expr: "request.time", version_update: {inc: 1}})
+  installments: loanInstallment_updateMany(where: {loanId: {eq: $loanId}, financialSpaceId: {eq: $spaceId}}, data: {status: CANCELLED, updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
 # Notification preferences
 
 mutation UpdateNotificationPreference(
@@ -1057,4 +1151,152 @@ mutation UpdateNotificationPreference(
       version_update: {inc: 1}
     }
   ) @check(expr: "this != null", message: "Preferência não encontrada.")
+}
+
+mutation UpdateNotificationRules(
+  $spaceId: UUID!
+  $invoiceClosing: Boolean!
+  $invoiceDue: Boolean!
+  $loanDue: Boolean!
+  $daysBefore: Int!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Você não participa deste espaço.") { id }
+    preference: notificationPreference(first: {where: {financialSpaceId: {eq: $spaceId}, userFirebaseUid: {eq_expr: "auth.uid"}}})
+    @check(expr: "this != null", message: "Preferência não encontrada.") { id }
+  }
+  closing: notificationRule_update(
+    first: {where: {notificationPreferenceId: {eq_expr: "response.query.preference.id"}, eventType: {eq: INVOICE_CLOSING}}}
+    data: {enabled: $invoiceClosing, daysBefore: $daysBefore, updatedAt_expr: "request.time"}
+  )
+  due: notificationRule_update(
+    first: {where: {notificationPreferenceId: {eq_expr: "response.query.preference.id"}, eventType: {eq: INVOICE_DUE}}}
+    data: {enabled: $invoiceDue, daysBefore: $daysBefore, updatedAt_expr: "request.time"}
+  )
+  loan: notificationRule_update(
+    first: {where: {notificationPreferenceId: {eq_expr: "response.query.preference.id"}, eventType: {eq: LOAN_INSTALLMENT_DUE}}}
+    data: {enabled: $loanDue, daysBefore: $daysBefore, updatedAt_expr: "request.time"}
+  )
+}
+
+mutation RegisterDeviceSubscription(
+  $id: UUID!
+  $platform: NotificationPlatform!
+  $tokenOrEndpoint: String!
+  $tokenHash: String!
+  $deviceName: String
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}})
+    @check(expr: "this != null", message: "Perfil não encontrado.") { id }
+  }
+  subscription: deviceSubscription_upsert(data: {
+    id: $id
+    userId_expr: "response.query.me.id"
+    userFirebaseUid_expr: "auth.uid"
+    platform: $platform
+    tokenOrEndpoint: $tokenOrEndpoint
+    tokenHash: $tokenHash
+    deviceName: $deviceName
+    enabled: true
+    lastSeenAt_expr: "request.time"
+    updatedAt_expr: "request.time"
+  })
+}
+
+# Workspace, membership and catalog management
+
+mutation UpdateFinancialSpace($spaceId: UUID!, $name: String!, $colorHex: String!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER'", message: "Somente o proprietário pode editar o espaço.")
+    }
+  }
+  space: financialSpace_update(id: $spaceId, data: {name: $name, colorHex: $colorHex, updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
+mutation ArchiveFinancialSpace($spaceId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER'", message: "Somente o proprietário pode arquivar o espaço.")
+    }
+  }
+  space: financialSpace_update(id: $spaceId, data: {archivedAt_expr: "request.time", updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
+mutation RevokeSpaceInvitation($spaceId: UUID!, $invitationId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Você não pode revogar convites.")
+    }
+  }
+  invitation: spaceInvitation_update(first: {where: {id: {eq: $invitationId}, financialSpaceId: {eq: $spaceId}, status: {eq: PENDING}}}, data: {status: REVOKED, revokedAt_expr: "request.time", updatedAt_expr: "request.time"})
+  @check(expr: "this != null", message: "Convite pendente não encontrado.")
+}
+
+mutation UpdateMemberRole($spaceId: UUID!, $memberId: UUID!, $role: MembershipRole!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    actor: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER'", message: "Somente o proprietário pode alterar papéis.")
+    }
+    target: spaceMember(first: {where: {id: {eq: $memberId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Membro não encontrado.") { role }
+    owners: spaceMembers(where: {financialSpaceId: {eq: $spaceId}, role: {eq: OWNER}, status: {eq: ACTIVE}}, limit: 2) { id }
+  }
+  member: spaceMember_update(id: $memberId, data: {role: $role, updatedAt_expr: "request.time", version_update: {inc: 1}})
+  @check(expr: "vars.role == 'OWNER' || response.query.target.role != 'OWNER' || response.query.owners.size() > 1", message: "O espaço precisa manter um proprietário.")
+}
+
+mutation RemoveSpaceMember($spaceId: UUID!, $memberId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    actor: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER'", message: "Somente o proprietário pode remover membros.")
+    }
+    target: spaceMember(first: {where: {id: {eq: $memberId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Membro não encontrado.") { role memberFirebaseUid }
+    owners: spaceMembers(where: {financialSpaceId: {eq: $spaceId}, role: {eq: OWNER}, status: {eq: ACTIVE}}, limit: 2) { id }
+  }
+  member: spaceMember_update(id: $memberId, data: {status: REMOVED, removedAt_expr: "request.time", updatedAt_expr: "request.time", version_update: {inc: 1}})
+  @check(expr: "response.query.target.role != 'OWNER' || response.query.owners.size() > 1", message: "O último proprietário não pode ser removido.")
+}
+
+mutation UpdateCategory($spaceId: UUID!, $categoryId: UUID!, $name: String!, $normalizedName: String!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) { role @check(expr: "this == 'OWNER' || this == 'EDITOR'") }
+  }
+  category: category_update(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}}, data: {name: $name, normalizedName: $normalizedName, updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
+mutation ArchiveCategory($spaceId: UUID!, $categoryId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) { role @check(expr: "this == 'OWNER' || this == 'EDITOR'") }
+  }
+  category: category_update(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, isDefault: {eq: false}, archivedAt: {isNull: true}}}, data: {archivedAt_expr: "request.time", updatedAt_expr: "request.time", version_update: {inc: 1}})
+  @check(expr: "this != null", message: "Categorias padrão não podem ser arquivadas.")
+}
+
+mutation UpdateCreditCard($spaceId: UUID!, $cardId: UUID!, $nickname: String!, $creditLimitCents: Int64!, $closingDay: Int!, $dueDay: Int!, $colorHex: String!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) { role @check(expr: "this == 'OWNER' || this == 'EDITOR'") }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  card: creditCard_update(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {nickname: $nickname, creditLimitCents: $creditLimitCents, closingDay: $closingDay, dueDay: $dueDay, colorHex: $colorHex, updatedByUserId_expr: "response.query.me.id", updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
+mutation ArchiveCreditCard($spaceId: UUID!, $cardId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) { role @check(expr: "this == 'OWNER' || this == 'EDITOR'") }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  card: creditCard_update(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {status: ARCHIVED, archivedAt_expr: "request.time", updatedByUserId_expr: "response.query.me.id", updatedAt_expr: "request.time", version_update: {inc: 1}})
 }

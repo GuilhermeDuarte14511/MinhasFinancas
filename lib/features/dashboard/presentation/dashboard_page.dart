@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../app/widgets/app_widgets.dart';
@@ -141,6 +142,12 @@ class _InvoiceOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final referenceMonths = finance.invoices
+        .map((invoice) => invoice.referenceMonth)
+        .toSet();
+    final invoiceTitle = referenceMonths.length == 1
+        ? 'Faturas de ${toBeginningOfSentenceCase(DateFormat.MMMM('pt_BR').format(referenceMonths.first))}'
+        : 'Resumo das faturas';
     final fraction = finance.invoiceTotal.isZero
         ? 0.0
         : finance.paidTotal.cents / finance.invoiceTotal.cents;
@@ -154,7 +161,7 @@ class _InvoiceOverview extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Faturas de julho',
+                    invoiceTitle,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
@@ -369,7 +376,7 @@ class _DueRow extends StatelessWidget {
                     children: [
                       Text(invoice.cardName),
                       Text(
-                        'Vence em ${invoice.dueDate.day} jul',
+                        'Vence em ${DateFormat("d 'de' MMM", 'pt_BR').format(invoice.dueDate)}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -396,6 +403,7 @@ class _LoanDueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dueDate = _nextDateForDay(loan.dueDay);
     return Column(
       children: [
         const Divider(height: 1),
@@ -416,7 +424,7 @@ class _LoanDueRow extends StatelessWidget {
                     children: [
                       const Text('Empréstimo'),
                       Text(
-                        'Vence em ${loan.dueDay} jul',
+                        'Vence em ${DateFormat("d 'de' MMM", 'pt_BR').format(dueDate)}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -433,6 +441,19 @@ class _LoanDueRow extends StatelessWidget {
       ],
     );
   }
+}
+
+DateTime _nextDateForDay(int day) {
+  final now = DateTime.now();
+  DateTime inMonth(int year, int month) {
+    final lastDay = DateUtils.getDaysInMonth(year, month);
+    return DateTime(year, month, day.clamp(1, lastDay));
+  }
+
+  final current = inMonth(now.year, now.month);
+  if (!current.isBefore(DateTime(now.year, now.month, now.day))) return current;
+  final nextMonth = DateTime(now.year, now.month + 1);
+  return inMonth(nextMonth.year, nextMonth.month);
 }
 
 class _ActivityTile extends StatelessWidget {

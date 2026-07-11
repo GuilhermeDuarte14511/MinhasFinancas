@@ -12,13 +12,23 @@ import '../../features/finance/presentation/add_card_page.dart';
 import '../../features/finance/presentation/add_loan_page.dart';
 import '../../features/finance/presentation/add_purchase_page.dart';
 import '../../features/finance/presentation/categories_page.dart';
+import '../../features/finance/presentation/card_detail_page.dart';
+import '../../features/finance/presentation/edit_card_page.dart';
+import '../../features/finance/presentation/help_page.dart';
 import '../../features/finance/presentation/invoice_detail_page.dart';
 import '../../features/finance/presentation/loans_page.dart';
+import '../../features/finance/presentation/loan_detail_page.dart';
+import '../../features/finance/presentation/loan_payment_page.dart';
 import '../../features/finance/presentation/members_page.dart';
 import '../../features/finance/presentation/notifications_page.dart';
+import '../../features/finance/presentation/offline_page.dart';
+import '../../features/finance/presentation/pending_invitations_page.dart';
 import '../../features/finance/presentation/payment_page.dart';
 import '../../features/finance/presentation/pwa_install_page.dart';
 import '../../features/finance/presentation/purchase_detail_page.dart';
+import '../../features/finance/presentation/profile_page.dart';
+import '../../features/finance/presentation/security_page.dart';
+import '../../features/finance/presentation/workspace_settings_page.dart';
 import '../../features/onboarding/presentation/create_space_page.dart';
 import '../../features/onboarding/presentation/entry_gate_page.dart';
 import '../../features/onboarding/presentation/invite_member_page.dart';
@@ -122,6 +132,20 @@ final appRouter = GoRouter(
           _animatedPage(state, const AddCardPage()),
     ),
     GoRoute(
+      path: '/card/:cardId',
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        CardDetailPage(cardId: state.pathParameters['cardId']!),
+      ),
+    ),
+    GoRoute(
+      path: '/card/:cardId/edit',
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        EditCardPage(cardId: state.pathParameters['cardId']!),
+      ),
+    ),
+    GoRoute(
       path: '/new-loan',
       pageBuilder: (context, state) =>
           _animatedPage(state, const AddLoanPage()),
@@ -155,6 +179,20 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => _animatedPage(state, const LoansPage()),
     ),
     GoRoute(
+      path: '/loans/:loanId',
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        LoanDetailPage(loanId: state.pathParameters['loanId']!),
+      ),
+    ),
+    GoRoute(
+      path: '/loans/:loanId/payment',
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        LoanPaymentPage(loanId: state.pathParameters['loanId']!),
+      ),
+    ),
+    GoRoute(
       path: '/categories',
       pageBuilder: (context, state) =>
           _animatedPage(state, const CategoriesPage()),
@@ -165,6 +203,16 @@ final appRouter = GoRouter(
           _animatedPage(state, const MembersPage()),
     ),
     GoRoute(
+      path: '/workspace-settings',
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const WorkspaceSettingsPage()),
+    ),
+    GoRoute(
+      path: '/pending-invitations',
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const PendingInvitationsPage()),
+    ),
+    GoRoute(
       path: '/notifications',
       pageBuilder: (context, state) =>
           _animatedPage(state, const NotificationsPage()),
@@ -173,6 +221,25 @@ final appRouter = GoRouter(
       path: '/install',
       pageBuilder: (context, state) =>
           _animatedPage(state, const PwaInstallPage()),
+    ),
+    GoRoute(
+      path: '/profile',
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const ProfilePage()),
+    ),
+    GoRoute(
+      path: '/security',
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const SecurityPage()),
+    ),
+    GoRoute(
+      path: '/help',
+      pageBuilder: (context, state) => _animatedPage(state, const HelpPage()),
+    ),
+    GoRoute(
+      path: '/offline',
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const OfflinePage()),
     ),
   ],
   navigatorKey: _rootNavigatorKey,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -41,11 +42,30 @@ class MorePage extends ConsumerWidget {
         subtitle: 'Configure seus alertas',
         route: '/notifications',
       ),
+      if (kIsWeb)
+        const _MenuItem(
+          icon: Icons.install_mobile_outlined,
+          title: 'Instalar aplicativo',
+          subtitle: 'Adicione à tela inicial',
+          route: '/install',
+        ),
       const _MenuItem(
-        icon: Icons.install_mobile_outlined,
-        title: 'Instalar aplicativo',
-        subtitle: 'Adicione à tela inicial',
-        route: '/install',
+        icon: Icons.person_outline_rounded,
+        title: 'Perfil',
+        subtitle: 'Seus dados e identidade no espaço',
+        route: '/profile',
+      ),
+      const _MenuItem(
+        icon: Icons.security_outlined,
+        title: 'Segurança',
+        subtitle: 'Senha, provedores e sessão',
+        route: '/security',
+      ),
+      const _MenuItem(
+        icon: Icons.help_outline_rounded,
+        title: 'Ajuda',
+        subtitle: 'Dúvidas frequentes e suporte',
+        route: '/help',
       ),
     ];
     return SingleChildScrollView(

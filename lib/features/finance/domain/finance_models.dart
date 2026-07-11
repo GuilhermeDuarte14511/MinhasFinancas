@@ -4,6 +4,51 @@ enum InvoiceStatus { open, closed, partiallyPaid, paid, overdue, cancelled }
 
 enum MembershipRole { owner, editor, viewer }
 
+enum MembershipStatus { invited, active, suspended, removed }
+
+enum InstallmentStatus { planned, open, paid, cancelled }
+
+enum LoanInstallmentStatus {
+  planned,
+  open,
+  partiallyPaid,
+  paid,
+  overdue,
+  cancelled,
+}
+
+final class MemberRecord {
+  const MemberRecord({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.role,
+    required this.status,
+    required this.isCurrentUser,
+  });
+
+  final String id;
+  final String name;
+  final String email;
+  final MembershipRole role;
+  final MembershipStatus status;
+  final bool isCurrentUser;
+}
+
+final class InvitationRecord {
+  const InvitationRecord({
+    required this.id,
+    required this.email,
+    required this.role,
+    required this.expiresAt,
+  });
+
+  final String id;
+  final String email;
+  final MembershipRole role;
+  final DateTime expiresAt;
+}
+
 final class CreditCardAccount {
   const CreditCardAccount({
     required this.id,
@@ -64,6 +109,28 @@ final class PurchaseRecord {
   final String createdBy;
 }
 
+final class PurchaseInstallmentRecord {
+  const PurchaseInstallmentRecord({
+    required this.id,
+    required this.purchaseId,
+    required this.invoiceId,
+    required this.number,
+    required this.count,
+    required this.amount,
+    required this.dueDate,
+    required this.status,
+  });
+
+  final String id;
+  final String purchaseId;
+  final String invoiceId;
+  final int number;
+  final int count;
+  final Money amount;
+  final DateTime dueDate;
+  final InstallmentStatus status;
+}
+
 final class InvoiceSummary {
   const InvoiceSummary({
     required this.id,
@@ -122,6 +189,70 @@ final class LoanContract {
   final int paidInstallments;
   final int installmentCount;
   final int dueDay;
+}
+
+final class LoanInstallmentRecord {
+  const LoanInstallmentRecord({
+    required this.id,
+    required this.loanId,
+    required this.number,
+    required this.dueDate,
+    required this.total,
+    required this.paid,
+    required this.status,
+  });
+
+  final String id;
+  final String loanId;
+  final int number;
+  final DateTime dueDate;
+  final Money total;
+  final Money paid;
+  final LoanInstallmentStatus status;
+
+  Money get pending => total - paid;
+}
+
+final class NotificationSettings {
+  const NotificationSettings({
+    required this.enabled,
+    required this.pushEnabled,
+    required this.inAppEnabled,
+    required this.preferredTime,
+    required this.invoiceClosing,
+    required this.invoiceDue,
+    required this.loanDue,
+    required this.daysBefore,
+  });
+
+  final bool enabled;
+  final bool pushEnabled;
+  final bool inAppEnabled;
+  final String preferredTime;
+  final bool invoiceClosing;
+  final bool invoiceDue;
+  final bool loanDue;
+  final int daysBefore;
+
+  NotificationSettings copyWith({
+    bool? enabled,
+    bool? pushEnabled,
+    bool? inAppEnabled,
+    String? preferredTime,
+    bool? invoiceClosing,
+    bool? invoiceDue,
+    bool? loanDue,
+    int? daysBefore,
+  }) => NotificationSettings(
+    enabled: enabled ?? this.enabled,
+    pushEnabled: pushEnabled ?? this.pushEnabled,
+    inAppEnabled: inAppEnabled ?? this.inAppEnabled,
+    preferredTime: preferredTime ?? this.preferredTime,
+    invoiceClosing: invoiceClosing ?? this.invoiceClosing,
+    invoiceDue: invoiceDue ?? this.invoiceDue,
+    loanDue: loanDue ?? this.loanDue,
+    daysBefore: daysBefore ?? this.daysBefore,
+  );
 }
 
 final class DueItem {

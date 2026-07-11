@@ -10,7 +10,8 @@ class CategoriesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(financeControllerProvider).categories;
+    final finance = ref.watch(financeControllerProvider);
+    final categories = finance.categories;
     return Scaffold(
       appBar: const BrandAppBar(title: 'Categorias', showBack: true),
       body: SafeArea(
@@ -46,14 +47,35 @@ class CategoriesPage extends ConsumerWidget {
                         ),
                       ),
                       title: Text(categories[index]),
-                      trailing: const Icon(Icons.drag_handle_rounded),
+                      trailing: finance.canEdit
+                          ? PopupMenuButton<String>(
+                              onSelected: (action) => _manageCategory(
+                                context,
+                                ref,
+                                categories[index],
+                                action,
+                              ),
+                              itemBuilder: (_) => const [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text('Editar'),
+                                ),
+                                PopupMenuItem(
+                                  value: 'archive',
+                                  child: Text('Arquivar'),
+                                ),
+                              ],
+                            )
+                          : const Icon(Icons.lock_outline_rounded),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 18),
               FilledButton.icon(
-                onPressed: () => _showAddCategory(context, ref),
+                onPressed: finance.canEdit
+                    ? () => _showAddCategory(context, ref)
+                    : null,
                 icon: const Icon(Icons.add_rounded),
                 label: const Text('Nova categoria'),
               ),
@@ -62,6 +84,68 @@ class CategoriesPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _manageCategory(
+    BuildContext context,
+    WidgetRef ref,
+    String category,
+    String action,
+  ) async {
+    final finance = ref.read(financeControllerProvider);
+    final id = finance.categoryIdsByName[category];
+    if (id == null) return;
+    try {
+      if (action == 'archive') {
+        await ref.read(financeControllerProvider.notifier).archiveCategory(id);
+        if (context.mounted) {
+          showSuccessMessage(context, 'Categoria arquivada.');
+        }
+        return;
+      }
+      final controller = TextEditingController(text: category);
+      final name = await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Editar categoria'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(labelText: 'Nome'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, controller.text.trim()),
+              child: const Text('Salvar'),
+            ),
+          ],
+        ),
+      );
+      controller.dispose();
+      if (name != null && name.length >= 2) {
+        await ref
+            .read(financeControllerProvider.notifier)
+            .updateCategory(id, name);
+        if (context.mounted) {
+          showSuccessMessage(context, 'Categoria atualizada.');
+        }
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ref.read(financeControllerProvider).errorMessage ??
+                  'Não foi possível alterar a categoria.',
+            ),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _showAddCategory(BuildContext context, WidgetRef ref) async {

@@ -21,6 +21,7 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
   Money _limit = const Money.zero();
   int _closingDay = 10;
   int _dueDay = 17;
+  int _colorValue = 0xFF3525CD;
   bool _saving = false;
 
   Future<void> _save() async {
@@ -35,6 +36,7 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
             limit: _limit,
             closingDay: _closingDay,
             dueDay: _dueDay,
+            colorValue: _colorValue,
           );
       if (!mounted) return;
       showSuccessMessage(context, 'Cartão adicionado com segurança.');
@@ -152,6 +154,31 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
                           onChanged: (value) => _dueDay = value ?? 17,
                         ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Cor do cartão',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 12,
+                    children: [
+                      for (final color in const [
+                        0xFF3525CD,
+                        0xFF006A63,
+                        0xFF3D37A9,
+                        0xFF8C1D40,
+                        0xFF4B6267,
+                      ])
+                        ChoiceChip(
+                          label: const SizedBox(width: 24, height: 24),
+                          avatar: CircleAvatar(backgroundColor: Color(color)),
+                          selected: _colorValue == color,
+                          onSelected: (_) =>
+                              setState(() => _colorValue = color),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 26),
