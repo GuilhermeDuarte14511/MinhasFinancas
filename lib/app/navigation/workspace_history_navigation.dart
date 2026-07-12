@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum WorkspaceHistoryDestination { movements, activities }
+enum WorkspaceHistoryDestination { movements, activities, commitments }
 
 typedef WorkspaceHistoryPageBuilder =
     Widget Function(WorkspaceHistoryDestination destination);
