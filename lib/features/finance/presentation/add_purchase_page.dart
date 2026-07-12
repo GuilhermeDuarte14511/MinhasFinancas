@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../app/widgets/app_widgets.dart';
 import '../../../core/money/money.dart';
+import '../../billing/domain/card_invoice_cycle.dart';
 import '../../billing/domain/installment_schedule.dart';
 import '../application/finance_controller.dart';
 
@@ -133,12 +134,17 @@ class _AddPurchasePageState extends ConsumerState<AddPurchasePage> {
     _cardId ??= finance.cards.first.id;
     _category ??= finance.categories.first;
     final selectedCard = finance.cards.firstWhere((card) => card.id == _cardId);
+    final firstCycle = const CardInvoiceCycleCalculator().calculate(
+      purchaseDate: _date,
+      closingDay: selectedCard.closingDay,
+      dueDay: selectedCard.dueDay,
+    );
     final preview = _amount.cents <= 0
         ? null
         : const InstallmentScheduleGenerator().generate(
             total: _amount,
             count: _installmentCount,
-            firstReferenceMonth: DateTime(_date.year, _date.month + 1),
+            firstReferenceMonth: firstCycle.referenceMonth,
           );
     return Scaffold(
       appBar: BrandAppBar(
