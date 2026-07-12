@@ -7,6 +7,7 @@ import 'app/navigation/workspace_history_navigation.dart';
 import 'app/nossa_grana_app.dart';
 import 'features/finance/application/finance_controller.dart';
 import 'features/finance/infrastructure/sql_connect_finance_repository.dart';
+import 'features/finance/presentation/commitments_page.dart';
 import 'features/finance/presentation/workspace_history_page.dart';
 import 'firebase_options.dart';
 
@@ -16,9 +17,10 @@ Future<void> main() async {
   await initializeDateFormatting('pt_BR');
 
   registerWorkspaceHistoryPageBuilder(
-    (destination) => WorkspaceHistoryPage(
-      initialSection: destination,
-    ),
+    (destination) => switch (destination) {
+      WorkspaceHistoryDestination.commitments => const CommitmentsPage(),
+      _ => WorkspaceHistoryPage(initialSection: destination),
+    },
   );
 
   runApp(
