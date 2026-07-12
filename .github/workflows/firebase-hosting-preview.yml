@@ -1,0 +1,60 @@
+name: Preview Firebase Hosting
+
+on:
+  pull_request:
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: firebase-hosting-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_preview:
+    name: Build Flutter Web e criar preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar credencial do Firebase
+        id: firebase_credentials
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC }}
+        run: |
+          if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::O secret FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC ainda não foi configurado. O preview foi ignorado sem falhar o workflow."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configurar Flutter
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Instalar dependências
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: flutter pub get
+
+      - name: Gerar Flutter Web
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: flutter build web --release
+
+      - name: Publicar canal de preview
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC }}
+          projectId: minhasfinancasofc
+          expires: 7d
