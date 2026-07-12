@@ -19,20 +19,21 @@ final class SqlConnectLoanScheduleService {
       firstDueDate: firstDueDate,
     );
     final client = sql.ClientConnector.instance;
-    final builder = client.createLoan(
-      spaceId: spaceId,
-      name: description.trim(),
-      principalAmountCents: BigInt.from(amount.cents),
-      monthlyInterestRateMicros: BigInt.zero,
-      amortizationMethod: sql.LoanAmortizationMethod.MANUAL,
-      installmentCount: installmentCount,
-      firstDueDate: installments.first.dueDate,
-    )
-      ..lender(lender.trim())
-      ..contractedAt(DateTime.now())
-      ..expectedInstallmentAmountCents(
-        BigInt.from(installments.first.amount.cents),
-      );
+    final builder =
+        client.createLoan(
+            spaceId: spaceId,
+            name: description.trim(),
+            principalAmountCents: BigInt.from(amount.cents),
+            monthlyInterestRateMicros: BigInt.zero,
+            amortizationMethod: sql.LoanAmortizationMethod.MANUAL,
+            installmentCount: installmentCount,
+            firstDueDate: installments.first.dueDate,
+          )
+          ..lender(lender.trim())
+          ..contractedAt(DateTime.now())
+          ..expectedInstallmentAmountCents(
+            BigInt.from(installments.first.amount.cents),
+          );
 
     final result = await builder.execute();
     final loanId = result.data.loan.id;
