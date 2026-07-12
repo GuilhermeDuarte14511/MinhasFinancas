@@ -12,9 +12,14 @@ import 'cash_flow_action_dialogs.dart';
 import 'cash_flow_labels.dart';
 
 class CashFlowEntryDetailPage extends ConsumerStatefulWidget {
-  const CashFlowEntryDetailPage({required this.entryId, super.key});
+  const CashFlowEntryDetailPage({
+    required this.entryId,
+    this.initialEntry,
+    super.key,
+  });
 
   final String entryId;
+  final CashFlowEntry? initialEntry;
 
   @override
   ConsumerState<CashFlowEntryDetailPage> createState() =>
@@ -23,10 +28,10 @@ class CashFlowEntryDetailPage extends ConsumerStatefulWidget {
 
 class _CashFlowEntryDetailPageState
     extends ConsumerState<CashFlowEntryDetailPage> {
-  var _isSaving = false;
+  var _saving = false;
 
   Future<void> _confirm(CashFlowEntry entry) async {
-    setState(() => _isSaving = true);
+    setState(() => _saving = true);
     try {
       await ref
           .read(financeControllerProvider.notifier)
@@ -40,18 +45,17 @@ class _CashFlowEntryDetailPageState
     } catch (_) {
       if (mounted) await _showError('Não foi possível atualizar o status.');
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) setState(() => _saving = false);
     }
   }
 
   Future<void> _edit(CashFlowEntry entry, List<String> categories) async {
-    final values = await showModalBottomSheet<_CashFlowEditValues>(
+    final values = await showModalBottomSheet<_EditValues>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       useSafeArea: true,
-      builder: (context) =>
-          _EditCashFlowSheet(entry: entry, categories: categories),
+      builder: (_) => _EditSheet(entry: entry, categories: categories),
     );
     if (values == null || !mounted) return;
 
@@ -65,27 +69,25 @@ class _CashFlowEntryDetailPageState
       scope = selected;
     }
 
-    setState(() => _isSaving = true);
+    setState(() => _saving = true);
     try {
-      await ref
-          .read(financeControllerProvider.notifier)
-          .updateCashFlowEntry(
-            entryId: entry.id,
-            description: values.description,
-            amount: values.amount,
-            occurredAt: values.occurredAt,
-            kind: values.kind,
-            paymentMethod: values.paymentMethod,
-            category: values.category,
-            notes: values.notes,
-            status: values.status,
-            scope: scope,
-          );
+      await ref.read(financeControllerProvider.notifier).updateCashFlowEntry(
+        entryId: entry.id,
+        description: values.description,
+        amount: values.amount,
+        occurredAt: values.occurredAt,
+        kind: values.kind,
+        paymentMethod: values.paymentMethod,
+        category: values.category,
+        notes: values.notes,
+        status: values.status,
+        scope: scope,
+      );
       if (mounted) showSuccessMessage(context, 'Lançamento atualizado.');
     } catch (_) {
       if (mounted) await _showError('Não foi possível editar o lançamento.');
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -99,9 +101,10 @@ class _CashFlowEntryDetailPageState
       if (selected == null || !mounted) return;
       scope = selected;
     }
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: const Text('Excluir lançamento?'),
         content: Text(
           entry.recurrenceSeriesId == null
@@ -123,7 +126,7 @@ class _CashFlowEntryDetailPageState
     );
     if (confirmed != true || !mounted) return;
 
-    setState(() => _isSaving = true);
+    setState(() => _saving = true);
     try {
       await ref
           .read(financeControllerProvider.notifier)
@@ -134,13 +137,13 @@ class _CashFlowEntryDetailPageState
     } catch (_) {
       if (mounted) await _showError('Não foi possível excluir o lançamento.');
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) setState(() => _saving = false);
     }
   }
 
   Future<void> _showError(String fallback) => showDialog<void>(
     context: context,
-    builder: (context) => AlertDialog(
+    builder: (_) => AlertDialog(
       title: const Text('Não foi possível concluir'),
       content: SelectableText(
         ref.read(financeControllerProvider).errorMessage ?? fallback,
@@ -157,7 +160,8 @@ class _CashFlowEntryDetailPageState
   @override
   Widget build(BuildContext context) {
     final finance = ref.watch(financeControllerProvider);
-    final entry = _findEntry(finance.cashFlowEntries, widget.entryId);
+    final stateEntry = _findEntry(finance.cashFlowEntries, widget.entryId);
+    final entry = stateEntry ?? widget.initialEntry;
     if (entry == null) {
       return const Scaffold(
         appBar: BrandAppBar(title: 'Lançamento', showBack: true),
@@ -165,16 +169,18 @@ class _CashFlowEntryDetailPageState
       );
     }
 
+    final canManage = finance.canEdit && stateEntry != null;
     final accent = entry.isIncome ? AppColors.secondary : AppColors.primary;
-    final statusColor = _statusColor(entry.status);
     return Scaffold(
       appBar: BrandAppBar(
         title: entry.isIncome ? 'Detalhes da entrada' : 'Detalhes da despesa',
         showBack: true,
         actions: [
           IconButton(
-            tooltip: 'Editar lançamento',
-            onPressed: finance.canEdit && !_isSaving
+            tooltip: canManage
+                ? 'Editar lançamento'
+                : 'Atualize os dados para editar',
+            onPressed: canManage && !_saving
                 ? () => _edit(entry, finance.categories)
                 : null,
             icon: const Icon(Icons.edit_outlined),
@@ -193,15 +199,15 @@ class _CashFlowEntryDetailPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _EntrySummary(entry: entry, accent: accent),
+                    _Summary(entry: entry, accent: accent),
                     const SizedBox(height: 20),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
                         StatusPill(
-                          label: _entryStatusLabel(entry),
-                          color: statusColor,
+                          label: _statusLabel(entry),
+                          color: _statusColor(entry.status),
                         ),
                         StatusPill(
                           label: cashFlowKindLabel(entry.kind),
@@ -215,16 +221,31 @@ class _CashFlowEntryDetailPageState
                       ],
                     ),
                     const SizedBox(height: 24),
-                    _EntryInformation(entry: entry),
+                    _Information(entry: entry),
                     if ((entry.notes ?? '').trim().isNotEmpty) ...[
                       const SizedBox(height: 20),
-                      _NotesCard(notes: entry.notes!.trim()),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Observação',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              SelectableText(entry.notes!.trim()),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                    if (finance.canEdit) ...[
+                    if (canManage) ...[
                       const SizedBox(height: 28),
-                      if (entry.status == CashFlowStatus.scheduled)
+                      if (entry.status == CashFlowStatus.scheduled) ...[
                         FilledButton.icon(
-                          onPressed: _isSaving ? null : () => _confirm(entry),
+                          onPressed: _saving ? null : () => _confirm(entry),
                           icon: const Icon(Icons.check_circle_outline_rounded),
                           label: Text(
                             entry.isIncome
@@ -232,10 +253,10 @@ class _CashFlowEntryDetailPageState
                                 : 'Confirmar pagamento',
                           ),
                         ),
-                      if (entry.status == CashFlowStatus.scheduled)
                         const SizedBox(height: 12),
+                      ],
                       OutlinedButton.icon(
-                        onPressed: _isSaving
+                        onPressed: _saving
                             ? null
                             : () => _edit(entry, finance.categories),
                         icon: const Icon(Icons.edit_outlined),
@@ -247,7 +268,7 @@ class _CashFlowEntryDetailPageState
                           backgroundColor: const Color(0xFFFFDAD6),
                           foregroundColor: const Color(0xFF93000A),
                         ),
-                        onPressed: _isSaving ? null : () => _delete(entry),
+                        onPressed: _saving ? null : () => _delete(entry),
                         icon: const Icon(Icons.delete_outline_rounded),
                         label: const Text('Excluir lançamento'),
                       ),
@@ -264,8 +285,8 @@ class _CashFlowEntryDetailPageState
   }
 }
 
-class _EntrySummary extends StatelessWidget {
-  const _EntrySummary({required this.entry, required this.accent});
+class _Summary extends StatelessWidget {
+  const _Summary({required this.entry, required this.accent});
 
   final CashFlowEntry entry;
   final Color accent;
@@ -292,9 +313,10 @@ class _EntrySummary extends StatelessWidget {
           FittedBox(
             child: Text(
               entry.amount.format(),
-              style: Theme.of(
-                context,
-              ).textTheme.displaySmall?.copyWith(color: accent),
+              style: Theme.of(context)
+                  .textTheme
+                  .displaySmall
+                  ?.copyWith(color: accent),
             ),
           ),
         ],
@@ -303,8 +325,8 @@ class _EntrySummary extends StatelessWidget {
   );
 }
 
-class _EntryInformation extends StatelessWidget {
-  const _EntryInformation({required this.entry});
+class _Information extends StatelessWidget {
+  const _Information({required this.entry});
 
   final CashFlowEntry entry;
 
@@ -314,31 +336,37 @@ class _EntryInformation extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: Column(
         children: [
-          _InformationRow(
+          _InfoRow(
             icon: Icons.calendar_today_outlined,
             label: 'Data',
-            value: DateFormat(
-              "d 'de' MMMM 'de' y",
-              'pt_BR',
-            ).format(entry.occurredAt),
+            value: DateFormat("d 'de' MMMM 'de' y", 'pt_BR')
+                .format(entry.occurredAt),
           ),
           const Divider(height: 1),
-          _InformationRow(
+          _InfoRow(
             icon: Icons.account_balance_wallet_outlined,
             label: 'Forma de movimentação',
             value: cashFlowPaymentMethodLabel(entry.paymentMethod),
           ),
           if (entry.categoryName != null) ...[
             const Divider(height: 1),
-            _InformationRow(
+            _InfoRow(
               icon: Icons.category_outlined,
               label: 'Categoria',
               value: entry.categoryName!,
             ),
           ],
+          const Divider(height: 1),
+          _InfoRow(
+            icon: Icons.person_outline_rounded,
+            label: 'Criado por',
+            value: entry.createdBy.trim().isEmpty
+                ? 'Usuário do espaço'
+                : entry.createdBy,
+          ),
           if (entry.recurrenceSeriesId != null) ...[
             const Divider(height: 1),
-            _InformationRow(
+            _InfoRow(
               icon: Icons.repeat_rounded,
               label: 'Ocorrência',
               value: entry.occurrenceIndex == null
@@ -352,8 +380,8 @@ class _EntryInformation extends StatelessWidget {
   );
 }
 
-class _InformationRow extends StatelessWidget {
-  const _InformationRow({
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
     required this.icon,
     required this.label,
     required this.value,
@@ -386,93 +414,70 @@ class _InformationRow extends StatelessWidget {
   );
 }
 
-class _NotesCard extends StatelessWidget {
-  const _NotesCard({required this.notes});
-
-  final String notes;
-
-  @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Observação', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          SelectableText(notes),
-        ],
-      ),
-    ),
-  );
-}
-
-class _EditCashFlowSheet extends StatefulWidget {
-  const _EditCashFlowSheet({required this.entry, required this.categories});
+class _EditSheet extends StatefulWidget {
+  const _EditSheet({required this.entry, required this.categories});
 
   final CashFlowEntry entry;
   final List<String> categories;
 
   @override
-  State<_EditCashFlowSheet> createState() => _EditCashFlowSheetState();
+  State<_EditSheet> createState() => _EditSheetState();
 }
 
-class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
+class _EditSheetState extends State<_EditSheet> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _notesController;
+  late final TextEditingController _description;
+  late final TextEditingController _notes;
   late Money _amount;
-  late DateTime _occurredAt;
+  late DateTime _date;
   late CashFlowKind _kind;
-  late CashFlowPaymentMethod _paymentMethod;
+  late CashFlowPaymentMethod _method;
   late CashFlowStatus _status;
   String? _category;
 
   @override
   void initState() {
     super.initState();
-    _descriptionController = TextEditingController(
-      text: widget.entry.description,
-    );
-    _notesController = TextEditingController(text: widget.entry.notes);
+    _description = TextEditingController(text: widget.entry.description);
+    _notes = TextEditingController(text: widget.entry.notes);
     _amount = widget.entry.amount;
-    _occurredAt = widget.entry.occurredAt;
+    _date = widget.entry.occurredAt;
     _kind = widget.entry.kind;
-    _paymentMethod = widget.entry.paymentMethod;
+    _method = widget.entry.paymentMethod;
     _status = widget.entry.status;
     _category = widget.entry.categoryName;
   }
 
   @override
   void dispose() {
-    _descriptionController.dispose();
-    _notesController.dispose();
+    _description.dispose();
+    _notes.dispose();
     super.dispose();
   }
 
-  Future<void> _selectDate() async {
-    final date = await showDatePicker(
+  Future<void> _pickDate() async {
+    final value = await showDatePicker(
       context: context,
-      initialDate: _occurredAt,
+      initialDate: _date,
       firstDate: DateTime(2000),
       lastDate: DateTime(9999, 12, 31),
       locale: const Locale('pt', 'BR'),
     );
-    if (date != null) setState(() => _occurredAt = date);
+    if (value != null) setState(() => _date = value);
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     Navigator.pop(
       context,
-      _CashFlowEditValues(
-        description: _descriptionController.text.trim(),
+      _EditValues(
+        description: _description.text.trim(),
         amount: _amount,
-        occurredAt: _occurredAt,
+        occurredAt: _date,
         kind: _kind,
-        paymentMethod: _paymentMethod,
+        paymentMethod: _method,
         category: _category,
-        notes: _notesController.text.trim(),
+        notes: _notes.text.trim(),
         status: _status,
       ),
     );
@@ -480,19 +485,21 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final availableKinds = cashFlowKindsFor(widget.entry.direction).toList();
-    if (!availableKinds.contains(widget.entry.kind)) {
-      availableKinds.add(widget.entry.kind);
-    }
-    final availableCategories = widget.categories.toList();
-    if (_category != null && !availableCategories.contains(_category)) {
-      availableCategories.add(_category!);
+    final kinds = cashFlowKindsFor(widget.entry.direction).toList();
+    if (!kinds.contains(_kind)) kinds.add(_kind);
+    final categories = widget.categories.toList();
+    if (_category != null && !categories.contains(_category)) {
+      categories.add(_category!);
     }
     return SizedBox(
       height: MediaQuery.sizeOf(context).height * .9,
       child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20, 4, 20, 24 + bottomInset),
+        padding: EdgeInsets.fromLTRB(
+          20,
+          4,
+          20,
+          24 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
         child: Form(
           key: _formKey,
           child: Column(
@@ -510,7 +517,7 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
               ),
               const SizedBox(height: 14),
               TextFormField(
-                controller: _descriptionController,
+                controller: _description,
                 decoration: const InputDecoration(labelText: 'Descrição'),
                 validator: (value) => (value?.trim().length ?? 0) >= 3
                     ? null
@@ -522,7 +529,7 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Tipo'),
                 items: [
-                  for (final kind in availableKinds)
+                  for (final kind in kinds)
                     DropdownMenuItem(
                       value: kind,
                       child: Text(cashFlowKindLabel(kind)),
@@ -539,43 +546,40 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
                   isExpanded: true,
                   decoration: const InputDecoration(labelText: 'Categoria'),
                   items: [
-                    for (final category in availableCategories)
-                      DropdownMenuItem(value: category, child: Text(category)),
+                    for (final value in categories)
+                      DropdownMenuItem(value: value, child: Text(value)),
                   ],
                   validator: (value) =>
                       value == null ? 'Selecione uma categoria.' : null,
-                  onChanged: (value) => _category = value,
+                  onChanged: (value) => setState(() => _category = value),
                 ),
               ],
               const SizedBox(height: 14),
               DropdownButtonFormField<CashFlowPaymentMethod>(
-                initialValue: _paymentMethod,
+                initialValue: _method,
                 isExpanded: true,
                 decoration: const InputDecoration(
                   labelText: 'Forma de movimentação',
                 ),
                 items: [
-                  for (final method in CashFlowPaymentMethod.values)
+                  for (final value in CashFlowPaymentMethod.values)
                     DropdownMenuItem(
-                      value: method,
-                      child: Text(cashFlowPaymentMethodLabel(method)),
+                      value: value,
+                      child: Text(cashFlowPaymentMethodLabel(value)),
                     ),
                 ],
                 onChanged: (value) {
-                  if (value != null) _paymentMethod = value;
+                  if (value != null) setState(() => _method = value);
                 },
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<CashFlowStatus>(
                 initialValue: _status,
-                isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Status'),
                 items: [
                   DropdownMenuItem(
                     value: CashFlowStatus.scheduled,
-                    child: Text(
-                      widget.entry.isIncome ? 'Prevista' : 'Pendente',
-                    ),
+                    child: Text(widget.entry.isIncome ? 'Prevista' : 'Pendente'),
                   ),
                   DropdownMenuItem(
                     value: CashFlowStatus.confirmed,
@@ -588,29 +592,22 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
               ),
               const SizedBox(height: 14),
               InkWell(
-                onTap: _selectDate,
-                borderRadius: BorderRadius.circular(12),
+                onTap: _pickDate,
                 child: InputDecorator(
                   decoration: const InputDecoration(
                     labelText: 'Data',
                     prefixIcon: Icon(Icons.calendar_today_outlined),
-                    suffixIcon: Icon(Icons.expand_more_rounded),
                   ),
-                  child: Text(DateFormat('dd/MM/yyyy').format(_occurredAt)),
+                  child: Text(DateFormat('dd/MM/yyyy').format(_date)),
                 ),
-              ),
-              const DropdownMenuItem(
-                value: CashFlowStatus.cancelled,
-                child: Text('Cancelada'),
               ),
               const SizedBox(height: 14),
               TextFormField(
-                controller: _notesController,
+                controller: _notes,
                 maxLines: 3,
                 maxLength: 500,
                 decoration: const InputDecoration(
                   labelText: 'Observação (opcional)',
-                  alignLabelWithHint: true,
                 ),
               ),
               const SizedBox(height: 20),
@@ -627,8 +624,8 @@ class _EditCashFlowSheetState extends State<_EditCashFlowSheet> {
   }
 }
 
-final class _CashFlowEditValues {
-  const _CashFlowEditValues({
+final class _EditValues {
+  const _EditValues({
     required this.description,
     required this.amount,
     required this.occurredAt,
@@ -656,7 +653,7 @@ CashFlowEntry? _findEntry(List<CashFlowEntry> entries, String id) {
   return null;
 }
 
-String _entryStatusLabel(CashFlowEntry entry) => switch (entry.status) {
+String _statusLabel(CashFlowEntry entry) => switch (entry.status) {
   CashFlowStatus.scheduled => entry.isIncome ? 'Prevista' : 'Pendente',
   CashFlowStatus.confirmed => entry.isIncome ? 'Recebida' : 'Paga',
   CashFlowStatus.cancelled => 'Cancelada',
