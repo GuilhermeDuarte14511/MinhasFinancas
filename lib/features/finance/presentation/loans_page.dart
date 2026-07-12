@@ -80,10 +80,12 @@ class LoansPage extends ConsumerWidget {
                   ),
                 )
               else
-                for (final loan in finance.loans) ...[
-                  _LoanCard(loan: loan),
-                  const SizedBox(height: 14),
+                for (var index = 0; index < finance.loans.length; index++) ...[
+                  _LoanCard(loan: finance.loans[index]),
+                  if (index < finance.loans.length - 1)
+                    const SizedBox(height: 14),
                 ],
+              const SizedBox(height: 20),
               OutlinedButton.icon(
                 onPressed: finance.canEdit
                     ? () => context.push('/new-loan')
