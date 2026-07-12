@@ -1,0 +1,24 @@
+name: Format agent files
+
+on:
+  push:
+    branches: [agent/loan-footer-agenda-navigation]
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: dart format lib/features/dashboard/presentation/app_shell.dart lib/features/finance/domain/loan_agenda_entry.dart lib/features/finance/presentation/agenda_page.dart lib/features/finance/presentation/loans_page.dart test/features/finance/loan_agenda_entry_test.dart
+      - run: tar -czf formatted-dart-files.tar.gz lib/features/dashboard/presentation/app_shell.dart lib/features/finance/domain/loan_agenda_entry.dart lib/features/finance/presentation/agenda_page.dart lib/features/finance/presentation/loans_page.dart test/features/finance/loan_agenda_entry_test.dart
+      - uses: actions/upload-artifact@v4
+        with:
+          name: formatted-dart-files
+          path: formatted-dart-files.tar.gz
