@@ -55,7 +55,9 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
       setState(() => _errorShakeTrigger++);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('O valor deve permitir pelo menos R\$ 0,01 por parcela.'),
+          content: Text(
+            'O valor deve permitir pelo menos R\$ 0,01 por parcela.',
+          ),
         ),
       );
       return;
@@ -94,9 +96,9 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
       context.go('/loans');
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_friendlyError(error))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_friendlyError(error))));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -112,8 +114,7 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final canPreview =
-        _amount.cents > 0 && _amount.cents >= _installmentCount;
+    final canPreview = _amount.cents > 0 && _amount.cents >= _installmentCount;
     final preview = canPreview
         ? _scheduleGenerator.generate(
             total: _amount,
@@ -298,7 +299,9 @@ class _LoanSchedulePreview extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  Text('Primeiro pagamento: ${dateFormat.format(first.dueDate)}'),
+                  Text(
+                    'Primeiro pagamento: ${dateFormat.format(first.dueDate)}',
+                  ),
                   const SizedBox(height: 4),
                   Text('Último pagamento: ${dateFormat.format(last.dueDate)}'),
                 ],
@@ -324,6 +327,7 @@ DateTime _defaultFirstPaymentDate() {
 
 String _friendlyError(Object error) {
   if (error is StateError) return error.message;
-  if (error is ArgumentError) return error.message?.toString() ?? error.toString();
+  if (error is ArgumentError)
+    return error.message?.toString() ?? error.toString();
   return 'Não foi possível salvar o empréstimo. Tente novamente.';
 }
