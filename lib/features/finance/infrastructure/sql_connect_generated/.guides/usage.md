@@ -1,6 +1,8 @@
 # Basic Usage
 
 ```dart
+ClientConnector.instance.ListWorkspaceCashFlowHistory(listWorkspaceCashFlowHistoryVariables).execute();
+ClientConnector.instance.ListWorkspaceActivityHistory(listWorkspaceActivityHistoryVariables).execute();
 ClientConnector.instance.GetMyProfile().execute();
 ClientConnector.instance.CreateMyProfile(createMyProfileVariables).execute();
 ClientConnector.instance.UpdateMyProfile(updateMyProfileVariables).execute();
@@ -9,8 +11,6 @@ ClientConnector.instance.GetWorkspaceSnapshot(getWorkspaceSnapshotVariables).exe
 ClientConnector.instance.GetCashFlowSummary(getCashFlowSummaryVariables).execute();
 ClientConnector.instance.GetAgendaEntries(getAgendaEntriesVariables).execute();
 ClientConnector.instance.CreateFinancialSpace(createFinancialSpaceVariables).execute();
-ClientConnector.instance.ListSpaceInvitations(listSpaceInvitationsVariables).execute();
-ClientConnector.instance.CreateSpaceInvitation(createSpaceInvitationVariables).execute();
 
 ```
 

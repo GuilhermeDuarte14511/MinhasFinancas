@@ -4,7 +4,7 @@ import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import '../../../core/money/money.dart';
 import '../domain/cash_flow.dart';
-import 'sql_connect_generated/client.dart';
+import 'sql_connect_generated/client.dart' hide CashFlowDirection, CashFlowKind, CashFlowPaymentMethod, CashFlowStatus;
 
 final class WorkspaceHistoryPage<T> {
   const WorkspaceHistoryPage({

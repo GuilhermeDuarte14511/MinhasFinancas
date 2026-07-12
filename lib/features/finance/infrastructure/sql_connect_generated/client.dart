@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
+part 'list_workspace_cash_flow_history.dart';
+
+part 'list_workspace_activity_history.dart';
+
 part 'get_my_profile.dart';
 
 part 'create_my_profile.dart';
@@ -867,6 +871,16 @@ class Unknown extends EnumValue<Never> {
 }
 
 class ClientConnector {
+  
+  
+  ListWorkspaceCashFlowHistoryVariablesBuilder listWorkspaceCashFlowHistory ({required String spaceId, required int limit, required int offset, }) {
+    return ListWorkspaceCashFlowHistoryVariablesBuilder(dataConnect, spaceId: spaceId,limit: limit,offset: offset,);
+  }
+  
+  
+  ListWorkspaceActivityHistoryVariablesBuilder listWorkspaceActivityHistory ({required String spaceId, required int limit, required int offset, }) {
+    return ListWorkspaceActivityHistoryVariablesBuilder(dataConnect, spaceId: spaceId,limit: limit,offset: offset,);
+  }
   
   
   GetMyProfileVariablesBuilder getMyProfile () {
