@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/money/money.dart';
+import '../navigation/workspace_history_navigation.dart';
 import '../theme/app_theme.dart';
 
 class AppContent extends StatelessWidget {
@@ -354,13 +355,30 @@ class SectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final historyDestination = switch (title) {
+      'Movimentações recentes' => WorkspaceHistoryDestination.movements,
+      'Atividades do espaço' => WorkspaceHistoryDestination.activities,
+      _ => null,
+    };
+    final resolvedActionLabel =
+        actionLabel ?? (historyDestination == null ? null : 'Ver mais');
+    final resolvedOnAction = onAction ??
+        (historyDestination == null
+            ? null
+            : () {
+                openWorkspaceHistory(context, historyDestination);
+              });
+
     return Row(
       children: [
         Expanded(
           child: Text(title, style: Theme.of(context).textTheme.titleLarge),
         ),
-        if (actionLabel != null)
-          TextButton(onPressed: onAction, child: Text(actionLabel!)),
+        if (resolvedActionLabel != null)
+          TextButton(
+            onPressed: resolvedOnAction,
+            child: Text(resolvedActionLabel),
+          ),
       ],
     );
   }
