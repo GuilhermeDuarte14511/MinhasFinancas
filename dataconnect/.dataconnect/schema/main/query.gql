@@ -19,6 +19,44 @@ extend type Query {
     first: AuditEvent_FirstRow
   ): AuditEvent @fdc_generated(from: "AuditEvent", purpose: QUERY_SINGLE)
   """
+  ✨ Look up a single `CashFlowEntry` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  cashFlowEntry(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowEntry_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowEntry_FirstRow
+  ): CashFlowEntry @fdc_generated(from: "CashFlowEntry", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `CashFlowRecurrenceSeries` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  cashFlowRecurrenceSeries(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowRecurrenceSeries_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowRecurrenceSeries_FirstRow
+  ): CashFlowRecurrenceSeries @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: QUERY_SINGLE)
+  """
   ✨ Look up a single `Category` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
   category(
@@ -375,6 +413,74 @@ extend type Query {
     """
     having: AuditEvent_Having
   ): [AuditEvent!]! @fdc_generated(from: "AuditEvent", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CashFlowEntry` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  cashFlowEntries(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  cashFlowRecurrenceSeriess(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Category` objects in the table and return selected fields, optionally filtered by `where` conditions
   """

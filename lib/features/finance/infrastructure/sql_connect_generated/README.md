@@ -152,6 +152,159 @@ ref.subscribe(...);
 ```
 
 
+### GetCashFlowSummary
+#### Required Arguments
+```dart
+String spaceId = ...;
+DateTime monthStart = ...;
+DateTime yearStart = ...;
+DateTime nextYearStart = ...;
+Timestamp monthStartedAt = ...;
+Timestamp nextMonthStartedAt = ...;
+Timestamp yearStartedAt = ...;
+Timestamp nextYearStartedAt = ...;
+ClientConnector.instance.getCashFlowSummary(
+  spaceId: spaceId,
+  monthStart: monthStart,
+  yearStart: yearStart,
+  nextYearStart: nextYearStart,
+  monthStartedAt: monthStartedAt,
+  nextMonthStartedAt: nextMonthStartedAt,
+  yearStartedAt: yearStartedAt,
+  nextYearStartedAt: nextYearStartedAt,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `QueryResult<GetCashFlowSummaryData, GetCashFlowSummaryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+/// Result of a query request. Created to hold extra variables in the future.
+class QueryResult<Data, Variables> extends OperationResult<Data, Variables> {
+  QueryResult(super.dataConnect, super.data, super.ref);
+}
+
+final result = await ClientConnector.instance.getCashFlowSummary(
+  spaceId: spaceId,
+  monthStart: monthStart,
+  yearStart: yearStart,
+  nextYearStart: nextYearStart,
+  monthStartedAt: monthStartedAt,
+  nextMonthStartedAt: nextMonthStartedAt,
+  yearStartedAt: yearStartedAt,
+  nextYearStartedAt: nextYearStartedAt,
+);
+GetCashFlowSummaryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+DateTime monthStart = ...;
+DateTime yearStart = ...;
+DateTime nextYearStart = ...;
+Timestamp monthStartedAt = ...;
+Timestamp nextMonthStartedAt = ...;
+Timestamp yearStartedAt = ...;
+Timestamp nextYearStartedAt = ...;
+
+final ref = ClientConnector.instance.getCashFlowSummary(
+  spaceId: spaceId,
+  monthStart: monthStart,
+  yearStart: yearStart,
+  nextYearStart: nextYearStart,
+  monthStartedAt: monthStartedAt,
+  nextMonthStartedAt: nextMonthStartedAt,
+  yearStartedAt: yearStartedAt,
+  nextYearStartedAt: nextYearStartedAt,
+).ref();
+ref.execute();
+
+ref.subscribe(...);
+```
+
+
+### GetAgendaEntries
+#### Required Arguments
+```dart
+String spaceId = ...;
+Timestamp rangeStart = ...;
+Timestamp rangeEnd = ...;
+DateTime rangeStartDate = ...;
+DateTime rangeEndDate = ...;
+ClientConnector.instance.getAgendaEntries(
+  spaceId: spaceId,
+  rangeStart: rangeStart,
+  rangeEnd: rangeEnd,
+  rangeStartDate: rangeStartDate,
+  rangeEndDate: rangeEndDate,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `QueryResult<GetAgendaEntriesData, GetAgendaEntriesVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+/// Result of a query request. Created to hold extra variables in the future.
+class QueryResult<Data, Variables> extends OperationResult<Data, Variables> {
+  QueryResult(super.dataConnect, super.data, super.ref);
+}
+
+final result = await ClientConnector.instance.getAgendaEntries(
+  spaceId: spaceId,
+  rangeStart: rangeStart,
+  rangeEnd: rangeEnd,
+  rangeStartDate: rangeStartDate,
+  rangeEndDate: rangeEndDate,
+);
+GetAgendaEntriesData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+Timestamp rangeStart = ...;
+Timestamp rangeEnd = ...;
+DateTime rangeStartDate = ...;
+DateTime rangeEndDate = ...;
+
+final ref = ClientConnector.instance.getAgendaEntries(
+  spaceId: spaceId,
+  rangeStart: rangeStart,
+  rangeEnd: rangeEnd,
+  rangeStartDate: rangeStartDate,
+  rangeEndDate: rangeEndDate,
+).ref();
+ref.execute();
+
+ref.subscribe(...);
+```
+
+
 ### ListSpaceInvitations
 #### Required Arguments
 ```dart
@@ -630,6 +783,1445 @@ final ref = ClientConnector.instance.createCategory(
   normalizedName: normalizedName,
   icon: icon,
   colorHex: colorHex,
+).ref();
+ref.execute();
+```
+
+
+### CreateIncomeEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateIncomeEntry, we created `CreateIncomeEntryBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateIncomeEntryVariablesBuilder {
+  ...
+   CreateIncomeEntryVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+)
+.notes(notes)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateIncomeEntryData, CreateIncomeEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+);
+CreateIncomeEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CreateScheduledIncomeEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createScheduledIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateScheduledIncomeEntry, we created `CreateScheduledIncomeEntryBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateScheduledIncomeEntryVariablesBuilder {
+  ...
+   CreateScheduledIncomeEntryVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  CreateScheduledIncomeEntryVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createScheduledIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+)
+.categoryId(categoryId)
+.notes(notes)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateScheduledIncomeEntryData, CreateScheduledIncomeEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createScheduledIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+);
+CreateScheduledIncomeEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createScheduledIncomeEntry(
+  spaceId: spaceId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CreateExpenseEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateExpenseEntry, we created `CreateExpenseEntryBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateExpenseEntryVariablesBuilder {
+  ...
+   CreateExpenseEntryVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+)
+.notes(notes)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateExpenseEntryData, CreateExpenseEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+);
+CreateExpenseEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CreatePlannedExpenseEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createPlannedExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreatePlannedExpenseEntry, we created `CreatePlannedExpenseEntryBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreatePlannedExpenseEntryVariablesBuilder {
+  ...
+   CreatePlannedExpenseEntryVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createPlannedExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+)
+.notes(notes)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreatePlannedExpenseEntryData, CreatePlannedExpenseEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createPlannedExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+);
+CreatePlannedExpenseEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String categoryId = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createPlannedExpenseEntry(
+  spaceId: spaceId,
+  categoryId: categoryId,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CreateCashFlowRecurrenceSeries
+#### Required Arguments
+```dart
+String spaceId = ...;
+CashFlowDirection direction = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+String description = ...;
+BigInt amountCents = ...;
+CashFlowRecurrenceFrequency frequency = ...;
+DateTime startDate = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createCashFlowRecurrenceSeries(
+  spaceId: spaceId,
+  direction: direction,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  description: description,
+  amountCents: amountCents,
+  frequency: frequency,
+  startDate: startDate,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateCashFlowRecurrenceSeries, we created `CreateCashFlowRecurrenceSeriesBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateCashFlowRecurrenceSeriesVariablesBuilder {
+  ...
+   CreateCashFlowRecurrenceSeriesVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder endDate(DateTime? t) {
+   _endDate.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder occurrenceLimit(int? t) {
+   _occurrenceLimit.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder preferredDay(int? t) {
+   _preferredDay.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder nextOccurrenceDate(DateTime? t) {
+   _nextOccurrenceDate.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createCashFlowRecurrenceSeries(
+  spaceId: spaceId,
+  direction: direction,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  description: description,
+  amountCents: amountCents,
+  frequency: frequency,
+  startDate: startDate,
+  idempotencyKey: idempotencyKey,
+)
+.categoryId(categoryId)
+.notes(notes)
+.endDate(endDate)
+.occurrenceLimit(occurrenceLimit)
+.preferredDay(preferredDay)
+.nextOccurrenceDate(nextOccurrenceDate)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateCashFlowRecurrenceSeriesData, CreateCashFlowRecurrenceSeriesVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createCashFlowRecurrenceSeries(
+  spaceId: spaceId,
+  direction: direction,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  description: description,
+  amountCents: amountCents,
+  frequency: frequency,
+  startDate: startDate,
+  idempotencyKey: idempotencyKey,
+);
+CreateCashFlowRecurrenceSeriesData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+CashFlowDirection direction = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+String description = ...;
+BigInt amountCents = ...;
+CashFlowRecurrenceFrequency frequency = ...;
+DateTime startDate = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createCashFlowRecurrenceSeries(
+  spaceId: spaceId,
+  direction: direction,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  description: description,
+  amountCents: amountCents,
+  frequency: frequency,
+  startDate: startDate,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CreateRecurringCashFlowOccurrence
+#### Required Arguments
+```dart
+String spaceId = ...;
+String seriesId = ...;
+int occurrenceIndex = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+CashFlowStatus status = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createRecurringCashFlowOccurrence(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  occurrenceIndex: occurrenceIndex,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateRecurringCashFlowOccurrence, we created `CreateRecurringCashFlowOccurrenceBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateRecurringCashFlowOccurrenceVariablesBuilder {
+  ...
+   CreateRecurringCashFlowOccurrenceVariablesBuilder receivedAt(Timestamp? t) {
+   _receivedAt.value = t;
+   return this;
+  }
+  CreateRecurringCashFlowOccurrenceVariablesBuilder paidAt(Timestamp? t) {
+   _paidAt.value = t;
+   return this;
+  }
+  CreateRecurringCashFlowOccurrenceVariablesBuilder nextOccurrenceDate(DateTime? t) {
+   _nextOccurrenceDate.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createRecurringCashFlowOccurrence(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  occurrenceIndex: occurrenceIndex,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+  idempotencyKey: idempotencyKey,
+)
+.receivedAt(receivedAt)
+.paidAt(paidAt)
+.nextOccurrenceDate(nextOccurrenceDate)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateRecurringCashFlowOccurrenceData, CreateRecurringCashFlowOccurrenceVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createRecurringCashFlowOccurrence(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  occurrenceIndex: occurrenceIndex,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+  idempotencyKey: idempotencyKey,
+);
+CreateRecurringCashFlowOccurrenceData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String seriesId = ...;
+int occurrenceIndex = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+CashFlowStatus status = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createRecurringCashFlowOccurrence(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  occurrenceIndex: occurrenceIndex,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### MarkIncomeEntryReceived
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+Timestamp receivedAt = ...;
+ClientConnector.instance.markIncomeEntryReceived(
+  spaceId: spaceId,
+  entryId: entryId,
+  receivedAt: receivedAt,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<MarkIncomeEntryReceivedData, MarkIncomeEntryReceivedVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.markIncomeEntryReceived(
+  spaceId: spaceId,
+  entryId: entryId,
+  receivedAt: receivedAt,
+);
+MarkIncomeEntryReceivedData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+Timestamp receivedAt = ...;
+
+final ref = ClientConnector.instance.markIncomeEntryReceived(
+  spaceId: spaceId,
+  entryId: entryId,
+  receivedAt: receivedAt,
+).ref();
+ref.execute();
+```
+
+
+### MarkExpenseEntryPaid
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+Timestamp paidAt = ...;
+ClientConnector.instance.markExpenseEntryPaid(
+  spaceId: spaceId,
+  entryId: entryId,
+  paidAt: paidAt,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<MarkExpenseEntryPaidData, MarkExpenseEntryPaidVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.markExpenseEntryPaid(
+  spaceId: spaceId,
+  entryId: entryId,
+  paidAt: paidAt,
+);
+MarkExpenseEntryPaidData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+Timestamp paidAt = ...;
+
+final ref = ClientConnector.instance.markExpenseEntryPaid(
+  spaceId: spaceId,
+  entryId: entryId,
+  paidAt: paidAt,
+).ref();
+ref.execute();
+```
+
+
+### UpdateCashFlowOccurrence
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+CashFlowStatus status = ...;
+ClientConnector.instance.updateCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For UpdateCashFlowOccurrence, we created `UpdateCashFlowOccurrenceBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class UpdateCashFlowOccurrenceVariablesBuilder {
+  ...
+   UpdateCashFlowOccurrenceVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  UpdateCashFlowOccurrenceVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+  UpdateCashFlowOccurrenceVariablesBuilder receivedAt(Timestamp? t) {
+   _receivedAt.value = t;
+   return this;
+  }
+  UpdateCashFlowOccurrenceVariablesBuilder paidAt(Timestamp? t) {
+   _paidAt.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.updateCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+)
+.categoryId(categoryId)
+.notes(notes)
+.receivedAt(receivedAt)
+.paidAt(paidAt)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateCashFlowOccurrenceData, UpdateCashFlowOccurrenceVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+);
+UpdateCashFlowOccurrenceData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+Timestamp occurredAt = ...;
+DateTime competenceMonth = ...;
+CashFlowStatus status = ...;
+
+final ref = ClientConnector.instance.updateCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  occurredAt: occurredAt,
+  competenceMonth: competenceMonth,
+  status: status,
+).ref();
+ref.execute();
+```
+
+
+### UpdateCashFlowSeriesFrom
+#### Required Arguments
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+Timestamp cutoffAt = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+CashFlowStatus entryStatus = ...;
+ClientConnector.instance.updateCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For UpdateCashFlowSeriesFrom, we created `UpdateCashFlowSeriesFromBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class UpdateCashFlowSeriesFromVariablesBuilder {
+  ...
+   UpdateCashFlowSeriesFromVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  UpdateCashFlowSeriesFromVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+  UpdateCashFlowSeriesFromVariablesBuilder receivedAt(Timestamp? t) {
+   _receivedAt.value = t;
+   return this;
+  }
+  UpdateCashFlowSeriesFromVariablesBuilder paidAt(Timestamp? t) {
+   _paidAt.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.updateCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+)
+.categoryId(categoryId)
+.notes(notes)
+.receivedAt(receivedAt)
+.paidAt(paidAt)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateCashFlowSeriesFromData, UpdateCashFlowSeriesFromVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+);
+UpdateCashFlowSeriesFromData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+Timestamp cutoffAt = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+CashFlowStatus entryStatus = ...;
+
+final ref = ClientConnector.instance.updateCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+).ref();
+ref.execute();
+```
+
+
+### UpdateEntireCashFlowSeries
+#### Required Arguments
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+CashFlowStatus entryStatus = ...;
+ClientConnector.instance.updateEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For UpdateEntireCashFlowSeries, we created `UpdateEntireCashFlowSeriesBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class UpdateEntireCashFlowSeriesVariablesBuilder {
+  ...
+   UpdateEntireCashFlowSeriesVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  UpdateEntireCashFlowSeriesVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+  UpdateEntireCashFlowSeriesVariablesBuilder receivedAt(Timestamp? t) {
+   _receivedAt.value = t;
+   return this;
+  }
+  UpdateEntireCashFlowSeriesVariablesBuilder paidAt(Timestamp? t) {
+   _paidAt.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.updateEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+)
+.categoryId(categoryId)
+.notes(notes)
+.receivedAt(receivedAt)
+.paidAt(paidAt)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateEntireCashFlowSeriesData, UpdateEntireCashFlowSeriesVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+);
+UpdateEntireCashFlowSeriesData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+String description = ...;
+CashFlowKind kind = ...;
+CashFlowPaymentMethod paymentMethod = ...;
+BigInt amountCents = ...;
+CashFlowStatus entryStatus = ...;
+
+final ref = ClientConnector.instance.updateEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  description: description,
+  kind: kind,
+  paymentMethod: paymentMethod,
+  amountCents: amountCents,
+  entryStatus: entryStatus,
+).ref();
+ref.execute();
+```
+
+
+### DeleteStandaloneCashFlowEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+ClientConnector.instance.deleteStandaloneCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteStandaloneCashFlowEntryData, DeleteStandaloneCashFlowEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteStandaloneCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+);
+DeleteStandaloneCashFlowEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+
+final ref = ClientConnector.instance.deleteStandaloneCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+).ref();
+ref.execute();
+```
+
+
+### DeleteCashFlowOccurrence
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+String reason = ...;
+ClientConnector.instance.deleteCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  reason: reason,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteCashFlowOccurrenceData, DeleteCashFlowOccurrenceVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  reason: reason,
+);
+DeleteCashFlowOccurrenceData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+CashFlowMutationScope scope = ...;
+String reason = ...;
+
+final ref = ClientConnector.instance.deleteCashFlowOccurrence(
+  spaceId: spaceId,
+  entryId: entryId,
+  scope: scope,
+  reason: reason,
+).ref();
+ref.execute();
+```
+
+
+### DeleteCashFlowSeriesFrom
+#### Required Arguments
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+Timestamp cutoffAt = ...;
+String reason = ...;
+ClientConnector.instance.deleteCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  reason: reason,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For DeleteCashFlowSeriesFrom, we created `DeleteCashFlowSeriesFromBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class DeleteCashFlowSeriesFromVariablesBuilder {
+  ...
+   DeleteCashFlowSeriesFromVariablesBuilder lastKeptDate(DateTime? t) {
+   _lastKeptDate.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.deleteCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  reason: reason,
+)
+.lastKeptDate(lastKeptDate)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteCashFlowSeriesFromData, DeleteCashFlowSeriesFromVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  reason: reason,
+);
+DeleteCashFlowSeriesFromData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+Timestamp cutoffAt = ...;
+String reason = ...;
+
+final ref = ClientConnector.instance.deleteCashFlowSeriesFrom(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  cutoffAt: cutoffAt,
+  reason: reason,
+).ref();
+ref.execute();
+```
+
+
+### DeleteEntireCashFlowSeries
+#### Required Arguments
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+String reason = ...;
+ClientConnector.instance.deleteEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  reason: reason,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteEntireCashFlowSeriesData, DeleteEntireCashFlowSeriesVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  reason: reason,
+);
+DeleteEntireCashFlowSeriesData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String seriesId = ...;
+CashFlowMutationScope scope = ...;
+String reason = ...;
+
+final ref = ClientConnector.instance.deleteEntireCashFlowSeries(
+  spaceId: spaceId,
+  seriesId: seriesId,
+  scope: scope,
+  reason: reason,
+).ref();
+ref.execute();
+```
+
+
+### CancelCashFlowEntry
+#### Required Arguments
+```dart
+String spaceId = ...;
+String entryId = ...;
+String reason = ...;
+ClientConnector.instance.cancelCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  reason: reason,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<CancelCashFlowEntryData, CancelCashFlowEntryVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.cancelCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  reason: reason,
+);
+CancelCashFlowEntryData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String entryId = ...;
+String reason = ...;
+
+final ref = ClientConnector.instance.cancelCashFlowEntry(
+  spaceId: spaceId,
+  entryId: entryId,
+  reason: reason,
 ).ref();
 ref.execute();
 ```
@@ -2284,6 +3876,53 @@ String spaceId = ...;
 String cardId = ...;
 
 final ref = ClientConnector.instance.archiveCreditCard(
+  spaceId: spaceId,
+  cardId: cardId,
+).ref();
+ref.execute();
+```
+
+
+### DeleteCreditCardCascade
+#### Required Arguments
+```dart
+String spaceId = ...;
+String cardId = ...;
+ClientConnector.instance.deleteCreditCardCascade(
+  spaceId: spaceId,
+  cardId: cardId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteCreditCardCascadeData, DeleteCreditCardCascadeVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteCreditCardCascade(
+  spaceId: spaceId,
+  cardId: cardId,
+);
+DeleteCreditCardCascadeData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String cardId = ...;
+
+final ref = ClientConnector.instance.deleteCreditCardCascade(
   spaceId: spaceId,
   cardId: cardId,
 ).ref();

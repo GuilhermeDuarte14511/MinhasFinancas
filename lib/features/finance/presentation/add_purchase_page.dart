@@ -166,7 +166,7 @@ class _AddPurchasePageState extends ConsumerState<AddPurchasePage> {
                   children: [
                     CurrencyField(
                       key: const Key('purchase-amount'),
-                      label: 'Valor da compra em centavos',
+                      label: 'Valor da compra',
                       large: true,
                       onChanged: (value) => setState(() => _amount = value),
                     ),

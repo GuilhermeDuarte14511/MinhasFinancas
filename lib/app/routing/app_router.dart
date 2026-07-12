@@ -9,10 +9,12 @@ import '../../features/auth/presentation/email_verification_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/dashboard/presentation/app_shell.dart';
 import '../../features/finance/presentation/add_card_page.dart';
+import '../../features/finance/presentation/add_cash_flow_entry_page.dart';
 import '../../features/finance/presentation/add_loan_page.dart';
 import '../../features/finance/presentation/add_purchase_page.dart';
 import '../../features/finance/presentation/categories_page.dart';
 import '../../features/finance/presentation/card_detail_page.dart';
+import '../../features/finance/presentation/cash_flow_entry_detail_page.dart';
 import '../../features/finance/presentation/edit_card_page.dart';
 import '../../features/finance/presentation/help_page.dart';
 import '../../features/finance/presentation/invoice_detail_page.dart';
@@ -29,6 +31,7 @@ import '../../features/finance/presentation/purchase_detail_page.dart';
 import '../../features/finance/presentation/profile_page.dart';
 import '../../features/finance/presentation/security_page.dart';
 import '../../features/finance/presentation/workspace_settings_page.dart';
+import '../../features/finance/domain/cash_flow.dart';
 import '../../features/onboarding/presentation/create_space_page.dart';
 import '../../features/onboarding/presentation/entry_gate_page.dart';
 import '../../features/onboarding/presentation/invite_member_page.dart';
@@ -124,6 +127,30 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) =>
           _animatedPage(state, const AddPurchasePage()),
+    ),
+    GoRoute(
+      path: '/new-income',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        const AddCashFlowEntryPage(initialDirection: CashFlowDirection.income),
+      ),
+    ),
+    GoRoute(
+      path: '/new-expense',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        const AddCashFlowEntryPage(initialDirection: CashFlowDirection.expense),
+      ),
+    ),
+    GoRoute(
+      path: '/cash-flow/:entryId',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => _animatedPage(
+        state,
+        CashFlowEntryDetailPage(entryId: state.pathParameters['entryId']!),
+      ),
     ),
     GoRoute(
       path: '/new-card',
@@ -270,12 +297,22 @@ CustomTransitionPage<void> _animatedPage(
   Widget child, {
   Offset offset = const Offset(.035, 0),
 }) {
+  final disableAnimations = WidgetsBinding
+      .instance
+      .platformDispatcher
+      .accessibilityFeatures
+      .disableAnimations;
   return CustomTransitionPage<void>(
     key: state.pageKey,
     child: child,
-    transitionDuration: const Duration(milliseconds: 340),
-    reverseTransitionDuration: const Duration(milliseconds: 240),
+    transitionDuration: disableAnimations
+        ? Duration.zero
+        : const Duration(milliseconds: 340),
+    reverseTransitionDuration: disableAnimations
+        ? Duration.zero
+        : const Duration(milliseconds: 240),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (MediaQuery.disableAnimationsOf(context)) return child;
       final curved = CurvedAnimation(
         parent: animation,
         curve: Curves.easeOutCubic,

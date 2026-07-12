@@ -1,4 +1,5 @@
 import '../../../core/money/money.dart';
+import '../domain/cash_flow.dart';
 import '../domain/finance_models.dart';
 
 final class WorkspaceSummary {
@@ -22,6 +23,8 @@ final class WorkspaceSnapshot {
     required this.colorValue,
     required this.cards,
     required this.purchases,
+    required this.cashFlowEntries,
+    required this.cashFlowOverview,
     required this.purchaseInstallments,
     required this.invoices,
     required this.loans,
@@ -40,6 +43,8 @@ final class WorkspaceSnapshot {
   final int colorValue;
   final List<CreditCardAccount> cards;
   final List<PurchaseRecord> purchases;
+  final List<CashFlowEntry> cashFlowEntries;
+  final CashFlowOverview cashFlowOverview;
   final List<PurchaseInstallmentRecord> purchaseInstallments;
   final List<InvoiceSummary> invoices;
   final List<LoanContract> loans;
@@ -105,6 +110,52 @@ abstract interface class FinanceRepository {
     required String categoryId,
   });
 
+  Future<void> createCashFlowEntry({
+    required String spaceId,
+    required CashFlowDirection direction,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required CashFlowStatus status,
+    RecurrenceRule? recurrence,
+    String? categoryId,
+    String? notes,
+  });
+
+  Future<void> updateCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required CashFlowDirection direction,
+    required String? recurrenceSeriesId,
+    required DateTime originalOccurredAt,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required CashFlowStatus status,
+    required RecurrenceScope scope,
+    String? categoryId,
+    String? notes,
+  });
+
+  Future<void> updateCashFlowStatus({
+    required String spaceId,
+    required String entryId,
+    required CashFlowDirection direction,
+    required CashFlowStatus status,
+  });
+
+  Future<void> deleteCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required String? recurrenceSeriesId,
+    required DateTime occurredAt,
+    required RecurrenceScope scope,
+  });
+
   Future<void> createCard({
     required String spaceId,
     required String nickname,
@@ -126,6 +177,8 @@ abstract interface class FinanceRepository {
   });
 
   Future<void> archiveCard({required String spaceId, required String cardId});
+
+  Future<void> deleteCard({required String spaceId, required String cardId});
 
   Future<void> createPurchase({
     required String spaceId,

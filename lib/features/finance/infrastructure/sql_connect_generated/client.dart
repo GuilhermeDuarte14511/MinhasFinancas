@@ -15,6 +15,10 @@ part 'list_my_spaces.dart';
 
 part 'get_workspace_snapshot.dart';
 
+part 'get_cash_flow_summary.dart';
+
+part 'get_agenda_entries.dart';
+
 part 'create_financial_space.dart';
 
 part 'list_space_invitations.dart';
@@ -24,6 +28,38 @@ part 'create_space_invitation.dart';
 part 'accept_space_invitation.dart';
 
 part 'create_category.dart';
+
+part 'create_income_entry.dart';
+
+part 'create_scheduled_income_entry.dart';
+
+part 'create_expense_entry.dart';
+
+part 'create_planned_expense_entry.dart';
+
+part 'create_cash_flow_recurrence_series.dart';
+
+part 'create_recurring_cash_flow_occurrence.dart';
+
+part 'mark_income_entry_received.dart';
+
+part 'mark_expense_entry_paid.dart';
+
+part 'update_cash_flow_occurrence.dart';
+
+part 'update_cash_flow_series_from.dart';
+
+part 'update_entire_cash_flow_series.dart';
+
+part 'delete_standalone_cash_flow_entry.dart';
+
+part 'delete_cash_flow_occurrence.dart';
+
+part 'delete_cash_flow_series_from.dart';
+
+part 'delete_entire_cash_flow_series.dart';
+
+part 'cancel_cash_flow_entry.dart';
 
 part 'create_credit_card.dart';
 
@@ -79,12 +115,262 @@ part 'update_credit_card.dart';
 
 part 'archive_credit_card.dart';
 
+part 'delete_credit_card_cascade.dart';
+
 String? bigIntToJson(BigInt? value) {
   return value?.toString();
 }
 
 BigInt bigIntFromJson(dynamic value) {
   return BigInt.parse(value);
+}
+
+enum CashFlowDirection { INCOME, EXPENSE }
+
+String cashFlowDirectionSerializer(EnumValue<CashFlowDirection> e) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowDirection> cashFlowDirectionDeserializer(dynamic data) {
+  switch (data) {
+    case 'INCOME':
+      return const Known(CashFlowDirection.INCOME);
+
+    case 'EXPENSE':
+      return const Known(CashFlowDirection.EXPENSE);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowKind {
+  SALARY,
+
+  THIRTEENTH_SALARY,
+
+  VACATION_PAY,
+
+  BONUS,
+
+  REFUND,
+
+  BILL,
+
+  CASH_PURCHASE,
+
+  CARD_PURCHASE,
+
+  SUBSCRIPTION,
+
+  TAX,
+
+  LOAN_PAYMENT,
+
+  OTHER_INCOME,
+
+  OTHER_EXPENSE,
+}
+
+String cashFlowKindSerializer(EnumValue<CashFlowKind> e) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowKind> cashFlowKindDeserializer(dynamic data) {
+  switch (data) {
+    case 'SALARY':
+      return const Known(CashFlowKind.SALARY);
+
+    case 'THIRTEENTH_SALARY':
+      return const Known(CashFlowKind.THIRTEENTH_SALARY);
+
+    case 'VACATION_PAY':
+      return const Known(CashFlowKind.VACATION_PAY);
+
+    case 'BONUS':
+      return const Known(CashFlowKind.BONUS);
+
+    case 'REFUND':
+      return const Known(CashFlowKind.REFUND);
+
+    case 'BILL':
+      return const Known(CashFlowKind.BILL);
+
+    case 'CASH_PURCHASE':
+      return const Known(CashFlowKind.CASH_PURCHASE);
+
+    case 'CARD_PURCHASE':
+      return const Known(CashFlowKind.CARD_PURCHASE);
+
+    case 'SUBSCRIPTION':
+      return const Known(CashFlowKind.SUBSCRIPTION);
+
+    case 'TAX':
+      return const Known(CashFlowKind.TAX);
+
+    case 'LOAN_PAYMENT':
+      return const Known(CashFlowKind.LOAN_PAYMENT);
+
+    case 'OTHER_INCOME':
+      return const Known(CashFlowKind.OTHER_INCOME);
+
+    case 'OTHER_EXPENSE':
+      return const Known(CashFlowKind.OTHER_EXPENSE);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowMutationScope { ONLY_THIS, THIS_AND_FUTURE, ENTIRE_SERIES }
+
+String cashFlowMutationScopeSerializer(EnumValue<CashFlowMutationScope> e) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowMutationScope> cashFlowMutationScopeDeserializer(
+  dynamic data,
+) {
+  switch (data) {
+    case 'ONLY_THIS':
+      return const Known(CashFlowMutationScope.ONLY_THIS);
+
+    case 'THIS_AND_FUTURE':
+      return const Known(CashFlowMutationScope.THIS_AND_FUTURE);
+
+    case 'ENTIRE_SERIES':
+      return const Known(CashFlowMutationScope.ENTIRE_SERIES);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowPaymentMethod {
+  PIX,
+
+  CASH,
+
+  BANK_TRANSFER,
+
+  DEBIT_CARD,
+
+  CREDIT_CARD,
+
+  OTHER,
+}
+
+String cashFlowPaymentMethodSerializer(EnumValue<CashFlowPaymentMethod> e) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowPaymentMethod> cashFlowPaymentMethodDeserializer(
+  dynamic data,
+) {
+  switch (data) {
+    case 'PIX':
+      return const Known(CashFlowPaymentMethod.PIX);
+
+    case 'CASH':
+      return const Known(CashFlowPaymentMethod.CASH);
+
+    case 'BANK_TRANSFER':
+      return const Known(CashFlowPaymentMethod.BANK_TRANSFER);
+
+    case 'DEBIT_CARD':
+      return const Known(CashFlowPaymentMethod.DEBIT_CARD);
+
+    case 'CREDIT_CARD':
+      return const Known(CashFlowPaymentMethod.CREDIT_CARD);
+
+    case 'OTHER':
+      return const Known(CashFlowPaymentMethod.OTHER);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowRecurrenceFrequency { WEEKLY, BIWEEKLY, MONTHLY, ANNUAL }
+
+String cashFlowRecurrenceFrequencySerializer(
+  EnumValue<CashFlowRecurrenceFrequency> e,
+) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowRecurrenceFrequency> cashFlowRecurrenceFrequencyDeserializer(
+  dynamic data,
+) {
+  switch (data) {
+    case 'WEEKLY':
+      return const Known(CashFlowRecurrenceFrequency.WEEKLY);
+
+    case 'BIWEEKLY':
+      return const Known(CashFlowRecurrenceFrequency.BIWEEKLY);
+
+    case 'MONTHLY':
+      return const Known(CashFlowRecurrenceFrequency.MONTHLY);
+
+    case 'ANNUAL':
+      return const Known(CashFlowRecurrenceFrequency.ANNUAL);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowRecurrenceSeriesStatus { ACTIVE, COMPLETED, CANCELLED }
+
+String cashFlowRecurrenceSeriesStatusSerializer(
+  EnumValue<CashFlowRecurrenceSeriesStatus> e,
+) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowRecurrenceSeriesStatus>
+cashFlowRecurrenceSeriesStatusDeserializer(dynamic data) {
+  switch (data) {
+    case 'ACTIVE':
+      return const Known(CashFlowRecurrenceSeriesStatus.ACTIVE);
+
+    case 'COMPLETED':
+      return const Known(CashFlowRecurrenceSeriesStatus.COMPLETED);
+
+    case 'CANCELLED':
+      return const Known(CashFlowRecurrenceSeriesStatus.CANCELLED);
+
+    default:
+      return Unknown(data);
+  }
+}
+
+enum CashFlowStatus { PLANNED, CONFIRMED, RECEIVED, PAID, CANCELLED }
+
+String cashFlowStatusSerializer(EnumValue<CashFlowStatus> e) {
+  return e.stringValue;
+}
+
+EnumValue<CashFlowStatus> cashFlowStatusDeserializer(dynamic data) {
+  switch (data) {
+    case 'PLANNED':
+      return const Known(CashFlowStatus.PLANNED);
+
+    case 'CONFIRMED':
+      return const Known(CashFlowStatus.CONFIRMED);
+
+    case 'RECEIVED':
+      return const Known(CashFlowStatus.RECEIVED);
+
+    case 'PAID':
+      return const Known(CashFlowStatus.PAID);
+
+    case 'CANCELLED':
+      return const Known(CashFlowStatus.CANCELLED);
+
+    default:
+      return Unknown(data);
+  }
 }
 
 enum CreditCardStatus { ACTIVE, ARCHIVED }
@@ -469,6 +755,46 @@ class ClientConnector {
     return GetWorkspaceSnapshotVariablesBuilder(dataConnect, spaceId: spaceId);
   }
 
+  GetCashFlowSummaryVariablesBuilder getCashFlowSummary({
+    required String spaceId,
+    required DateTime monthStart,
+    required DateTime yearStart,
+    required DateTime nextYearStart,
+    required Timestamp monthStartedAt,
+    required Timestamp nextMonthStartedAt,
+    required Timestamp yearStartedAt,
+    required Timestamp nextYearStartedAt,
+  }) {
+    return GetCashFlowSummaryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      monthStart: monthStart,
+      yearStart: yearStart,
+      nextYearStart: nextYearStart,
+      monthStartedAt: monthStartedAt,
+      nextMonthStartedAt: nextMonthStartedAt,
+      yearStartedAt: yearStartedAt,
+      nextYearStartedAt: nextYearStartedAt,
+    );
+  }
+
+  GetAgendaEntriesVariablesBuilder getAgendaEntries({
+    required String spaceId,
+    required Timestamp rangeStart,
+    required Timestamp rangeEnd,
+    required DateTime rangeStartDate,
+    required DateTime rangeEndDate,
+  }) {
+    return GetAgendaEntriesVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      rangeStart: rangeStart,
+      rangeEnd: rangeEnd,
+      rangeStartDate: rangeStartDate,
+      rangeEndDate: rangeEndDate,
+    );
+  }
+
   CreateFinancialSpaceVariablesBuilder createFinancialSpace({
     required String name,
     required String colorHex,
@@ -528,6 +854,324 @@ class ClientConnector {
       normalizedName: normalizedName,
       icon: icon,
       colorHex: colorHex,
+    );
+  }
+
+  CreateIncomeEntryVariablesBuilder createIncomeEntry({
+    required String spaceId,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required String idempotencyKey,
+  }) {
+    return CreateIncomeEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  CreateScheduledIncomeEntryVariablesBuilder createScheduledIncomeEntry({
+    required String spaceId,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required String idempotencyKey,
+  }) {
+    return CreateScheduledIncomeEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  CreateExpenseEntryVariablesBuilder createExpenseEntry({
+    required String spaceId,
+    required String categoryId,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required String idempotencyKey,
+  }) {
+    return CreateExpenseEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      categoryId: categoryId,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  CreatePlannedExpenseEntryVariablesBuilder createPlannedExpenseEntry({
+    required String spaceId,
+    required String categoryId,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required String idempotencyKey,
+  }) {
+    return CreatePlannedExpenseEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      categoryId: categoryId,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  CreateCashFlowRecurrenceSeriesVariablesBuilder
+  createCashFlowRecurrenceSeries({
+    required String spaceId,
+    required CashFlowDirection direction,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required BigInt amountCents,
+    required CashFlowRecurrenceFrequency frequency,
+    required DateTime startDate,
+    required String idempotencyKey,
+  }) {
+    return CreateCashFlowRecurrenceSeriesVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      direction: direction,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      description: description,
+      amountCents: amountCents,
+      frequency: frequency,
+      startDate: startDate,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  CreateRecurringCashFlowOccurrenceVariablesBuilder
+  createRecurringCashFlowOccurrence({
+    required String spaceId,
+    required String seriesId,
+    required int occurrenceIndex,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required CashFlowStatus status,
+    required String idempotencyKey,
+  }) {
+    return CreateRecurringCashFlowOccurrenceVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      seriesId: seriesId,
+      occurrenceIndex: occurrenceIndex,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      status: status,
+      idempotencyKey: idempotencyKey,
+    );
+  }
+
+  MarkIncomeEntryReceivedVariablesBuilder markIncomeEntryReceived({
+    required String spaceId,
+    required String entryId,
+    required Timestamp receivedAt,
+  }) {
+    return MarkIncomeEntryReceivedVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      receivedAt: receivedAt,
+    );
+  }
+
+  MarkExpenseEntryPaidVariablesBuilder markExpenseEntryPaid({
+    required String spaceId,
+    required String entryId,
+    required Timestamp paidAt,
+  }) {
+    return MarkExpenseEntryPaidVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      paidAt: paidAt,
+    );
+  }
+
+  UpdateCashFlowOccurrenceVariablesBuilder updateCashFlowOccurrence({
+    required String spaceId,
+    required String entryId,
+    required CashFlowMutationScope scope,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required Timestamp occurredAt,
+    required DateTime competenceMonth,
+    required CashFlowStatus status,
+  }) {
+    return UpdateCashFlowOccurrenceVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      scope: scope,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      occurredAt: occurredAt,
+      competenceMonth: competenceMonth,
+      status: status,
+    );
+  }
+
+  UpdateCashFlowSeriesFromVariablesBuilder updateCashFlowSeriesFrom({
+    required String spaceId,
+    required String seriesId,
+    required CashFlowMutationScope scope,
+    required Timestamp cutoffAt,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required CashFlowStatus entryStatus,
+  }) {
+    return UpdateCashFlowSeriesFromVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      seriesId: seriesId,
+      scope: scope,
+      cutoffAt: cutoffAt,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      entryStatus: entryStatus,
+    );
+  }
+
+  UpdateEntireCashFlowSeriesVariablesBuilder updateEntireCashFlowSeries({
+    required String spaceId,
+    required String seriesId,
+    required CashFlowMutationScope scope,
+    required String description,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required BigInt amountCents,
+    required CashFlowStatus entryStatus,
+  }) {
+    return UpdateEntireCashFlowSeriesVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      seriesId: seriesId,
+      scope: scope,
+      description: description,
+      kind: kind,
+      paymentMethod: paymentMethod,
+      amountCents: amountCents,
+      entryStatus: entryStatus,
+    );
+  }
+
+  DeleteStandaloneCashFlowEntryVariablesBuilder deleteStandaloneCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required CashFlowMutationScope scope,
+  }) {
+    return DeleteStandaloneCashFlowEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      scope: scope,
+    );
+  }
+
+  DeleteCashFlowOccurrenceVariablesBuilder deleteCashFlowOccurrence({
+    required String spaceId,
+    required String entryId,
+    required CashFlowMutationScope scope,
+    required String reason,
+  }) {
+    return DeleteCashFlowOccurrenceVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      scope: scope,
+      reason: reason,
+    );
+  }
+
+  DeleteCashFlowSeriesFromVariablesBuilder deleteCashFlowSeriesFrom({
+    required String spaceId,
+    required String seriesId,
+    required CashFlowMutationScope scope,
+    required Timestamp cutoffAt,
+    required String reason,
+  }) {
+    return DeleteCashFlowSeriesFromVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      seriesId: seriesId,
+      scope: scope,
+      cutoffAt: cutoffAt,
+      reason: reason,
+    );
+  }
+
+  DeleteEntireCashFlowSeriesVariablesBuilder deleteEntireCashFlowSeries({
+    required String spaceId,
+    required String seriesId,
+    required CashFlowMutationScope scope,
+    required String reason,
+  }) {
+    return DeleteEntireCashFlowSeriesVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      seriesId: seriesId,
+      scope: scope,
+      reason: reason,
+    );
+  }
+
+  CancelCashFlowEntryVariablesBuilder cancelCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required String reason,
+  }) {
+    return CancelCashFlowEntryVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      entryId: entryId,
+      reason: reason,
     );
   }
 
@@ -948,6 +1592,17 @@ class ClientConnector {
     required String cardId,
   }) {
     return ArchiveCreditCardVariablesBuilder(
+      dataConnect,
+      spaceId: spaceId,
+      cardId: cardId,
+    );
+  }
+
+  DeleteCreditCardCascadeVariablesBuilder deleteCreditCardCascade({
+    required String spaceId,
+    required String cardId,
+  }) {
+    return DeleteCreditCardCascadeVariablesBuilder(
       dataConnect,
       spaceId: spaceId,
       cardId: cardId,

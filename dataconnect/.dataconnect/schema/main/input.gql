@@ -5,6 +5,60 @@ It has the same format as `AuditEvent_Key`, but is only used as mutation return 
 """
 scalar AuditEvent_KeyOutput
 """
+✨ `CashFlowDirection_Expr` is a server value variant of enum type `CashFlowDirection`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowDirection_Expr
+"""
+✨ `CashFlowEntry_KeyOutput` returns the primary key fields of table type `CashFlowEntry`.
+
+It has the same format as `CashFlowEntry_Key`, but is only used as mutation return value.
+"""
+scalar CashFlowEntry_KeyOutput
+"""
+✨ `CashFlowKind_Expr` is a server value variant of enum type `CashFlowKind`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowKind_Expr
+"""
+✨ `CashFlowMutationScope_Expr` is a server value variant of enum type `CashFlowMutationScope`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowMutationScope_Expr
+"""
+✨ `CashFlowPaymentMethod_Expr` is a server value variant of enum type `CashFlowPaymentMethod`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowPaymentMethod_Expr
+"""
+✨ `CashFlowRecurrenceFrequency_Expr` is a server value variant of enum type `CashFlowRecurrenceFrequency`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowRecurrenceFrequency_Expr
+"""
+✨ `CashFlowRecurrenceSeries_KeyOutput` returns the primary key fields of table type `CashFlowRecurrenceSeries`.
+
+It has the same format as `CashFlowRecurrenceSeries_Key`, but is only used as mutation return value.
+"""
+scalar CashFlowRecurrenceSeries_KeyOutput
+"""
+✨ `CashFlowRecurrenceSeriesStatus_Expr` is a server value variant of enum type `CashFlowRecurrenceSeriesStatus`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowRecurrenceSeriesStatus_Expr
+"""
+✨ `CashFlowStatus_Expr` is a server value variant of enum type `CashFlowStatus`.
+
+It accepts a CEL expression.
+"""
+scalar CashFlowStatus_Expr
+"""
 ✨ `Category_KeyOutput` returns the primary key fields of table type `Category`.
 
 It has the same format as `Category_Key`, but is only used as mutation return value.
@@ -556,6 +610,2886 @@ input AuditEvent_Order {
   occurredAt_max: OrderDirection
 }
 """
+✨ Generated filter input type for table 'CashFlowDirection'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowDirection_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowDirection!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowDirection!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowDirection'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowDirection_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowDirection!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowDirection!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowDirection_Filter
+}
+"""
+✨ Generated data input type for table 'CashFlowEntry'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input CashFlowEntry_Data {
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `cancelledByUserId` (✨ Generated from Field `CashFlowEntry`.`cancelledByUserId` of type `UUID`)
+  """
+  cancelledByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`categoryId` of type `UUID`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `CashFlowEntry`.`categoryId` of type `UUID`)
+  """
+  categoryId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `createdByUserId` (✨ Generated from Field `CashFlowEntry`.`createdByUserId` of type `UUID!`)
+  """
+  createdByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: UUID
+  """
+  ✨ `_expr` server value variant of `financialSpaceId` (✨ Generated from Field `CashFlowEntry`.`financialSpaceId` of type `UUID!`)
+  """
+  financialSpaceId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId` of type `UUID`
+  """
+  recurrenceSeriesId: UUID
+  """
+  ✨ `_expr` server value variant of `recurrenceSeriesId` (✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId` of type `UUID`)
+  """
+  recurrenceSeriesId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `updatedByUserId` (✨ Generated from Field `CashFlowEntry`.`updatedByUserId` of type `UUID!`)
+  """
+  updatedByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`category` of type `Category`
+  """
+  category: Category_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeries` of type `CashFlowRecurrenceSeries`
+  """
+  recurrenceSeries: CashFlowRecurrenceSeries_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents` of type `Int64!`
+  """
+  amountCents: Int64
+  """
+  ✨ `_expr` server value variant of `amountCents` (✨ Generated from Field `CashFlowEntry`.`amountCents` of type `Int64!`)
+  """
+  amountCents_expr: Int64_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `amountCents` (✨ Generated from Field `CashFlowEntry`.`amountCents` of type `Int64!`)
+  """
+  amountCents_update: [Int64_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancellationReason` of type `String`
+  """
+  cancellationReason: String
+  """
+  ✨ `_expr` server value variant of `cancellationReason` (✨ Generated from Field `CashFlowEntry`.`cancellationReason` of type `String`)
+  """
+  cancellationReason_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`
+  """
+  competenceMonth: Date
+  """
+  ✨ `_date` server value variant of `competenceMonth` (✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`)
+  """
+  competenceMonth_date: Date_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_expr` server value variant of `competenceMonth` (✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`)
+  """
+  competenceMonth_expr: Date_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `competenceMonth` (✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`)
+  """
+  competenceMonth_update: [Date_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`description` of type `String!`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `CashFlowEntry`.`description` of type `String!`)
+  """
+  description_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`direction` of type `CashFlowDirection!`
+  """
+  direction: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `direction` (✨ Generated from Field `CashFlowEntry`.`direction` of type `CashFlowDirection!`)
+  """
+  direction_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: String
+  """
+  ✨ `_expr` server value variant of `idempotencyKey` (✨ Generated from Field `CashFlowEntry`.`idempotencyKey` of type `String!`)
+  """
+  idempotencyKey_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`isRecurrenceException` of type `Boolean!`
+  """
+  isRecurrenceException: Boolean
+  """
+  ✨ `_expr` server value variant of `isRecurrenceException` (✨ Generated from Field `CashFlowEntry`.`isRecurrenceException` of type `Boolean!`)
+  """
+  isRecurrenceException_expr: Boolean_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`kind` of type `CashFlowKind!`
+  """
+  kind: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `kind` (✨ Generated from Field `CashFlowEntry`.`kind` of type `CashFlowKind!`)
+  """
+  kind_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`notes` of type `String`
+  """
+  notes: String
+  """
+  ✨ `_expr` server value variant of `notes` (✨ Generated from Field `CashFlowEntry`.`notes` of type `String`)
+  """
+  notes_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`
+  """
+  occurredAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `occurredAt` (✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`)
+  """
+  occurredAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `occurredAt` (✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`)
+  """
+  occurredAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `occurredAt` (✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`)
+  """
+  occurredAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex` of type `Int`
+  """
+  occurrenceIndex: Int
+  """
+  ✨ `_expr` server value variant of `occurrenceIndex` (✨ Generated from Field `CashFlowEntry`.`occurrenceIndex` of type `Int`)
+  """
+  occurrenceIndex_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `occurrenceIndex` (✨ Generated from Field `CashFlowEntry`.`occurrenceIndex` of type `Int`)
+  """
+  occurrenceIndex_update: [Int_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`
+  """
+  paidAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `paidAt` (✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`)
+  """
+  paidAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `paidAt` (✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`)
+  """
+  paidAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `paidAt` (✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`)
+  """
+  paidAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `paymentMethod` (✨ Generated from Field `CashFlowEntry`.`paymentMethod` of type `CashFlowPaymentMethod!`)
+  """
+  paymentMethod_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`
+  """
+  receivedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `receivedAt` (✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`)
+  """
+  receivedAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `receivedAt` (✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`)
+  """
+  receivedAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `receivedAt` (✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`)
+  """
+  receivedAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceEntityId` of type `UUID`
+  """
+  sourceEntityId: UUID
+  """
+  ✨ `_expr` server value variant of `sourceEntityId` (✨ Generated from Field `CashFlowEntry`.`sourceEntityId` of type `UUID`)
+  """
+  sourceEntityId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceType` of type `String`
+  """
+  sourceType: String
+  """
+  ✨ `_expr` server value variant of `sourceType` (✨ Generated from Field `CashFlowEntry`.`sourceType` of type `String`)
+  """
+  sourceType_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`status` of type `CashFlowStatus!`
+  """
+  status: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `status` (✨ Generated from Field `CashFlowEntry`.`status` of type `CashFlowStatus!`)
+  """
+  status_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version` of type `Int!`
+  """
+  version: Int
+  """
+  ✨ `_expr` server value variant of `version` (✨ Generated from Field `CashFlowEntry`.`version` of type `Int!`)
+  """
+  version_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `version` (✨ Generated from Field `CashFlowEntry`.`version` of type `Int!`)
+  """
+  version_update: [Int_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'CashFlowEntry'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowEntry_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [CashFlowEntry_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: CashFlowEntry_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [CashFlowEntry_Filter!]
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`categoryId` of type `UUID`
+  """
+  categoryId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId` of type `UUID`
+  """
+  recurrenceSeriesId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`category` of type `Category`
+  """
+  category: Category_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeries` of type `CashFlowRecurrenceSeries`
+  """
+  recurrenceSeries: CashFlowRecurrenceSeries_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents` of type `Int64!`
+  """
+  amountCents: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancellationReason` of type `String`
+  """
+  cancellationReason: String_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`
+  """
+  competenceMonth: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`description` of type `String!`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`direction` of type `CashFlowDirection!`
+  """
+  direction: CashFlowDirection_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: String_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`isRecurrenceException` of type `Boolean!`
+  """
+  isRecurrenceException: Boolean_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`kind` of type `CashFlowKind!`
+  """
+  kind: CashFlowKind_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`notes` of type `String`
+  """
+  notes: String_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`
+  """
+  occurredAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex` of type `Int`
+  """
+  occurrenceIndex: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`
+  """
+  paidAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: CashFlowPaymentMethod_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`
+  """
+  receivedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceEntityId` of type `UUID`
+  """
+  sourceEntityId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceType` of type `String`
+  """
+  sourceType: String_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`status` of type `CashFlowStatus!`
+  """
+  status: CashFlowStatus_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version` of type `Int!`
+  """
+  version: Int_Filter
+}
+"""
+✨ Generated first-row input type for table 'CashFlowEntry'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input CashFlowEntry_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [CashFlowEntry_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: CashFlowEntry_Filter
+}
+"""
+✨ Generated having input type for table 'CashFlowEntry'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowEntry_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [CashFlowEntry_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: CashFlowEntry_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [CashFlowEntry_Having!]
+  """
+  ✨ Generated from Field `CashFlowEntry`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_count` of type `Int!`
+  """
+  amountCents_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancellationReason_count` of type `Int!`
+  """
+  cancellationReason_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_count` of type `Int!`
+  """
+  cancelledAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUserId_count` of type `Int!`
+  """
+  cancelledByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_count` of type `Int!`
+  """
+  competenceMonth_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUserId_count` of type `Int!`
+  """
+  createdByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`direction_count` of type `Int!`
+  """
+  direction_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpaceId_count` of type `Int!`
+  """
+  financialSpaceId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`idempotencyKey_count` of type `Int!`
+  """
+  idempotencyKey_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`isRecurrenceException_count` of type `Int!`
+  """
+  isRecurrenceException_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`kind_count` of type `Int!`
+  """
+  kind_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`notes_count` of type `Int!`
+  """
+  notes_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_count` of type `Int!`
+  """
+  occurredAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_count` of type `Int!`
+  """
+  occurrenceIndex_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_count` of type `Int!`
+  """
+  paidAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paymentMethod_count` of type `Int!`
+  """
+  paymentMethod_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_count` of type `Int!`
+  """
+  receivedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId_count` of type `Int!`
+  """
+  recurrenceSeriesId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceEntityId_count` of type `Int!`
+  """
+  sourceEntityId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceType_count` of type `Int!`
+  """
+  sourceType_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`status_count` of type `Int!`
+  """
+  status_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUserId_count` of type `Int!`
+  """
+  updatedByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_count` of type `Int!`
+  """
+  version_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_sum` of type `Int64`
+  """
+  amountCents_sum: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_sum` of type `Int`
+  """
+  occurrenceIndex_sum: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_sum` of type `Int`
+  """
+  version_sum: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_avg` of type `Float`
+  """
+  amountCents_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_avg` of type `Float`
+  """
+  occurrenceIndex_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_avg` of type `Float`
+  """
+  version_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_min` of type `Int64`
+  """
+  amountCents_min: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_min` of type `Timestamp`
+  """
+  cancelledAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_min` of type `Date`
+  """
+  competenceMonth_min: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_min` of type `Timestamp`
+  """
+  occurredAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_min` of type `Int`
+  """
+  occurrenceIndex_min: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_min` of type `Timestamp`
+  """
+  paidAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_min` of type `Timestamp`
+  """
+  receivedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_min` of type `Int`
+  """
+  version_min: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_max` of type `Int64`
+  """
+  amountCents_max: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_max` of type `Timestamp`
+  """
+  cancelledAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_max` of type `Date`
+  """
+  competenceMonth_max: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_max` of type `Timestamp`
+  """
+  occurredAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_max` of type `Int`
+  """
+  occurrenceIndex_max: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_max` of type `Timestamp`
+  """
+  paidAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_max` of type `Timestamp`
+  """
+  receivedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_max` of type `Int`
+  """
+  version_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'CashFlowEntry'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input CashFlowEntry_Key {
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowEntry'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowEntry_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowEntry_Filter
+}
+"""
+✨ Generated order input type for table 'CashFlowEntry'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input CashFlowEntry_Order {
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`categoryId` of type `UUID`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId` of type `UUID`
+  """
+  recurrenceSeriesId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`category` of type `Category`
+  """
+  category: Category_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeries` of type `CashFlowRecurrenceSeries`
+  """
+  recurrenceSeries: CashFlowRecurrenceSeries_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents` of type `Int64!`
+  """
+  amountCents: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancellationReason` of type `String`
+  """
+  cancellationReason: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth` of type `Date!`
+  """
+  competenceMonth: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`description` of type `String!`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`direction` of type `CashFlowDirection!`
+  """
+  direction: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`isRecurrenceException` of type `Boolean!`
+  """
+  isRecurrenceException: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`kind` of type `CashFlowKind!`
+  """
+  kind: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`notes` of type `String`
+  """
+  notes: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt` of type `Timestamp!`
+  """
+  occurredAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex` of type `Int`
+  """
+  occurrenceIndex: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt` of type `Timestamp`
+  """
+  paidAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt` of type `Timestamp`
+  """
+  receivedAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceEntityId` of type `UUID`
+  """
+  sourceEntityId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceType` of type `String`
+  """
+  sourceType: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`status` of type `CashFlowStatus!`
+  """
+  status: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version` of type `Int!`
+  """
+  version: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_count` of type `Int!`
+  """
+  amountCents_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancellationReason_count` of type `Int!`
+  """
+  cancellationReason_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_count` of type `Int!`
+  """
+  cancelledAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledByUserId_count` of type `Int!`
+  """
+  cancelledByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_count` of type `Int!`
+  """
+  competenceMonth_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdByUserId_count` of type `Int!`
+  """
+  createdByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`direction_count` of type `Int!`
+  """
+  direction_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`financialSpaceId_count` of type `Int!`
+  """
+  financialSpaceId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`idempotencyKey_count` of type `Int!`
+  """
+  idempotencyKey_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`isRecurrenceException_count` of type `Int!`
+  """
+  isRecurrenceException_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`kind_count` of type `Int!`
+  """
+  kind_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`notes_count` of type `Int!`
+  """
+  notes_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_count` of type `Int!`
+  """
+  occurredAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_count` of type `Int!`
+  """
+  occurrenceIndex_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_count` of type `Int!`
+  """
+  paidAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paymentMethod_count` of type `Int!`
+  """
+  paymentMethod_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_count` of type `Int!`
+  """
+  receivedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`recurrenceSeriesId_count` of type `Int!`
+  """
+  recurrenceSeriesId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceEntityId_count` of type `Int!`
+  """
+  sourceEntityId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`sourceType_count` of type `Int!`
+  """
+  sourceType_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`status_count` of type `Int!`
+  """
+  status_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedByUserId_count` of type `Int!`
+  """
+  updatedByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_count` of type `Int!`
+  """
+  version_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_sum` of type `Int64`
+  """
+  amountCents_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_sum` of type `Int`
+  """
+  occurrenceIndex_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_sum` of type `Int`
+  """
+  version_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_avg` of type `Float`
+  """
+  amountCents_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_avg` of type `Float`
+  """
+  occurrenceIndex_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_avg` of type `Float`
+  """
+  version_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_min` of type `Int64`
+  """
+  amountCents_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_min` of type `Timestamp`
+  """
+  cancelledAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_min` of type `Date`
+  """
+  competenceMonth_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_min` of type `Timestamp`
+  """
+  occurredAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_min` of type `Int`
+  """
+  occurrenceIndex_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_min` of type `Timestamp`
+  """
+  paidAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_min` of type `Timestamp`
+  """
+  receivedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_min` of type `Int`
+  """
+  version_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`amountCents_max` of type `Int64`
+  """
+  amountCents_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`cancelledAt_max` of type `Timestamp`
+  """
+  cancelledAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`competenceMonth_max` of type `Date`
+  """
+  competenceMonth_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurredAt_max` of type `Timestamp`
+  """
+  occurredAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`occurrenceIndex_max` of type `Int`
+  """
+  occurrenceIndex_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`paidAt_max` of type `Timestamp`
+  """
+  paidAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`receivedAt_max` of type `Timestamp`
+  """
+  receivedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowEntry`.`version_max` of type `Int`
+  """
+  version_max: OrderDirection
+}
+"""
+✨ Generated filter input type for table 'CashFlowKind'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowKind_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowKind!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowKind!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowKind'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowKind_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowKind!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowKind!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowKind_Filter
+}
+"""
+✨ Generated filter input type for table 'CashFlowMutationScope'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowMutationScope_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowMutationScope!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowMutationScope!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowMutationScope'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowMutationScope_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowMutationScope!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowMutationScope
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowMutationScope_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowMutationScope!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowMutationScope_Filter
+}
+"""
+✨ Generated filter input type for table 'CashFlowPaymentMethod'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowPaymentMethod_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowPaymentMethod!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowPaymentMethod!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowPaymentMethod'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowPaymentMethod_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowPaymentMethod!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowPaymentMethod!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowPaymentMethod_Filter
+}
+"""
+✨ Generated filter input type for table 'CashFlowRecurrenceFrequency'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowRecurrenceFrequency_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowRecurrenceFrequency!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowRecurrenceFrequency!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowRecurrenceFrequency'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowRecurrenceFrequency_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowRecurrenceFrequency!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowRecurrenceFrequency!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowRecurrenceFrequency_Filter
+}
+"""
+✨ Generated data input type for table 'CashFlowRecurrenceSeries'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input CashFlowRecurrenceSeries_Data {
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `cancelledByUserId` (✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId` of type `UUID`)
+  """
+  cancelledByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId` of type `UUID`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId` of type `UUID`)
+  """
+  categoryId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `createdByUserId` (✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId` of type `UUID!`)
+  """
+  createdByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: UUID
+  """
+  ✨ `_expr` server value variant of `financialSpaceId` (✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId` of type `UUID!`)
+  """
+  financialSpaceId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: UUID
+  """
+  ✨ `_expr` server value variant of `updatedByUserId` (✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId` of type `UUID!`)
+  """
+  updatedByUserId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`category` of type `Category`
+  """
+  category: Category_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents` of type `Int64!`
+  """
+  amountCents: Int64
+  """
+  ✨ `_expr` server value variant of `amountCents` (✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents` of type `Int64!`)
+  """
+  amountCents_expr: Int64_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `amountCents` (✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents` of type `Int64!`)
+  """
+  amountCents_update: [Int64_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason` of type `String`
+  """
+  cancellationReason: String
+  """
+  ✨ `_expr` server value variant of `cancellationReason` (✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason` of type `String`)
+  """
+  cancellationReason_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `cancelledAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`)
+  """
+  cancelledAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`description` of type `String!`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `CashFlowRecurrenceSeries`.`description` of type `String!`)
+  """
+  description_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`direction` of type `CashFlowDirection!`
+  """
+  direction: CashFlowDirection
+  """
+  ✨ `_expr` server value variant of `direction` (✨ Generated from Field `CashFlowRecurrenceSeries`.`direction` of type `CashFlowDirection!`)
+  """
+  direction_expr: CashFlowDirection_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`
+  """
+  endDate: Date
+  """
+  ✨ `_date` server value variant of `endDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`)
+  """
+  endDate_date: Date_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_expr` server value variant of `endDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`)
+  """
+  endDate_expr: Date_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `endDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`)
+  """
+  endDate_update: [Date_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency` of type `CashFlowRecurrenceFrequency!`
+  """
+  frequency: CashFlowRecurrenceFrequency
+  """
+  ✨ `_expr` server value variant of `frequency` (✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency` of type `CashFlowRecurrenceFrequency!`)
+  """
+  frequency_expr: CashFlowRecurrenceFrequency_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: String
+  """
+  ✨ `_expr` server value variant of `idempotencyKey` (✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey` of type `String!`)
+  """
+  idempotencyKey_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`kind` of type `CashFlowKind!`
+  """
+  kind: CashFlowKind
+  """
+  ✨ `_expr` server value variant of `kind` (✨ Generated from Field `CashFlowRecurrenceSeries`.`kind` of type `CashFlowKind!`)
+  """
+  kind_expr: CashFlowKind_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`
+  """
+  nextOccurrenceDate: Date
+  """
+  ✨ `_date` server value variant of `nextOccurrenceDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`)
+  """
+  nextOccurrenceDate_date: Date_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_expr` server value variant of `nextOccurrenceDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`)
+  """
+  nextOccurrenceDate_expr: Date_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `nextOccurrenceDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`)
+  """
+  nextOccurrenceDate_update: [Date_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`notes` of type `String`
+  """
+  notes: String
+  """
+  ✨ `_expr` server value variant of `notes` (✨ Generated from Field `CashFlowRecurrenceSeries`.`notes` of type `String`)
+  """
+  notes_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit` of type `Int`
+  """
+  occurrenceLimit: Int
+  """
+  ✨ `_expr` server value variant of `occurrenceLimit` (✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit` of type `Int`)
+  """
+  occurrenceLimit_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `occurrenceLimit` (✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit` of type `Int`)
+  """
+  occurrenceLimit_update: [Int_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: CashFlowPaymentMethod
+  """
+  ✨ `_expr` server value variant of `paymentMethod` (✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod` of type `CashFlowPaymentMethod!`)
+  """
+  paymentMethod_expr: CashFlowPaymentMethod_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay` of type `Int`
+  """
+  preferredDay: Int
+  """
+  ✨ `_expr` server value variant of `preferredDay` (✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay` of type `Int`)
+  """
+  preferredDay_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `preferredDay` (✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay` of type `Int`)
+  """
+  preferredDay_update: [Int_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`
+  """
+  startDate: Date
+  """
+  ✨ `_date` server value variant of `startDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`)
+  """
+  startDate_date: Date_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_expr` server value variant of `startDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`)
+  """
+  startDate_expr: Date_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `startDate` (✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`)
+  """
+  startDate_update: [Date_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`status` of type `CashFlowRecurrenceSeriesStatus!`
+  """
+  status: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `status` (✨ Generated from Field `CashFlowRecurrenceSeries`.`status` of type `CashFlowRecurrenceSeriesStatus!`)
+  """
+  status_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version` of type `Int!`
+  """
+  version: Int
+  """
+  ✨ `_expr` server value variant of `version` (✨ Generated from Field `CashFlowRecurrenceSeries`.`version` of type `Int!`)
+  """
+  version_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `version` (✨ Generated from Field `CashFlowRecurrenceSeries`.`version` of type `Int!`)
+  """
+  version_update: [Int_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cashFlowEntries_on_recurrenceSeries` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_recurrenceSeries: [CashFlowEntry_Data!]
+}
+"""
+✨ Generated filter input type for table 'CashFlowRecurrenceSeries'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowRecurrenceSeries_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [CashFlowRecurrenceSeries_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: CashFlowRecurrenceSeries_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [CashFlowRecurrenceSeries_Filter!]
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId` of type `UUID`
+  """
+  categoryId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: UUID_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`category` of type `Category`
+  """
+  category: Category_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents` of type `Int64!`
+  """
+  amountCents: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason` of type `String`
+  """
+  cancellationReason: String_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`description` of type `String!`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`direction` of type `CashFlowDirection!`
+  """
+  direction: CashFlowDirection_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`
+  """
+  endDate: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency` of type `CashFlowRecurrenceFrequency!`
+  """
+  frequency: CashFlowRecurrenceFrequency_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: String_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`kind` of type `CashFlowKind!`
+  """
+  kind: CashFlowKind_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`
+  """
+  nextOccurrenceDate: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`notes` of type `String`
+  """
+  notes: String_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit` of type `Int`
+  """
+  occurrenceLimit: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: CashFlowPaymentMethod_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay` of type `Int`
+  """
+  preferredDay: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`
+  """
+  startDate: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`status` of type `CashFlowRecurrenceSeriesStatus!`
+  """
+  status: CashFlowRecurrenceSeriesStatus_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version` of type `Int!`
+  """
+  version: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cashFlowEntries_on_recurrenceSeries` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_recurrenceSeries: CashFlowEntry_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'CashFlowRecurrenceSeries'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input CashFlowRecurrenceSeries_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [CashFlowRecurrenceSeries_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: CashFlowRecurrenceSeries_Filter
+}
+"""
+✨ Generated having input type for table 'CashFlowRecurrenceSeries'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowRecurrenceSeries_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [CashFlowRecurrenceSeries_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: CashFlowRecurrenceSeries_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [CashFlowRecurrenceSeries_Having!]
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_count` of type `Int!`
+  """
+  amountCents_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason_count` of type `Int!`
+  """
+  cancellationReason_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_count` of type `Int!`
+  """
+  cancelledAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId_count` of type `Int!`
+  """
+  cancelledByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId_count` of type `Int!`
+  """
+  createdByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`direction_count` of type `Int!`
+  """
+  direction_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_count` of type `Int!`
+  """
+  endDate_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId_count` of type `Int!`
+  """
+  financialSpaceId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency_count` of type `Int!`
+  """
+  frequency_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey_count` of type `Int!`
+  """
+  idempotencyKey_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`kind_count` of type `Int!`
+  """
+  kind_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_count` of type `Int!`
+  """
+  nextOccurrenceDate_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`notes_count` of type `Int!`
+  """
+  notes_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_count` of type `Int!`
+  """
+  occurrenceLimit_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod_count` of type `Int!`
+  """
+  paymentMethod_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_count` of type `Int!`
+  """
+  preferredDay_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_count` of type `Int!`
+  """
+  startDate_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`status_count` of type `Int!`
+  """
+  status_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId_count` of type `Int!`
+  """
+  updatedByUserId_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_count` of type `Int!`
+  """
+  version_count: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_sum` of type `Int64`
+  """
+  amountCents_sum: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_sum` of type `Int`
+  """
+  occurrenceLimit_sum: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_sum` of type `Int`
+  """
+  preferredDay_sum: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_sum` of type `Int`
+  """
+  version_sum: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_avg` of type `Float`
+  """
+  amountCents_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_avg` of type `Float`
+  """
+  occurrenceLimit_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_avg` of type `Float`
+  """
+  preferredDay_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_avg` of type `Float`
+  """
+  version_avg: Float_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_min` of type `Int64`
+  """
+  amountCents_min: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_min` of type `Timestamp`
+  """
+  cancelledAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_min` of type `Date`
+  """
+  endDate_min: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_min` of type `Date`
+  """
+  nextOccurrenceDate_min: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_min` of type `Int`
+  """
+  occurrenceLimit_min: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_min` of type `Int`
+  """
+  preferredDay_min: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_min` of type `Date`
+  """
+  startDate_min: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_min` of type `Int`
+  """
+  version_min: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_max` of type `Int64`
+  """
+  amountCents_max: Int64_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_max` of type `Timestamp`
+  """
+  cancelledAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_max` of type `Date`
+  """
+  endDate_max: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_max` of type `Date`
+  """
+  nextOccurrenceDate_max: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_max` of type `Int`
+  """
+  occurrenceLimit_max: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_max` of type `Int`
+  """
+  preferredDay_max: Int_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_max` of type `Date`
+  """
+  startDate_max: Date_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_max` of type `Int`
+  """
+  version_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'CashFlowRecurrenceSeries'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input CashFlowRecurrenceSeries_Key {
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowRecurrenceSeries'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowRecurrenceSeries_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowRecurrenceSeries_Filter
+}
+"""
+✨ Generated order input type for table 'CashFlowRecurrenceSeries'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input CashFlowRecurrenceSeries_Order {
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId` of type `UUID`
+  """
+  cancelledByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId` of type `UUID`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId` of type `UUID!`
+  """
+  createdByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId` of type `UUID!`
+  """
+  financialSpaceId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId` of type `UUID!`
+  """
+  updatedByUserId: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUser` of type `UserProfile`
+  """
+  cancelledByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`category` of type `Category`
+  """
+  category: Category_Order
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUser` of type `UserProfile!`
+  """
+  createdByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpace` of type `FinancialSpace!`
+  """
+  financialSpace: FinancialSpace_Order
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUser` of type `UserProfile!`
+  """
+  updatedByUser: UserProfile_Order
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents` of type `Int64!`
+  """
+  amountCents: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason` of type `String`
+  """
+  cancellationReason: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt` of type `Timestamp`
+  """
+  cancelledAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`description` of type `String!`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`direction` of type `CashFlowDirection!`
+  """
+  direction: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate` of type `Date`
+  """
+  endDate: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency` of type `CashFlowRecurrenceFrequency!`
+  """
+  frequency: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey` of type `String!`
+  """
+  idempotencyKey: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`kind` of type `CashFlowKind!`
+  """
+  kind: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate` of type `Date`
+  """
+  nextOccurrenceDate: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`notes` of type `String`
+  """
+  notes: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit` of type `Int`
+  """
+  occurrenceLimit: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod` of type `CashFlowPaymentMethod!`
+  """
+  paymentMethod: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay` of type `Int`
+  """
+  preferredDay: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate` of type `Date!`
+  """
+  startDate: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`status` of type `CashFlowRecurrenceSeriesStatus!`
+  """
+  status: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version` of type `Int!`
+  """
+  version: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_count` of type `Int!`
+  """
+  amountCents_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancellationReason_count` of type `Int!`
+  """
+  cancellationReason_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_count` of type `Int!`
+  """
+  cancelledAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledByUserId_count` of type `Int!`
+  """
+  cancelledByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdByUserId_count` of type `Int!`
+  """
+  createdByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`direction_count` of type `Int!`
+  """
+  direction_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_count` of type `Int!`
+  """
+  endDate_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`financialSpaceId_count` of type `Int!`
+  """
+  financialSpaceId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`frequency_count` of type `Int!`
+  """
+  frequency_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`idempotencyKey_count` of type `Int!`
+  """
+  idempotencyKey_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`kind_count` of type `Int!`
+  """
+  kind_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_count` of type `Int!`
+  """
+  nextOccurrenceDate_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`notes_count` of type `Int!`
+  """
+  notes_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_count` of type `Int!`
+  """
+  occurrenceLimit_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`paymentMethod_count` of type `Int!`
+  """
+  paymentMethod_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_count` of type `Int!`
+  """
+  preferredDay_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_count` of type `Int!`
+  """
+  startDate_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`status_count` of type `Int!`
+  """
+  status_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedByUserId_count` of type `Int!`
+  """
+  updatedByUserId_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_count` of type `Int!`
+  """
+  version_count: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_sum` of type `Int64`
+  """
+  amountCents_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_sum` of type `Int`
+  """
+  occurrenceLimit_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_sum` of type `Int`
+  """
+  preferredDay_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_sum` of type `Int`
+  """
+  version_sum: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_avg` of type `Float`
+  """
+  amountCents_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_avg` of type `Float`
+  """
+  occurrenceLimit_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_avg` of type `Float`
+  """
+  preferredDay_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_avg` of type `Float`
+  """
+  version_avg: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_min` of type `Int64`
+  """
+  amountCents_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_min` of type `Timestamp`
+  """
+  cancelledAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_min` of type `Date`
+  """
+  endDate_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_min` of type `Date`
+  """
+  nextOccurrenceDate_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_min` of type `Int`
+  """
+  occurrenceLimit_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_min` of type `Int`
+  """
+  preferredDay_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_min` of type `Date`
+  """
+  startDate_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_min` of type `Int`
+  """
+  version_min: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`amountCents_max` of type `Int64`
+  """
+  amountCents_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`cancelledAt_max` of type `Timestamp`
+  """
+  cancelledAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`endDate_max` of type `Date`
+  """
+  endDate_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`nextOccurrenceDate_max` of type `Date`
+  """
+  nextOccurrenceDate_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`occurrenceLimit_max` of type `Int`
+  """
+  occurrenceLimit_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`preferredDay_max` of type `Int`
+  """
+  preferredDay_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`startDate_max` of type `Date`
+  """
+  startDate_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CashFlowRecurrenceSeries`.`version_max` of type `Int`
+  """
+  version_max: OrderDirection
+}
+"""
+✨ Generated filter input type for table 'CashFlowRecurrenceSeriesStatus'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowRecurrenceSeriesStatus_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowRecurrenceSeriesStatus!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowRecurrenceSeriesStatus!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowRecurrenceSeriesStatus'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowRecurrenceSeriesStatus_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowRecurrenceSeriesStatus!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowRecurrenceSeriesStatus
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowRecurrenceSeriesStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowRecurrenceSeriesStatus!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowRecurrenceSeriesStatus_Filter
+}
+"""
+✨ Generated filter input type for table 'CashFlowStatus'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CashFlowStatus_Filter {
+  """
+  Match if field is exactly equal to provided value.
+  """
+  eq: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `eq` (Match if field is exactly equal to provided value.)
+  """
+  eq_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is not equal to provided value.
+  """
+  ne: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `ne` (Match if field is not equal to provided value.)
+  """
+  ne_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  When true, match if field `IS NULL`. When false, match if field is `NOT NULL`.
+  """
+  isNull: Boolean
+  """
+  Match if field value is among the provided list of values.
+  """
+  in: [CashFlowStatus!]
+  """
+  Match if field value is not among the provided list of values.
+  """
+  nin: [CashFlowStatus!]
+  """
+  Match if field value is greater than the provided value, based on index ordering of supported enum values.
+  """
+  gt: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `gt` (Match if field value is greater than the provided value, based on index ordering of supported enum values.)
+  """
+  gt_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is greater than or equal to the provided value.
+  """
+  ge: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `ge` (Match if field is greater than or equal to the provided value.)
+  """
+  ge_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field value is less than the provided value, based on index ordering of supported enum values.
+  """
+  lt: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `lt` (Match if field value is less than the provided value, based on index ordering of supported enum values.)
+  """
+  lt_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if field is less than or equal to the provided value, based on index ordering of supported enum values.
+  """
+  le: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `le` (Match if field is less than or equal to the provided value, based on index ordering of supported enum values.)
+  """
+  le_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'CashFlowStatus'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CashFlowStatus_ListFilter {
+  """
+  Match if list field contains the provided value as a member.
+  """
+  includes: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `includes` (Match if list field contains the provided value as a member.)
+  """
+  includes_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field contains all of the provided values as members.
+  """
+  includesAll: [CashFlowStatus!]
+  """
+  Match if list field does not contain the provided value as a member.
+  """
+  excludes: CashFlowStatus
+  """
+  ✨ `_expr` server value variant of `excludes` (Match if list field does not contain the provided value as a member.)
+  """
+  excludes_expr: CashFlowStatus_Expr @fdc_forbiddenInVariables
+  """
+  Match if list field does not contain any of the provided values as members.
+  """
+  excludesAll: [CashFlowStatus!]
+  """
+  The desired number of enum values that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CashFlowStatus_Filter
+}
+"""
 ✨ Generated data input type for table 'Category'. It includes all necessary fields for creating or upserting rows into table.
 """
 input Category_Data {
@@ -692,6 +3626,14 @@ input Category_Data {
   """
   version_update: [Int_Update!] @fdc_forbiddenInVariables
   """
+  ✨ Generated from Field `Category`.`cashFlowEntries_on_category` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_category: [CashFlowEntry_Data!]
+  """
+  ✨ Generated from Field `Category`.`cashFlowRecurrenceSeriess_on_category` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_category: [CashFlowRecurrenceSeries_Data!]
+  """
   ✨ Generated from Field `Category`.`purchases_on_category` of type `[Purchase!]!`
   """
   purchases_on_category: [Purchase_Data!]
@@ -768,6 +3710,14 @@ input Category_Filter {
   ✨ Generated from Field `Category`.`version` of type `Int!`
   """
   version: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`cashFlowEntries_on_category` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_category: CashFlowEntry_ListFilter
+  """
+  ✨ Generated from Field `Category`.`cashFlowRecurrenceSeriess_on_category` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_category: CashFlowRecurrenceSeries_ListFilter
   """
   ✨ Generated from Field `Category`.`purchases_on_category` of type `[Purchase!]!`
   """
@@ -3322,6 +6272,14 @@ input FinancialSpace_Data {
   """
   auditEvents_on_financialSpace: [AuditEvent_Data!]
   """
+  ✨ Generated from Field `FinancialSpace`.`cashFlowEntries_on_financialSpace` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_financialSpace: [CashFlowEntry_Data!]
+  """
+  ✨ Generated from Field `FinancialSpace`.`cashFlowRecurrenceSeriess_on_financialSpace` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_financialSpace: [CashFlowRecurrenceSeries_Data!]
+  """
   ✨ Generated from Field `FinancialSpace`.`categories_on_financialSpace` of type `[Category!]!`
   """
   categories_on_financialSpace: [Category_Data!]
@@ -3442,6 +6400,14 @@ input FinancialSpace_Filter {
   ✨ Generated from Field `FinancialSpace`.`auditEvents_on_financialSpace` of type `[AuditEvent!]!`
   """
   auditEvents_on_financialSpace: AuditEvent_ListFilter
+  """
+  ✨ Generated from Field `FinancialSpace`.`cashFlowEntries_on_financialSpace` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_financialSpace: CashFlowEntry_ListFilter
+  """
+  ✨ Generated from Field `FinancialSpace`.`cashFlowRecurrenceSeriess_on_financialSpace` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_financialSpace: CashFlowRecurrenceSeries_ListFilter
   """
   ✨ Generated from Field `FinancialSpace`.`categories_on_financialSpace` of type `[Category!]!`
   """
@@ -12402,6 +15368,30 @@ input UserProfile_Data {
   """
   auditEvents_on_actorUser: [AuditEvent_Data!]
   """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_cancelledByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_cancelledByUser: [CashFlowEntry_Data!]
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_createdByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_createdByUser: [CashFlowEntry_Data!]
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_updatedByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_updatedByUser: [CashFlowEntry_Data!]
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_cancelledByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_cancelledByUser: [CashFlowRecurrenceSeries_Data!]
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_createdByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_createdByUser: [CashFlowRecurrenceSeries_Data!]
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_updatedByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_updatedByUser: [CashFlowRecurrenceSeries_Data!]
+  """
   ✨ Generated from Field `UserProfile`.`categories_on_createdByUser` of type `[Category!]!`
   """
   categories_on_createdByUser: [Category_Data!]
@@ -12546,6 +15536,30 @@ input UserProfile_Filter {
   ✨ Generated from Field `UserProfile`.`auditEvents_on_actorUser` of type `[AuditEvent!]!`
   """
   auditEvents_on_actorUser: AuditEvent_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_cancelledByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_cancelledByUser: CashFlowEntry_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_createdByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_createdByUser: CashFlowEntry_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowEntries_on_updatedByUser` of type `[CashFlowEntry!]!`
+  """
+  cashFlowEntries_on_updatedByUser: CashFlowEntry_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_cancelledByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_cancelledByUser: CashFlowRecurrenceSeries_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_createdByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_createdByUser: CashFlowRecurrenceSeries_ListFilter
+  """
+  ✨ Generated from Field `UserProfile`.`cashFlowRecurrenceSeriess_on_updatedByUser` of type `[CashFlowRecurrenceSeries!]!`
+  """
+  cashFlowRecurrenceSeriess_on_updatedByUser: CashFlowRecurrenceSeries_ListFilter
   """
   ✨ Generated from Field `UserProfile`.`categories_on_createdByUser` of type `[Category!]!`
   """

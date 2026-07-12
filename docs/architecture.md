@@ -21,10 +21,11 @@ composição; widgets não calculam parcelas nem saldos.
 1. Identity and Access.
 2. Financial Spaces and Membership.
 3. Credit Cards and Purchases.
-4. Billing and Payments.
-5. Loans.
-6. Reminders and Notifications.
-7. Dashboard and Reporting.
+4. Cash Flow and Ledger.
+5. Billing and Payments.
+6. Loans.
+7. Reminders and Notifications.
+8. Dashboard and Reporting.
 
 ## Fluxo atual
 
@@ -34,6 +35,13 @@ mutations autorizadas e recarrega a projeção após gravações. Compras e
 empréstimos usam operações transacionais por etapa com compensação automática
 se a criação do cronograma falhar. Pagamentos são transacionais e idempotentes.
 O SDK tipado fica em `features/finance/infrastructure/sql_connect_generated`.
+
+O dashboard recebe um `CashFlowOverview` pronto do domínio. O Data Connect soma
+movimentações manuais, totais das faturas por mês de referência e pagamentos
+confirmados de empréstimo para o mês atual, ano atual, histórico completo e
+série mensal. Assim, uma compra em 12 vezes pesa em cada ciclo da fatura, não
+integralmente na data da compra. A apresentação apenas exibe a projeção e não
+recalcula saldos financeiros.
 
 ## Plataformas
 

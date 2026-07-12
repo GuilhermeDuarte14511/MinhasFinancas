@@ -6,8 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import '../../../core/money/money.dart';
+import '../../billing/domain/card_invoice_cycle.dart';
 import '../../billing/domain/installment_schedule.dart';
+import '../../billing/domain/recurrence_schedule.dart' as schedule;
 import '../application/finance_repository.dart';
+import '../domain/cash_flow.dart' as cash;
 import '../domain/finance_models.dart' as domain;
 import 'sql_connect_generated/client.dart' as sql;
 
@@ -42,6 +45,21 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     final data = result.data;
     final space = data.financialSpace;
     if (space == null) throw StateError('Espaço financeiro não encontrado.');
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    final canMaterializeRecurrences = data.spaceMembers.any(
+      (member) =>
+          member.memberFirebaseUid == currentUid &&
+          member.role.stringValue != 'VIEWER',
+    );
+    if (canMaterializeRecurrences) {
+      try {
+        final changed = await _materializeOpenEndedRecurrences(spaceId, data);
+        if (changed) return loadWorkspace(spaceId);
+      } catch (_) {
+        // A leitura atual permanece disponível; a próxima atualização tenta
+        // completar novamente a janela futura com as mesmas chaves idempotentes.
+      }
+    }
     var pendingInvitations = const <domain.InvitationRecord>[];
     try {
       final invitations = await _client
@@ -115,7 +133,6 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         if (b.role.stringValue == 'OWNER') return 1;
         return a.user.displayName.compareTo(b.user.displayName);
       });
-    final currentUid = FirebaseAuth.instance.currentUser?.uid;
     final currentMember = spaceMembers.firstWhere(
       (member) => member.memberFirebaseUid == currentUid,
       orElse: () => spaceMembers.first,
@@ -125,25 +142,52 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         rule.eventType.stringValue: rule,
     };
     final preference = data.notificationPreferences.firstOrNull;
-
+    final purchases = [
+      for (final purchase in data.purchases)
+        domain.PurchaseRecord(
+          id: purchase.id,
+          description: purchase.description,
+          category: purchase.category.name,
+          cardId: purchase.creditCard.id,
+          total: Money.fromCents(purchase.totalAmountCents.toInt()),
+          installmentCount: purchase.installmentCount,
+          purchaseDate: purchase.purchaseDate,
+          createdBy: purchase.createdByUser.displayName,
+        ),
+    ];
+    final cashFlowEntries = [
+      for (final entry in data.cashFlowEntries) _mapCashFlowEntry(entry),
+    ];
+    final now = DateTime.now();
+    var cashFlowOverview = cash.CashFlowOverview.fromEntries(
+      entries: cashFlowEntries,
+      referenceDate: now,
+    );
+    try {
+      final summary = await _client
+          .getCashFlowSummary(
+            spaceId: spaceId,
+            monthStart: DateTime(now.year, now.month),
+            yearStart: DateTime(now.year),
+            nextYearStart: DateTime(now.year + 1),
+            monthStartedAt: _timestamp(DateTime(now.year, now.month)),
+            nextMonthStartedAt: _timestamp(DateTime(now.year, now.month + 1)),
+            yearStartedAt: _timestamp(DateTime(now.year)),
+            nextYearStartedAt: _timestamp(DateTime(now.year + 1)),
+          )
+          .execute(fetchPolicy: QueryFetchPolicy.serverOnly);
+      cashFlowOverview = _mapCashFlowOverview(summary.data, now);
+    } catch (_) {
+      // The entry projection remains available during a rolling backend update.
+    }
     return WorkspaceSnapshot(
       id: space.id,
       name: space.name,
       colorValue: _colorValue(space.colorHex),
       cards: cards,
-      purchases: [
-        for (final purchase in data.purchases)
-          domain.PurchaseRecord(
-            id: purchase.id,
-            description: purchase.description,
-            category: purchase.category.name,
-            cardId: purchase.creditCard.id,
-            total: Money.fromCents(purchase.totalAmountCents.toInt()),
-            installmentCount: purchase.installmentCount,
-            purchaseDate: purchase.purchaseDate,
-            createdBy: purchase.createdByUser.displayName,
-          ),
-      ],
+      purchases: purchases,
+      cashFlowEntries: cashFlowEntries,
+      cashFlowOverview: cashFlowOverview,
       purchaseInstallments: [
         for (final installment in data.purchaseInstallments)
           domain.PurchaseInstallmentRecord(
@@ -369,6 +413,283 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
   }
 
   @override
+  Future<void> createCashFlowEntry({
+    required String spaceId,
+    required cash.CashFlowDirection direction,
+    required cash.CashFlowKind kind,
+    required cash.CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required cash.CashFlowStatus status,
+    cash.RecurrenceRule? recurrence,
+    String? categoryId,
+    String? notes,
+  }) async {
+    if (status == cash.CashFlowStatus.cancelled) {
+      throw StateError('Um novo lançamento não pode nascer cancelado.');
+    }
+    if (recurrence?.isRecurring == true) {
+      await _createRecurringCashFlowEntries(
+        spaceId: spaceId,
+        direction: direction,
+        kind: kind,
+        paymentMethod: paymentMethod,
+        description: description,
+        amount: amount,
+        occurredAt: occurredAt,
+        status: status,
+        recurrence: recurrence!,
+        categoryId: categoryId,
+        notes: notes,
+      );
+      return;
+    }
+    final competenceMonth = DateTime(occurredAt.year, occurredAt.month);
+    final idempotencyKey = _secureToken();
+    if (direction == cash.CashFlowDirection.income) {
+      if (status == cash.CashFlowStatus.scheduled) {
+        await (_client.createScheduledIncomeEntry(
+                spaceId: spaceId,
+                description: description.trim(),
+                kind: _sqlCashFlowKind(kind),
+                paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+                amountCents: BigInt.from(amount.cents),
+                occurredAt: _timestamp(occurredAt),
+                competenceMonth: competenceMonth,
+                idempotencyKey: idempotencyKey,
+              )
+              ..categoryId(categoryId)
+              ..notes(_optionalText(notes)))
+            .execute();
+        return;
+      }
+      await _client
+          .createIncomeEntry(
+            spaceId: spaceId,
+            description: description.trim(),
+            kind: _sqlCashFlowKind(kind),
+            paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+            amountCents: BigInt.from(amount.cents),
+            occurredAt: _timestamp(occurredAt),
+            competenceMonth: competenceMonth,
+            idempotencyKey: idempotencyKey,
+          )
+          .notes(_optionalText(notes))
+          .execute();
+      return;
+    }
+    if (categoryId == null) {
+      throw StateError('Categoria obrigatória para uma saída.');
+    }
+    if (status == cash.CashFlowStatus.scheduled) {
+      await _client
+          .createPlannedExpenseEntry(
+            spaceId: spaceId,
+            categoryId: categoryId,
+            description: description.trim(),
+            kind: _sqlCashFlowKind(kind),
+            paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+            amountCents: BigInt.from(amount.cents),
+            occurredAt: _timestamp(occurredAt),
+            competenceMonth: competenceMonth,
+            idempotencyKey: idempotencyKey,
+          )
+          .notes(_optionalText(notes))
+          .execute();
+      return;
+    }
+    await _client
+        .createExpenseEntry(
+          spaceId: spaceId,
+          categoryId: categoryId,
+          description: description.trim(),
+          kind: _sqlCashFlowKind(kind),
+          paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+          amountCents: BigInt.from(amount.cents),
+          occurredAt: _timestamp(occurredAt),
+          competenceMonth: competenceMonth,
+          idempotencyKey: idempotencyKey,
+        )
+        .notes(_optionalText(notes))
+        .execute();
+  }
+
+  @override
+  Future<void> updateCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required cash.CashFlowDirection direction,
+    required String? recurrenceSeriesId,
+    required DateTime originalOccurredAt,
+    required cash.CashFlowKind kind,
+    required cash.CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required cash.CashFlowStatus status,
+    required cash.RecurrenceScope scope,
+    String? categoryId,
+    String? notes,
+  }) async {
+    final sqlStatus = _sqlCashFlowStatus(status, direction);
+    final realizedAt = status == cash.CashFlowStatus.confirmed
+        ? _timestamp(DateTime.now())
+        : null;
+    if (scope == cash.RecurrenceScope.single) {
+      await (_client.updateCashFlowOccurrence(
+              spaceId: spaceId,
+              entryId: entryId,
+              scope: sql.CashFlowMutationScope.ONLY_THIS,
+              description: description.trim(),
+              kind: _sqlCashFlowKind(kind),
+              paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+              amountCents: BigInt.from(amount.cents),
+              occurredAt: _timestamp(occurredAt),
+              competenceMonth: DateTime(occurredAt.year, occurredAt.month),
+              status: sqlStatus,
+            )
+            ..categoryId(categoryId)
+            ..notes(_optionalText(notes))
+            ..receivedAt(
+              direction == cash.CashFlowDirection.income ? realizedAt : null,
+            )
+            ..paidAt(
+              direction == cash.CashFlowDirection.expense ? realizedAt : null,
+            ))
+          .execute();
+      return;
+    }
+    if (recurrenceSeriesId == null) {
+      throw StateError(
+        'A série recorrente deste lançamento não foi encontrada.',
+      );
+    }
+    if (scope == cash.RecurrenceScope.thisAndFuture) {
+      await (_client.updateCashFlowSeriesFrom(
+              spaceId: spaceId,
+              seriesId: recurrenceSeriesId,
+              scope: sql.CashFlowMutationScope.THIS_AND_FUTURE,
+              cutoffAt: _timestamp(originalOccurredAt),
+              description: description.trim(),
+              kind: _sqlCashFlowKind(kind),
+              paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+              amountCents: BigInt.from(amount.cents),
+              entryStatus: sqlStatus,
+            )
+            ..categoryId(categoryId)
+            ..notes(_optionalText(notes))
+            ..receivedAt(
+              direction == cash.CashFlowDirection.income ? realizedAt : null,
+            )
+            ..paidAt(
+              direction == cash.CashFlowDirection.expense ? realizedAt : null,
+            ))
+          .execute();
+      return;
+    }
+    await (_client.updateEntireCashFlowSeries(
+            spaceId: spaceId,
+            seriesId: recurrenceSeriesId,
+            scope: sql.CashFlowMutationScope.ENTIRE_SERIES,
+            description: description.trim(),
+            kind: _sqlCashFlowKind(kind),
+            paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+            amountCents: BigInt.from(amount.cents),
+            entryStatus: sqlStatus,
+          )
+          ..categoryId(categoryId)
+          ..notes(_optionalText(notes))
+          ..receivedAt(
+            direction == cash.CashFlowDirection.income ? realizedAt : null,
+          )
+          ..paidAt(
+            direction == cash.CashFlowDirection.expense ? realizedAt : null,
+          ))
+        .execute();
+  }
+
+  @override
+  Future<void> updateCashFlowStatus({
+    required String spaceId,
+    required String entryId,
+    required cash.CashFlowDirection direction,
+    required cash.CashFlowStatus status,
+  }) async {
+    if (status != cash.CashFlowStatus.confirmed) {
+      throw StateError('Use a edição ou exclusão para alterar este status.');
+    }
+    final now = _timestamp(DateTime.now());
+    if (direction == cash.CashFlowDirection.income) {
+      await _client
+          .markIncomeEntryReceived(
+            spaceId: spaceId,
+            entryId: entryId,
+            receivedAt: now,
+          )
+          .execute();
+      return;
+    }
+    await _client
+        .markExpenseEntryPaid(spaceId: spaceId, entryId: entryId, paidAt: now)
+        .execute();
+  }
+
+  @override
+  Future<void> deleteCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required String? recurrenceSeriesId,
+    required DateTime occurredAt,
+    required cash.RecurrenceScope scope,
+  }) async {
+    if (recurrenceSeriesId == null) {
+      await _client
+          .deleteStandaloneCashFlowEntry(
+            spaceId: spaceId,
+            entryId: entryId,
+            scope: sql.CashFlowMutationScope.ONLY_THIS,
+          )
+          .execute();
+      return;
+    }
+    if (scope == cash.RecurrenceScope.single) {
+      await _client
+          .deleteCashFlowOccurrence(
+            spaceId: spaceId,
+            entryId: entryId,
+            scope: sql.CashFlowMutationScope.ONLY_THIS,
+            reason: 'Excluída pelo usuário',
+          )
+          .execute();
+      return;
+    }
+    if (scope == cash.RecurrenceScope.thisAndFuture) {
+      final lastKeptDate = DateTime(
+        occurredAt.year,
+        occurredAt.month,
+        occurredAt.day,
+      ).subtract(const Duration(days: 1));
+      await (_client.deleteCashFlowSeriesFrom(
+        spaceId: spaceId,
+        seriesId: recurrenceSeriesId,
+        scope: sql.CashFlowMutationScope.THIS_AND_FUTURE,
+        cutoffAt: _timestamp(occurredAt),
+        reason: 'Esta ocorrência e as próximas foram excluídas.',
+      )..lastKeptDate(lastKeptDate)).execute();
+      return;
+    }
+    await _client
+        .deleteEntireCashFlowSeries(
+          spaceId: spaceId,
+          seriesId: recurrenceSeriesId,
+          scope: sql.CashFlowMutationScope.ENTIRE_SERIES,
+          reason: 'Série excluída pelo usuário',
+        )
+        .execute();
+  }
+
+  @override
   Future<void> createCard({
     required String spaceId,
     required String nickname,
@@ -423,6 +744,16 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
   }
 
   @override
+  Future<void> deleteCard({
+    required String spaceId,
+    required String cardId,
+  }) async {
+    await _client
+        .deleteCreditCardCascade(spaceId: spaceId, cardId: cardId)
+        .execute();
+  }
+
+  @override
   Future<void> createPurchase({
     required String spaceId,
     required String description,
@@ -434,11 +765,12 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required int cardClosingDay,
     required int cardDueDay,
   }) async {
-    final firstReference = DateTime(
-      purchaseDate.year,
-      purchaseDate.month + (purchaseDate.day > cardClosingDay ? 1 : 0),
-      1,
+    final firstCycle = const CardInvoiceCycleCalculator().calculate(
+      purchaseDate: purchaseDate,
+      closingDay: cardClosingDay,
+      dueDay: cardDueDay,
     );
+    final firstReference = firstCycle.referenceMonth;
     final purchaseResult = await _client
         .createPurchase(
           spaceId: spaceId,
@@ -480,7 +812,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
               installmentNumber: installment.number,
               installmentCount: installmentCount,
               amountCents: BigInt.from(installment.amount.cents),
-              dueDate: _invoiceDueDate(reference, cardClosingDay, cardDueDay),
+              dueDate: _invoiceDueDate(reference, cardDueDay),
             )
             .execute();
       }
@@ -699,6 +1031,182 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     await builder.execute();
   }
 
+  Future<void> _createRecurringCashFlowEntries({
+    required String spaceId,
+    required cash.CashFlowDirection direction,
+    required cash.CashFlowKind kind,
+    required cash.CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required cash.CashFlowStatus status,
+    required cash.RecurrenceRule recurrence,
+    required String? categoryId,
+    required String? notes,
+  }) async {
+    if (direction == cash.CashFlowDirection.expense && categoryId == null) {
+      throw StateError('Categoria obrigatória para uma saída recorrente.');
+    }
+    final startDate = DateTime(
+      occurredAt.year,
+      occurredAt.month,
+      occurredAt.day,
+    );
+    final seriesBuilder =
+        _client.createCashFlowRecurrenceSeries(
+            spaceId: spaceId,
+            direction: _sqlCashFlowDirection(direction),
+            kind: _sqlCashFlowKind(kind),
+            paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+            description: description.trim(),
+            amountCents: BigInt.from(amount.cents),
+            frequency: _sqlRecurrenceFrequency(recurrence.frequency),
+            startDate: startDate,
+            idempotencyKey: _secureToken(),
+          )
+          ..categoryId(categoryId)
+          ..notes(_optionalText(notes))
+          ..endDate(recurrence.endDate)
+          ..occurrenceLimit(recurrence.occurrenceCount)
+          ..preferredDay(recurrence.preferredDay)
+          ..nextOccurrenceDate(startDate);
+    final seriesResult = await seriesBuilder.execute();
+    final seriesId = seriesResult.data.series.id;
+    final materializedCount =
+        recurrence.occurrenceCount ??
+        (recurrence.endDate == null
+            ? _defaultRecurrenceHorizon(recurrence.frequency)
+            : null);
+    final occurrences = const schedule.RecurrenceScheduleGenerator().generate(
+      seriesId: seriesId,
+      startsOn: startDate,
+      frequency: _scheduleFrequency(recurrence.frequency),
+      endsOn: recurrence.endDate,
+      occurrenceCount: materializedCount,
+      preferredDay: recurrence.preferredDay,
+    );
+    if (occurrences.isEmpty) {
+      await _client
+          .deleteEntireCashFlowSeries(
+            spaceId: spaceId,
+            seriesId: seriesId,
+            scope: sql.CashFlowMutationScope.ENTIRE_SERIES,
+            reason: 'Série sem ocorrências válidas',
+          )
+          .execute();
+      throw StateError('A recorrência não gerou nenhuma data válida.');
+    }
+    try {
+      for (var index = 0; index < occurrences.length; index++) {
+        final occurrence = occurrences[index];
+        final occurrenceStatus = _occurrenceStatus(
+          requested: status,
+          scheduledDate: occurrence.scheduledDate,
+        );
+        final realizedAt = occurrenceStatus == cash.CashFlowStatus.confirmed
+            ? _timestamp(occurrence.scheduledDate)
+            : null;
+        final nextDate = index + 1 < occurrences.length
+            ? occurrences[index + 1].scheduledDate
+            : recurrence.withoutEnd
+            ? _nextRecurrenceDate(recurrence, occurrence.scheduledDate)
+            : null;
+        await (_client.createRecurringCashFlowOccurrence(
+                spaceId: spaceId,
+                seriesId: seriesId,
+                occurrenceIndex: occurrence.sequence,
+                occurredAt: _timestamp(occurrence.scheduledDate),
+                competenceMonth: DateTime(
+                  occurrence.scheduledDate.year,
+                  occurrence.scheduledDate.month,
+                ),
+                status: _sqlCashFlowStatus(occurrenceStatus, direction),
+                idempotencyKey:
+                    '$seriesId:${occurrence.sequence}:${occurrence.key.value}',
+              )
+              ..receivedAt(
+                direction == cash.CashFlowDirection.income ? realizedAt : null,
+              )
+              ..paidAt(
+                direction == cash.CashFlowDirection.expense ? realizedAt : null,
+              )
+              ..nextOccurrenceDate(nextDate))
+            .execute();
+      }
+    } catch (_) {
+      await _client
+          .deleteEntireCashFlowSeries(
+            spaceId: spaceId,
+            seriesId: seriesId,
+            scope: sql.CashFlowMutationScope.ENTIRE_SERIES,
+            reason: 'Falha ao materializar as ocorrências',
+          )
+          .execute();
+      rethrow;
+    }
+  }
+
+  Future<bool> _materializeOpenEndedRecurrences(
+    String spaceId,
+    sql.GetWorkspaceSnapshotData data,
+  ) async {
+    final now = DateTime.now();
+    final refillThreshold = DateTime(now.year, now.month + 12, now.day);
+    var changed = false;
+    for (final series in data.recurrenceSeries) {
+      final nextDate = series.nextOccurrenceDate;
+      final isOpenEnded =
+          series.status.stringValue == 'ACTIVE' &&
+          series.endDate == null &&
+          series.occurrenceLimit == null;
+      if (!isOpenEnded ||
+          nextDate == null ||
+          nextDate.isAfter(refillThreshold)) {
+        continue;
+      }
+      final frequency = _cashRecurrenceFrequency(series.frequency.stringValue);
+      final rule = cash.RecurrenceRule(
+        frequency: frequency,
+        preferredDay: series.preferredDay,
+        withoutEnd: true,
+      );
+      final occurrences = const schedule.RecurrenceScheduleGenerator().generate(
+        seriesId: series.id,
+        startsOn: nextDate,
+        frequency: _scheduleFrequency(frequency),
+        occurrenceCount: _defaultRecurrenceHorizon(frequency),
+        preferredDay: series.preferredDay,
+      );
+      final firstIndex = _recurrenceIndexFor(
+        startDate: series.startDate,
+        occurrenceDate: nextDate,
+        frequency: frequency,
+      );
+      for (var index = 0; index < occurrences.length; index++) {
+        final occurrence = occurrences[index];
+        final occurrenceIndex = firstIndex + index;
+        final following = index + 1 < occurrences.length
+            ? occurrences[index + 1].scheduledDate
+            : _nextRecurrenceDate(rule, occurrence.scheduledDate);
+        await (_client.createRecurringCashFlowOccurrence(
+          spaceId: spaceId,
+          seriesId: series.id,
+          occurrenceIndex: occurrenceIndex,
+          occurredAt: _timestamp(occurrence.scheduledDate),
+          competenceMonth: DateTime(
+            occurrence.scheduledDate.year,
+            occurrence.scheduledDate.month,
+          ),
+          status: sql.CashFlowStatus.PLANNED,
+          idempotencyKey:
+              '${series.id}:rolling:$occurrenceIndex:${occurrence.key.value}',
+        )..nextOccurrenceDate(following)).execute();
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
   Future<String> _ensureInvoice({
     required String spaceId,
     required String cardId,
@@ -730,7 +1238,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
               referenceMonth.month,
               closingDay,
             ),
-            dueDate: _invoiceDueDate(referenceMonth, closingDay, dueDay),
+            dueDate: _invoiceDueDate(referenceMonth, dueDay),
           )
           .execute();
       return created.data.invoice.id;
@@ -739,6 +1247,182 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
       if (raced != null) return raced;
       rethrow;
     }
+  }
+
+  static cash.CashFlowEntry _mapCashFlowEntry(
+    sql.GetWorkspaceSnapshotCashFlowEntries entry,
+  ) => cash.CashFlowEntry(
+    id: entry.id,
+    direction: _cashFlowDirection(entry.direction.stringValue),
+    kind: _cashFlowKind(entry.kind.stringValue),
+    paymentMethod: _cashFlowPaymentMethod(entry.paymentMethod.stringValue),
+    description: entry.description,
+    amount: Money.fromCents(entry.amountCents.toInt()),
+    occurredAt: entry.occurredAt.toDateTime().toLocal(),
+    competenceMonth: entry.competenceMonth,
+    status: _cashFlowStatus(entry.status.stringValue),
+    createdBy: entry.createdByUser.displayName,
+    categoryId: entry.category?.id,
+    categoryName: entry.category?.name,
+    notes: entry.notes,
+    sourceType: entry.sourceType,
+    sourceEntityId: entry.sourceEntityId,
+    recurrenceSeriesId: entry.recurrenceSeries?.id,
+    occurrenceIndex: entry.occurrenceIndex,
+    isRecurrenceException: entry.isRecurrenceException,
+    receivedAt: entry.receivedAt?.toDateTime().toLocal(),
+    paidAt: entry.paidAt?.toDateTime().toLocal(),
+  );
+
+  static cash.CashFlowOverview _mapCashFlowOverview(
+    sql.GetCashFlowSummaryData data,
+    DateTime referenceDate,
+  ) {
+    var month = _periodTotals([
+      for (final group in data.month)
+        (
+          direction: group.direction.stringValue,
+          cents: group.amountCents_sum?.toInt() ?? 0,
+        ),
+    ]);
+    month = month.addExpense(
+      Money.fromCents(
+        _sumCents([
+          for (final group in data.cardMonth) group.totalAmountCents_sum,
+          for (final group in data.loanMonth) group.amountCents_sum,
+        ]),
+      ),
+    );
+    var year = _periodTotals([
+      for (final group in data.year)
+        (
+          direction: group.direction.stringValue,
+          cents: group.amountCents_sum?.toInt() ?? 0,
+        ),
+    ]);
+    year = year.addExpense(
+      Money.fromCents(
+        _sumCents([
+          for (final group in data.cardYear) group.totalAmountCents_sum,
+          for (final group in data.loanYear) group.amountCents_sum,
+        ]),
+      ),
+    );
+    var lifetime = _periodTotals([
+      for (final group in data.lifetime)
+        (
+          direction: group.direction.stringValue,
+          cents: group.amountCents_sum?.toInt() ?? 0,
+        ),
+    ]);
+    lifetime = lifetime.addExpense(
+      Money.fromCents(
+        _sumCents([
+          for (final group in data.cardLifetime) group.totalAmountCents_sum,
+          for (final group in data.loanLifetime) group.amountCents_sum,
+        ]),
+      ),
+    );
+    final plannedMonth = _periodTotals([
+      for (final group in data.monthPlanned)
+        (
+          direction: group.direction.stringValue,
+          cents: group.amountCents_sum?.toInt() ?? 0,
+        ),
+    ]);
+    final plannedYear = _periodTotals([
+      for (final group in data.yearPlanned)
+        (
+          direction: group.direction.stringValue,
+          cents: group.amountCents_sum?.toInt() ?? 0,
+        ),
+    ]);
+    final series = [
+      for (var month = 1; month <= 12; month++)
+        cash.MonthlyCashFlow(
+          month: DateTime(referenceDate.year, month),
+          totals: const cash.PeriodTotals.zero(),
+        ),
+    ];
+    for (final group in data.yearSeries) {
+      final index = group.competenceMonth.month - 1;
+      final current = series[index];
+      series[index] = cash.MonthlyCashFlow(
+        month: current.month,
+        totals: current.totals.add(
+          _cashFlowDirection(group.direction.stringValue),
+          Money.fromCents(group.amountCents_sum?.toInt() ?? 0),
+        ),
+      );
+    }
+    for (final group in data.cardYearSeries) {
+      final index = group.referenceMonth.month - 1;
+      series[index] = series[index].addExpense(
+        Money.fromCents(group.totalAmountCents_sum?.toInt() ?? 0),
+      );
+    }
+    for (final group in data.loanYearSeries) {
+      final paidAt = group.paidAt.toDateTime().toLocal();
+      final index = paidAt.month - 1;
+      series[index] = series[index].addExpense(
+        Money.fromCents(group.amountCents_sum?.toInt() ?? 0),
+      );
+    }
+    DateTime? firstRecord;
+    DateTime? lastRecord;
+
+    void includeRange(DateTime? first, DateTime? last) {
+      if (first != null &&
+          (firstRecord == null || first.isBefore(firstRecord!))) {
+        firstRecord = DateTime(first.year, first.month);
+      }
+      if (last != null && (lastRecord == null || last.isAfter(lastRecord!))) {
+        lastRecord = DateTime(last.year, last.month);
+      }
+    }
+
+    for (final group in data.lifetime) {
+      includeRange(group.competenceMonth_min, group.competenceMonth_max);
+    }
+    for (final group in data.lifetimePlanned) {
+      includeRange(group.competenceMonth_min, group.competenceMonth_max);
+    }
+    for (final group in data.cardLifetime) {
+      includeRange(group.referenceMonth_min, group.referenceMonth_max);
+    }
+    for (final group in data.loanLifetime) {
+      includeRange(
+        group.paidAt_min?.toDateTime().toLocal(),
+        group.paidAt_max?.toDateTime().toLocal(),
+      );
+    }
+    return cash.CashFlowOverview(
+      referenceMonth: DateTime(referenceDate.year, referenceDate.month),
+      currentMonth: month,
+      currentYear: year,
+      lifetime: lifetime,
+      yearSeries: series,
+      currentMonthPlanned: plannedMonth,
+      currentYearPlanned: plannedYear,
+      firstRecordMonth: firstRecord,
+      lastRecordMonth: lastRecord,
+    );
+  }
+
+  static int _sumCents(Iterable<BigInt?> values) =>
+      values.fold<int>(0, (sum, value) => sum + (value?.toInt() ?? 0));
+
+  static cash.PeriodTotals _periodTotals(
+    Iterable<({String direction, int cents})> groups,
+  ) {
+    var totals = const cash.PeriodTotals.zero();
+    for (final group in groups) {
+      totals = totals.add(
+        _cashFlowDirection(group.direction),
+        Money.fromCents(group.cents),
+      );
+    }
+    return totals;
   }
 
   static domain.LoanContract _mapLoan(
@@ -810,6 +1494,127 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     _ => domain.MembershipStatus.active,
   };
 
+  static cash.CashFlowDirection _cashFlowDirection(String value) =>
+      value == 'INCOME'
+      ? cash.CashFlowDirection.income
+      : cash.CashFlowDirection.expense;
+
+  static cash.CashFlowStatus _cashFlowStatus(String value) => switch (value) {
+    'PLANNED' => cash.CashFlowStatus.scheduled,
+    'CANCELLED' => cash.CashFlowStatus.cancelled,
+    _ => cash.CashFlowStatus.confirmed,
+  };
+
+  static cash.RecurrenceFrequency _cashRecurrenceFrequency(String value) =>
+      switch (value) {
+        'WEEKLY' => cash.RecurrenceFrequency.weekly,
+        'BIWEEKLY' => cash.RecurrenceFrequency.biweekly,
+        'MONTHLY' => cash.RecurrenceFrequency.monthly,
+        'ANNUAL' => cash.RecurrenceFrequency.yearly,
+        _ => throw StateError('Frequência recorrente desconhecida: $value'),
+      };
+
+  static cash.CashFlowKind _cashFlowKind(String value) => switch (value) {
+    'SALARY' => cash.CashFlowKind.salary,
+    'THIRTEENTH_SALARY' => cash.CashFlowKind.thirteenthSalary,
+    'VACATION_PAY' => cash.CashFlowKind.vacationPay,
+    'BONUS' => cash.CashFlowKind.bonus,
+    'REFUND' => cash.CashFlowKind.refund,
+    'BILL' => cash.CashFlowKind.bill,
+    'CASH_PURCHASE' => cash.CashFlowKind.cashPurchase,
+    'CARD_PURCHASE' => cash.CashFlowKind.cardPurchase,
+    'SUBSCRIPTION' => cash.CashFlowKind.subscription,
+    'TAX' => cash.CashFlowKind.tax,
+    'LOAN_PAYMENT' => cash.CashFlowKind.loanPayment,
+    'OTHER_INCOME' => cash.CashFlowKind.otherIncome,
+    _ => cash.CashFlowKind.otherExpense,
+  };
+
+  static cash.CashFlowPaymentMethod _cashFlowPaymentMethod(String value) =>
+      switch (value) {
+        'PIX' => cash.CashFlowPaymentMethod.pix,
+        'CASH' => cash.CashFlowPaymentMethod.cash,
+        'BANK_TRANSFER' => cash.CashFlowPaymentMethod.bankTransfer,
+        'DEBIT_CARD' => cash.CashFlowPaymentMethod.debitCard,
+        'CREDIT_CARD' => cash.CashFlowPaymentMethod.creditCard,
+        _ => cash.CashFlowPaymentMethod.other,
+      };
+
+  static sql.CashFlowDirection _sqlCashFlowDirection(
+    cash.CashFlowDirection direction,
+  ) => direction == cash.CashFlowDirection.income
+      ? sql.CashFlowDirection.INCOME
+      : sql.CashFlowDirection.EXPENSE;
+
+  static sql.CashFlowStatus _sqlCashFlowStatus(
+    cash.CashFlowStatus status,
+    cash.CashFlowDirection direction,
+  ) => switch (status) {
+    cash.CashFlowStatus.scheduled => sql.CashFlowStatus.PLANNED,
+    cash.CashFlowStatus.confirmed =>
+      direction == cash.CashFlowDirection.income
+          ? sql.CashFlowStatus.RECEIVED
+          : sql.CashFlowStatus.PAID,
+    cash.CashFlowStatus.cancelled => sql.CashFlowStatus.CANCELLED,
+  };
+
+  static sql.CashFlowRecurrenceFrequency _sqlRecurrenceFrequency(
+    cash.RecurrenceFrequency frequency,
+  ) => switch (frequency) {
+    cash.RecurrenceFrequency.weekly => sql.CashFlowRecurrenceFrequency.WEEKLY,
+    cash.RecurrenceFrequency.biweekly =>
+      sql.CashFlowRecurrenceFrequency.BIWEEKLY,
+    cash.RecurrenceFrequency.monthly => sql.CashFlowRecurrenceFrequency.MONTHLY,
+    cash.RecurrenceFrequency.yearly => sql.CashFlowRecurrenceFrequency.ANNUAL,
+    cash.RecurrenceFrequency.none => throw StateError(
+      'Uma série precisa possuir frequência.',
+    ),
+  };
+
+  static schedule.RecurrenceFrequency _scheduleFrequency(
+    cash.RecurrenceFrequency frequency,
+  ) => switch (frequency) {
+    cash.RecurrenceFrequency.weekly => schedule.RecurrenceFrequency.weekly,
+    cash.RecurrenceFrequency.biweekly => schedule.RecurrenceFrequency.biweekly,
+    cash.RecurrenceFrequency.monthly => schedule.RecurrenceFrequency.monthly,
+    cash.RecurrenceFrequency.yearly => schedule.RecurrenceFrequency.yearly,
+    cash.RecurrenceFrequency.none => throw StateError(
+      'Uma série precisa possuir frequência.',
+    ),
+  };
+
+  static sql.CashFlowKind _sqlCashFlowKind(cash.CashFlowKind kind) =>
+      switch (kind) {
+        cash.CashFlowKind.salary => sql.CashFlowKind.SALARY,
+        cash.CashFlowKind.thirteenthSalary =>
+          sql.CashFlowKind.THIRTEENTH_SALARY,
+        cash.CashFlowKind.vacationPay => sql.CashFlowKind.VACATION_PAY,
+        cash.CashFlowKind.bonus => sql.CashFlowKind.BONUS,
+        cash.CashFlowKind.refund => sql.CashFlowKind.REFUND,
+        cash.CashFlowKind.bill => sql.CashFlowKind.BILL,
+        cash.CashFlowKind.cashPurchase => sql.CashFlowKind.CASH_PURCHASE,
+        cash.CashFlowKind.cardPurchase => sql.CashFlowKind.CARD_PURCHASE,
+        cash.CashFlowKind.subscription => sql.CashFlowKind.SUBSCRIPTION,
+        cash.CashFlowKind.tax => sql.CashFlowKind.TAX,
+        cash.CashFlowKind.loanPayment => sql.CashFlowKind.LOAN_PAYMENT,
+        cash.CashFlowKind.otherIncome => sql.CashFlowKind.OTHER_INCOME,
+        cash.CashFlowKind.otherExpense => sql.CashFlowKind.OTHER_EXPENSE,
+      };
+
+  static sql.CashFlowPaymentMethod _sqlCashFlowPaymentMethod(
+    cash.CashFlowPaymentMethod method,
+  ) => switch (method) {
+    cash.CashFlowPaymentMethod.pix => sql.CashFlowPaymentMethod.PIX,
+    cash.CashFlowPaymentMethod.cash => sql.CashFlowPaymentMethod.CASH,
+    cash.CashFlowPaymentMethod.bankTransfer =>
+      sql.CashFlowPaymentMethod.BANK_TRANSFER,
+    cash.CashFlowPaymentMethod.debitCard =>
+      sql.CashFlowPaymentMethod.DEBIT_CARD,
+    cash.CashFlowPaymentMethod.creditCard =>
+      sql.CashFlowPaymentMethod.CREDIT_CARD,
+    cash.CashFlowPaymentMethod.other => sql.CashFlowPaymentMethod.OTHER,
+  };
+
   static domain.InstallmentStatus _installmentStatus(
     sql.EnumValue<sql.InstallmentStatus> status,
   ) => switch (status.stringValue) {
@@ -830,15 +1635,74 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     _ => domain.LoanInstallmentStatus.open,
   };
 
-  static DateTime _invoiceDueDate(
-    DateTime reference,
-    int closingDay,
-    int dueDay,
-  ) => _safeDate(
-    reference.year,
-    reference.month + (dueDay <= closingDay ? 1 : 0),
-    dueDay,
-  );
+  static cash.CashFlowStatus _occurrenceStatus({
+    required cash.CashFlowStatus requested,
+    required DateTime scheduledDate,
+  }) {
+    if (requested != cash.CashFlowStatus.confirmed) return requested;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final date = DateTime(
+      scheduledDate.year,
+      scheduledDate.month,
+      scheduledDate.day,
+    );
+    return date.isAfter(today)
+        ? cash.CashFlowStatus.scheduled
+        : cash.CashFlowStatus.confirmed;
+  }
+
+  static int _defaultRecurrenceHorizon(cash.RecurrenceFrequency frequency) =>
+      switch (frequency) {
+        cash.RecurrenceFrequency.weekly => 53,
+        cash.RecurrenceFrequency.biweekly => 27,
+        cash.RecurrenceFrequency.monthly => 24,
+        cash.RecurrenceFrequency.yearly => 10,
+        cash.RecurrenceFrequency.none => 0,
+      };
+
+  static int _recurrenceIndexFor({
+    required DateTime startDate,
+    required DateTime occurrenceDate,
+    required cash.RecurrenceFrequency frequency,
+  }) => switch (frequency) {
+    cash.RecurrenceFrequency.weekly =>
+      _civilDaysBetween(startDate, occurrenceDate) ~/ 7 + 1,
+    cash.RecurrenceFrequency.biweekly =>
+      _civilDaysBetween(startDate, occurrenceDate) ~/ 14 + 1,
+    cash.RecurrenceFrequency.monthly =>
+      (occurrenceDate.year - startDate.year) * 12 +
+          occurrenceDate.month -
+          startDate.month +
+          1,
+    cash.RecurrenceFrequency.yearly => occurrenceDate.year - startDate.year + 1,
+    cash.RecurrenceFrequency.none => throw StateError(
+      'Uma série precisa possuir frequência.',
+    ),
+  };
+
+  static int _civilDaysBetween(DateTime start, DateTime end) => DateTime.utc(
+    end.year,
+    end.month,
+    end.day,
+  ).difference(DateTime.utc(start.year, start.month, start.day)).inDays;
+
+  static DateTime _nextRecurrenceDate(
+    cash.RecurrenceRule recurrence,
+    DateTime current,
+  ) => const schedule.RecurrenceScheduleGenerator()
+      .generate(
+        seriesId: 'next-occurrence',
+        startsOn: current,
+        frequency: _scheduleFrequency(recurrence.frequency),
+        occurrenceCount: 2,
+        preferredDay: recurrence.preferredDay,
+      )
+      .last
+      .scheduledDate;
+
+  static DateTime _invoiceDueDate(DateTime reference, int dueDay) =>
+      _safeDate(reference.year, reference.month, dueDay);
 
   static DateTime _safeDate(int year, int month, int day) {
     final firstOfFollowingMonth = DateTime(year, month + 1, 1);
@@ -878,6 +1742,11 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
 
   static String _colorHex(int value) =>
       '#${(value & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
+
+  static String? _optionalText(String? value) {
+    final normalized = value?.trim();
+    return normalized == null || normalized.isEmpty ? null : normalized;
+  }
 
   static String _relativeTime(DateTime value) {
     final difference = DateTime.now().difference(value.toLocal());

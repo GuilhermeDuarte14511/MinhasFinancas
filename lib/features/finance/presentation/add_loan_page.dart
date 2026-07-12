@@ -113,12 +113,12 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
                     ),
                     const SizedBox(height: 16),
                     CurrencyField(
-                      label: 'Valor original em centavos',
+                      label: 'Valor original',
                       onChanged: (value) => _amount = value,
                     ),
                     const SizedBox(height: 16),
                     CurrencyField(
-                      label: 'Valor da parcela em centavos',
+                      label: 'Valor da parcela',
                       onChanged: (value) => _installmentAmount = value,
                     ),
                     const SizedBox(height: 16),

@@ -49,6 +49,63 @@ enum PaymentStatus {
   REVERSED
 }
 
+enum CashFlowDirection {
+  INCOME
+  EXPENSE
+}
+
+enum CashFlowKind {
+  SALARY
+  THIRTEENTH_SALARY
+  VACATION_PAY
+  BONUS
+  REFUND
+  BILL
+  CASH_PURCHASE
+  CARD_PURCHASE
+  SUBSCRIPTION
+  TAX
+  LOAN_PAYMENT
+  OTHER_INCOME
+  OTHER_EXPENSE
+}
+
+enum CashFlowPaymentMethod {
+  PIX
+  CASH
+  BANK_TRANSFER
+  DEBIT_CARD
+  CREDIT_CARD
+  OTHER
+}
+
+enum CashFlowStatus {
+  PLANNED
+  CONFIRMED
+  RECEIVED
+  PAID
+  CANCELLED
+}
+
+enum CashFlowRecurrenceFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  ANNUAL
+}
+
+enum CashFlowRecurrenceSeriesStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CashFlowMutationScope {
+  ONLY_THIS
+  THIS_AND_FUTURE
+  ENTIRE_SERIES
+}
+
 enum LoanStatus {
   ACTIVE
   PAID_OFF
@@ -284,6 +341,76 @@ type InvoicePayment
   reversedAt: Timestamp
   reversalReason: String @col(dataType: "varchar(500)")
   createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type CashFlowRecurrenceSeries
+  @table(name: "cash_flow_recurrence_series")
+  @unique(fields: ["financialSpace", "idempotencyKey"])
+  @index(fields: ["financialSpaceId", "status", "startDate"])
+  @index(fields: ["financialSpaceId", "nextOccurrenceDate"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  category: Category
+  direction: CashFlowDirection!
+  kind: CashFlowKind!
+  paymentMethod: CashFlowPaymentMethod!
+  description: String! @col(dataType: "varchar(180)")
+  amountCents: Int64!
+  notes: String @col(dataType: "varchar(1000)")
+  frequency: CashFlowRecurrenceFrequency!
+  startDate: Date!
+  endDate: Date
+  occurrenceLimit: Int
+  preferredDay: Int
+  nextOccurrenceDate: Date
+  status: CashFlowRecurrenceSeriesStatus!
+  idempotencyKey: String! @col(dataType: "varchar(128)")
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  cancelledByUser: UserProfile
+  cancelledAt: Timestamp
+  cancellationReason: String @col(dataType: "varchar(500)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
+}
+
+type CashFlowEntry
+  @table(name: "cash_flow_entry")
+  @unique(fields: ["financialSpace", "idempotencyKey"])
+  @unique(fields: ["recurrenceSeries", "occurrenceIndex"])
+  @index(fields: ["financialSpaceId", "status", "occurredAt"])
+  @index(fields: ["financialSpaceId", "direction", "occurredAt"])
+  @index(fields: ["recurrenceSeriesId", "occurredAt", "status"])
+  @index(fields: ["sourceType", "sourceEntityId"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  category: Category
+  direction: CashFlowDirection!
+  kind: CashFlowKind!
+  paymentMethod: CashFlowPaymentMethod!
+  description: String! @col(dataType: "varchar(180)")
+  amountCents: Int64!
+  occurredAt: Timestamp!
+  competenceMonth: Date!
+  notes: String @col(dataType: "varchar(1000)")
+  status: CashFlowStatus!
+  recurrenceSeries: CashFlowRecurrenceSeries
+  occurrenceIndex: Int
+  isRecurrenceException: Boolean! @default(value: false)
+  receivedAt: Timestamp
+  paidAt: Timestamp
+  sourceType: String @col(dataType: "varchar(40)")
+  sourceEntityId: UUID
+  idempotencyKey: String! @col(dataType: "varchar(128)")
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  cancelledByUser: UserProfile
+  cancelledAt: Timestamp
+  cancellationReason: String @col(dataType: "varchar(500)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
 }
 
 type Loan

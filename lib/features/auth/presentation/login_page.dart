@@ -120,25 +120,31 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: AppContent(
-            maxWidth: 620,
+            maxWidth: 520,
             padding: const EdgeInsets.fromLTRB(24, 54, 24, 32),
             child: StaggeredColumn(
               initialDelay: const Duration(milliseconds: 40),
               step: const Duration(milliseconds: 90),
+              spacing: 24,
               children: [
-                const Center(child: BrandMark()),
-                Text(
-                  'Nossa Grana',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
-                Text(
-                  'A vida financeira de vocês,\norganizada em um só lugar.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textMuted,
-                    fontSize: 18,
-                  ),
+                Column(
+                  children: [
+                    const BrandMark(),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Nossa Grana',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Sua vida financeira, organizada em um só lugar.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
                 ),
                 ShakeOnError(
                   trigger: _errorShakeTrigger,
@@ -255,6 +261,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                 ),
                 Wrap(
+                  alignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     const Text('Ainda não tem uma conta?'),
@@ -272,7 +279,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
                 Text(
                   'Acesso protegido pelo Firebase Authentication',
                   textAlign: TextAlign.center,

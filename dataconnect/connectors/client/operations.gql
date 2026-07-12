@@ -148,7 +148,7 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
 
   purchases(
     where: {financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}
-    limit: 300
+    limit: 5000
   ) {
     id
     description
@@ -162,6 +162,61 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     creditCard { id }
     category { id name }
     createdByUser { id displayName }
+  }
+
+  cashFlowEntries(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    orderBy: [{occurredAt: DESC}]
+    limit: 5000
+  ) {
+    id
+    direction
+    kind
+    paymentMethod
+    description
+    amountCents
+    occurredAt
+    competenceMonth
+    notes
+    status
+    occurrenceIndex
+    isRecurrenceException
+    receivedAt
+    paidAt
+    sourceType
+    sourceEntityId
+    category { id name }
+    recurrenceSeries {
+      id
+      frequency
+      startDate
+      endDate
+      preferredDay
+      status
+    }
+    createdByUser { id displayName }
+  }
+
+  recurrenceSeries: cashFlowRecurrenceSeriess(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+    orderBy: [{startDate: DESC}]
+    limit: 500
+  ) {
+    id
+    direction
+    kind
+    paymentMethod
+    description
+    amountCents
+    notes
+    frequency
+    startDate
+    endDate
+    occurrenceLimit
+    preferredDay
+    nextOccurrenceDate
+    status
+    category { id name }
   }
 
   creditCardInvoices(
@@ -280,6 +335,340 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     summary
     occurredAt
     actorUser { displayName }
+  }
+}
+
+query GetCashFlowSummary(
+  $spaceId: UUID!
+  $monthStart: Date!
+  $yearStart: Date!
+  $nextYearStart: Date!
+  $monthStartedAt: Timestamp!
+  $nextMonthStartedAt: Timestamp!
+  $yearStartedAt: Timestamp!
+  $nextYearStartedAt: Timestamp!
+) @auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(
+    first: {
+      where: {
+        financialSpaceId: {eq: $spaceId}
+        memberFirebaseUid: {eq_expr: "auth.uid"}
+        status: {eq: ACTIVE}
+        removedAt: {isNull: true}
+      }
+    }
+  ) @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    id
+  }
+
+  month: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {in: [CONFIRMED, RECEIVED, PAID]}
+      competenceMonth: {eq: $monthStart}
+    }
+  ) {
+    direction
+    amountCents_sum
+  }
+
+  year: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {in: [CONFIRMED, RECEIVED, PAID]}
+      competenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+  ) {
+    direction
+    amountCents_sum
+  }
+
+  lifetime: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {in: [CONFIRMED, RECEIVED, PAID]}
+    }
+  ) {
+    direction
+    amountCents_sum
+    competenceMonth_min
+    competenceMonth_max
+  }
+
+  yearSeries: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {in: [CONFIRMED, RECEIVED, PAID]}
+      competenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+    orderBy: [{competenceMonth: ASC}]
+  ) {
+    competenceMonth
+    direction
+    amountCents_sum
+  }
+
+  monthPlanned: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: PLANNED}
+      competenceMonth: {eq: $monthStart}
+    }
+  ) {
+    direction
+    amountCents_sum
+  }
+
+  yearPlanned: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: PLANNED}
+      competenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+  ) {
+    direction
+    amountCents_sum
+  }
+
+  lifetimePlanned: cashFlowEntries(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: PLANNED}}
+  ) {
+    direction
+    amountCents_sum
+    competenceMonth_min
+    competenceMonth_max
+  }
+
+  yearPlannedSeries: cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: PLANNED}
+      competenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+    orderBy: [{competenceMonth: ASC}]
+  ) {
+    competenceMonth
+    direction
+    amountCents_sum
+  }
+
+  cardMonth: creditCardInvoices(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      referenceMonth: {eq: $monthStart}
+    }
+  ) {
+    totalAmountCents_sum
+  }
+
+  cardYear: creditCardInvoices(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      referenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+  ) {
+    totalAmountCents_sum
+  }
+
+  cardLifetime: creditCardInvoices(
+    where: {financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}
+  ) {
+    totalAmountCents_sum
+    referenceMonth_min
+    referenceMonth_max
+  }
+
+  cardYearSeries: creditCardInvoices(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      referenceMonth: {ge: $yearStart, lt: $nextYearStart}
+    }
+    orderBy: [{referenceMonth: ASC}]
+  ) {
+    referenceMonth
+    totalAmountCents_sum
+  }
+
+  loanMonth: loanPayments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: CONFIRMED}
+      paidAt: {ge: $monthStartedAt, lt: $nextMonthStartedAt}
+    }
+  ) {
+    amountCents_sum
+  }
+
+  loanYear: loanPayments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: CONFIRMED}
+      paidAt: {ge: $yearStartedAt, lt: $nextYearStartedAt}
+    }
+  ) {
+    amountCents_sum
+  }
+
+  loanLifetime: loanPayments(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: CONFIRMED}}
+  ) {
+    amountCents_sum
+    paidAt_min
+    paidAt_max
+  }
+
+  loanYearSeries: loanPayments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: CONFIRMED}
+      paidAt: {ge: $yearStartedAt, lt: $nextYearStartedAt}
+    }
+    orderBy: [{paidAt: ASC}]
+  ) {
+    paidAt
+    amountCents_sum
+  }
+}
+
+query GetAgendaEntries(
+  $spaceId: UUID!
+  $rangeStart: Timestamp!
+  $rangeEnd: Timestamp!
+  $rangeStartDate: Date!
+  $rangeEndDate: Date!
+) @auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(
+    first: {
+      where: {
+        financialSpaceId: {eq: $spaceId}
+        memberFirebaseUid: {eq_expr: "auth.uid"}
+        status: {eq: ACTIVE}
+        removedAt: {isNull: true}
+      }
+    }
+  ) @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    id
+  }
+
+  cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      occurredAt: {ge: $rangeStart, lt: $rangeEnd}
+    }
+    orderBy: [{occurredAt: ASC}]
+    limit: 5000
+  ) {
+    id
+    direction
+    kind
+    paymentMethod
+    description
+    amountCents
+    occurredAt
+    competenceMonth
+    notes
+    status
+    occurrenceIndex
+    isRecurrenceException
+    receivedAt
+    paidAt
+    category { id name icon colorHex }
+    recurrenceSeries {
+      id
+      frequency
+      preferredDay
+      status
+    }
+  }
+
+  creditCardInvoices(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      dueDate: {ge: $rangeStartDate, lt: $rangeEndDate}
+    }
+    orderBy: [{dueDate: ASC}]
+    limit: 1000
+  ) {
+    id
+    referenceMonth
+    closingDate
+    dueDate
+    status
+    totalAmountCents
+    paidAmountCents
+    creditCard { id nickname lastFourDigits colorHex }
+  }
+
+  purchaseInstallments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      dueDate: {ge: $rangeStartDate, lt: $rangeEndDate}
+    }
+    orderBy: [{dueDate: ASC}]
+    limit: 5000
+  ) {
+    id
+    installmentNumber
+    installmentCount
+    amountCents
+    dueDate
+    status
+    purchase {
+      id
+      description
+      creditCard { id nickname lastFourDigits colorHex }
+    }
+    invoice { id referenceMonth status }
+  }
+
+  loanInstallments(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+      dueDate: {ge: $rangeStartDate, lt: $rangeEndDate}
+    }
+    orderBy: [{dueDate: ASC}]
+    limit: 2000
+  ) {
+    id
+    installmentNumber
+    dueDate
+    totalAmountCents
+    paidAmountCents
+    status
+    loan { id name lender status }
+  }
+
+  recurrenceSeries: cashFlowRecurrenceSeriess(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {eq: ACTIVE}
+      startDate: {lt: $rangeEndDate}
+    }
+    orderBy: [{startDate: ASC}]
+    limit: 500
+  ) {
+    id
+    direction
+    kind
+    paymentMethod
+    description
+    amountCents
+    notes
+    frequency
+    startDate
+    endDate
+    occurrenceLimit
+    preferredDay
+    nextOccurrenceDate
+    status
+    category { id name icon colorHex }
   }
 }
 
@@ -663,6 +1052,719 @@ mutation CreateCategory(
   })
 }
 
+# General cash flow
+
+mutation CreateIncomeEntry(
+  $spaceId: UUID!
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $notes: String
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_insert(data: {
+    financialSpaceId: $spaceId
+    direction: INCOME
+    kind: $kind
+    paymentMethod: $paymentMethod
+    description: $description
+    amountCents: $amountCents
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes: $notes
+    status: CONFIRMED
+    sourceType: "manual"
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId_expr: "response.entry.id"
+    action: "income_created"
+    summary_expr: "'registrou a entrada ' + vars.description + '.'"
+  })
+}
+
+mutation CreateScheduledIncomeEntry(
+  $spaceId: UUID!
+  $categoryId: UUID
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $notes: String
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_insert(data: {
+    financialSpaceId: $spaceId
+    categoryId: $categoryId
+    direction: INCOME
+    kind: $kind
+    paymentMethod: $paymentMethod
+    description: $description
+    amountCents: $amountCents
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes: $notes
+    status: PLANNED
+    isRecurrenceException: false
+    sourceType: "manual"
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId_expr: "response.entry.id"
+    action: "income_planned"
+    summary_expr: "'agendou a entrada ' + vars.description + '.'"
+  })
+}
+
+mutation CreateExpenseEntry(
+  $spaceId: UUID!
+  $categoryId: UUID!
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $notes: String
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "this != null", message: "Categoria inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_insert(data: {
+    financialSpaceId: $spaceId
+    categoryId: $categoryId
+    direction: EXPENSE
+    kind: $kind
+    paymentMethod: $paymentMethod
+    description: $description
+    amountCents: $amountCents
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes: $notes
+    status: CONFIRMED
+    sourceType: "manual"
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId_expr: "response.entry.id"
+    action: "expense_created"
+    summary_expr: "'registrou a saída ' + vars.description + '.'"
+  })
+}
+
+mutation CreatePlannedExpenseEntry(
+  $spaceId: UUID!
+  $categoryId: UUID!
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $notes: String
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "this != null", message: "Categoria inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_insert(data: {
+    financialSpaceId: $spaceId
+    categoryId: $categoryId
+    direction: EXPENSE
+    kind: $kind
+    paymentMethod: $paymentMethod
+    description: $description
+    amountCents: $amountCents
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes: $notes
+    status: PLANNED
+    isRecurrenceException: false
+    sourceType: "manual"
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId_expr: "response.entry.id"
+    action: "expense_planned"
+    summary_expr: "'agendou a saída ' + vars.description + '.'"
+  })
+}
+
+mutation CreateCashFlowRecurrenceSeries(
+  $spaceId: UUID!
+  $categoryId: UUID
+  $direction: CashFlowDirection!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $description: String!
+  $amountCents: Int64!
+  $notes: String
+  $frequency: CashFlowRecurrenceFrequency!
+  $startDate: Date!
+  $endDate: Date
+  $occurrenceLimit: Int
+  $preferredDay: Int
+  $nextOccurrenceDate: Date
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida para este espaço.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  series: cashFlowRecurrenceSeries_insert(data: {
+    financialSpaceId: $spaceId
+    categoryId: $categoryId
+    direction: $direction
+    kind: $kind
+    paymentMethod: $paymentMethod
+    description: $description
+    amountCents: $amountCents
+    notes: $notes
+    frequency: $frequency
+    startDate: $startDate
+    endDate: $endDate
+    occurrenceLimit: $occurrenceLimit
+    preferredDay: $preferredDay
+    nextOccurrenceDate: $nextOccurrenceDate
+    status: ACTIVE
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_recurrence_series"
+    entityId_expr: "response.series.id"
+    action: "created"
+    summary_expr: "'criou a recorrência ' + vars.description + '.'"
+  })
+}
+
+mutation CreateRecurringCashFlowOccurrence(
+  $spaceId: UUID!
+  $seriesId: UUID!
+  $occurrenceIndex: Int!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $status: CashFlowStatus!
+  $receivedAt: Timestamp
+  $paidAt: Timestamp
+  $nextOccurrenceDate: Date
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    series: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Série recorrente inválida.") {
+      direction @check(expr: "(this == 'INCOME' && ((vars.status == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.status == 'RECEIVED' && vars.receivedAt != null && vars.paidAt == null) || vars.status == 'CONFIRMED')) || (this == 'EXPENSE' && ((vars.status == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.status == 'PAID' && vars.receivedAt == null && vars.paidAt != null) || vars.status == 'CONFIRMED'))", message: "Status ou data de realização incompatível com o tipo do lançamento.")
+      kind
+      paymentMethod
+      description
+      amountCents
+      notes
+      category { id }
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_insert(data: {
+    financialSpaceId: $spaceId
+    categoryId_expr: "response.query.series.category.id"
+    direction_expr: "response.query.series.direction"
+    kind_expr: "response.query.series.kind"
+    paymentMethod_expr: "response.query.series.paymentMethod"
+    description_expr: "response.query.series.description"
+    amountCents_expr: "response.query.series.amountCents"
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes_expr: "response.query.series.notes"
+    status: $status
+    recurrenceSeriesId: $seriesId
+    occurrenceIndex: $occurrenceIndex
+    isRecurrenceException: false
+    receivedAt: $receivedAt
+    paidAt: $paidAt
+    sourceType: "recurrence"
+    sourceEntityId: $seriesId
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  seriesProgress: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
+    nextOccurrenceDate: $nextOccurrenceDate
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+mutation MarkIncomeEntryReceived(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $receivedAt: Timestamp!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_update(
+    first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, direction: {eq: INCOME}, status: {eq: PLANNED}}}
+    data: {
+      status: RECEIVED
+      receivedAt: $receivedAt
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  ) @check(expr: "this != null", message: "Receita prevista não encontrada.")
+}
+
+mutation MarkExpenseEntryPaid(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $paidAt: Timestamp!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_update(
+    first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, direction: {eq: EXPENSE}, status: {eq: PLANNED}}}
+    data: {
+      status: PAID
+      paidAt: $paidAt
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  ) @check(expr: "this != null", message: "Despesa prevista não encontrada.")
+}
+
+mutation UpdateCashFlowOccurrence(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $scope: CashFlowMutationScope!
+  $categoryId: UUID
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $occurredAt: Timestamp!
+  $competenceMonth: Date!
+  $notes: String
+  $status: CashFlowStatus!
+  $receivedAt: Timestamp
+  $paidAt: Timestamp
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    current: cashFlowEntry(first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}})
+    @check(expr: "this != null", message: "Lançamento não encontrado.") {
+      id @check(expr: "vars.scope == 'ONLY_THIS'", message: "Escopo inválido para esta operação.")
+      direction @check(expr: "(this == 'INCOME' && ((vars.status == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.status == 'RECEIVED' && vars.receivedAt != null && vars.paidAt == null) || vars.status == 'CONFIRMED')) || (this == 'EXPENSE' && ((vars.status == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.status == 'PAID' && vars.receivedAt == null && vars.paidAt != null) || vars.status == 'CONFIRMED'))", message: "Status ou data de realização incompatível com o tipo do lançamento.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_update(id: $entryId, data: {
+    categoryId: $categoryId
+    description: $description
+    kind: $kind
+    paymentMethod: $paymentMethod
+    amountCents: $amountCents
+    occurredAt: $occurredAt
+    competenceMonth: $competenceMonth
+    notes: $notes
+    status: $status
+    isRecurrenceException: true
+    receivedAt: $receivedAt
+    paidAt: $paidAt
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+mutation UpdateCashFlowSeriesFrom(
+  $spaceId: UUID!
+  $seriesId: UUID!
+  $scope: CashFlowMutationScope!
+  $cutoffAt: Timestamp!
+  $categoryId: UUID
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $notes: String
+  $entryStatus: CashFlowStatus!
+  $receivedAt: Timestamp
+  $paidAt: Timestamp
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Série recorrente ativa não encontrada.") {
+      id @check(expr: "vars.scope == 'THIS_AND_FUTURE'", message: "Escopo inválido para esta operação.")
+      direction @check(expr: "(this == 'INCOME' && ((vars.entryStatus == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.entryStatus == 'RECEIVED' && vars.receivedAt != null && vars.paidAt == null) || vars.entryStatus == 'CONFIRMED')) || (this == 'EXPENSE' && ((vars.entryStatus == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.entryStatus == 'PAID' && vars.receivedAt == null && vars.paidAt != null) || vars.entryStatus == 'CONFIRMED'))", message: "Status ou data de realização incompatível com o tipo da série.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
+    categoryId: $categoryId
+    description: $description
+    kind: $kind
+    paymentMethod: $paymentMethod
+    amountCents: $amountCents
+    notes: $notes
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  entries: cashFlowEntry_updateMany(
+    where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, occurredAt: {ge: $cutoffAt}, status: {ne: CANCELLED}}
+    data: {
+      categoryId: $categoryId
+      description: $description
+      kind: $kind
+      paymentMethod: $paymentMethod
+      amountCents: $amountCents
+      notes: $notes
+      status: $entryStatus
+      isRecurrenceException: false
+      receivedAt: $receivedAt
+      paidAt: $paidAt
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  )
+}
+
+mutation UpdateEntireCashFlowSeries(
+  $spaceId: UUID!
+  $seriesId: UUID!
+  $scope: CashFlowMutationScope!
+  $categoryId: UUID
+  $description: String!
+  $kind: CashFlowKind!
+  $paymentMethod: CashFlowPaymentMethod!
+  $amountCents: Int64!
+  $notes: String
+  $entryStatus: CashFlowStatus!
+  $receivedAt: Timestamp
+  $paidAt: Timestamp
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0", message: "Acesso ou valor inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}})
+    @check(expr: "this != null", message: "Série recorrente não encontrada.") {
+      id @check(expr: "vars.scope == 'ENTIRE_SERIES'", message: "Escopo inválido para esta operação.")
+      direction @check(expr: "(this == 'INCOME' && ((vars.entryStatus == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.entryStatus == 'RECEIVED' && vars.receivedAt != null && vars.paidAt == null) || vars.entryStatus == 'CONFIRMED')) || (this == 'EXPENSE' && ((vars.entryStatus == 'PLANNED' && vars.receivedAt == null && vars.paidAt == null) || (vars.entryStatus == 'PAID' && vars.receivedAt == null && vars.paidAt != null) || vars.entryStatus == 'CONFIRMED'))", message: "Status ou data de realização incompatível com o tipo da série.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
+    categoryId: $categoryId
+    description: $description
+    kind: $kind
+    paymentMethod: $paymentMethod
+    amountCents: $amountCents
+    notes: $notes
+    status: ACTIVE
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  entries: cashFlowEntry_updateMany(
+    where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, status: {ne: CANCELLED}}
+    data: {
+      categoryId: $categoryId
+      description: $description
+      kind: $kind
+      paymentMethod: $paymentMethod
+      amountCents: $amountCents
+      notes: $notes
+      status: $entryStatus
+      isRecurrenceException: false
+      receivedAt: $receivedAt
+      paidAt: $paidAt
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  )
+}
+
+mutation DeleteStandaloneCashFlowEntry(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $scope: CashFlowMutationScope!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: cashFlowEntry(first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {isNull: true}}})
+    @check(expr: "this != null", message: "Lançamento avulso não encontrado.") {
+      id @check(expr: "vars.scope == 'ONLY_THIS'", message: "Escopo inválido para esta operação.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_delete(id: $entryId)
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId: $entryId
+    action: "deleted"
+    summary: "excluiu um lançamento financeiro avulso."
+  })
+}
+
+mutation DeleteCashFlowOccurrence(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $scope: CashFlowMutationScope!
+  $reason: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: cashFlowEntry(first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {isNull: false}, status: {ne: CANCELLED}}})
+    @check(expr: "this != null", message: "Ocorrência recorrente não encontrada.") {
+      id @check(expr: "vars.scope == 'ONLY_THIS'", message: "Escopo inválido para esta operação.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_update(id: $entryId, data: {
+    status: CANCELLED
+    isRecurrenceException: true
+    cancelledByUserId_expr: "response.query.me.id"
+    cancelledAt_expr: "request.time"
+    cancellationReason: $reason
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId: $entryId
+    action: "recurrence_occurrence_deleted"
+    summary: "excluiu uma ocorrência recorrente."
+  })
+}
+
+mutation DeleteCashFlowSeriesFrom(
+  $spaceId: UUID!
+  $seriesId: UUID!
+  $scope: CashFlowMutationScope!
+  $cutoffAt: Timestamp!
+  $lastKeptDate: Date
+  $reason: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "this != null", message: "Série recorrente ativa não encontrada.") {
+      id @check(expr: "vars.scope == 'THIS_AND_FUTURE'", message: "Escopo inválido para esta operação.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entries: cashFlowEntry_updateMany(
+    where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, occurredAt: {ge: $cutoffAt}, status: {ne: CANCELLED}}
+    data: {
+      status: CANCELLED
+      isRecurrenceException: true
+      cancelledByUserId_expr: "response.query.me.id"
+      cancelledAt_expr: "request.time"
+      cancellationReason: $reason
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  )
+  series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
+    status: COMPLETED
+    endDate: $lastKeptDate
+    nextOccurrenceDate: null
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_recurrence_series"
+    entityId: $seriesId
+    action: "future_occurrences_deleted"
+    summary: "excluiu esta ocorrência e as próximas."
+  })
+}
+
+mutation DeleteEntireCashFlowSeries(
+  $spaceId: UUID!
+  $seriesId: UUID!
+  $scope: CashFlowMutationScope!
+  $reason: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}})
+    @check(expr: "this != null", message: "Série recorrente não encontrada.") {
+      id @check(expr: "vars.scope == 'ENTIRE_SERIES'", message: "Escopo inválido para esta operação.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entries: cashFlowEntry_updateMany(
+    where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, status: {ne: CANCELLED}}
+    data: {
+      status: CANCELLED
+      isRecurrenceException: true
+      cancelledByUserId_expr: "response.query.me.id"
+      cancelledAt_expr: "request.time"
+      cancellationReason: $reason
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  )
+  series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
+    status: CANCELLED
+    nextOccurrenceDate: null
+    cancelledByUserId_expr: "response.query.me.id"
+    cancelledAt_expr: "request.time"
+    cancellationReason: $reason
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_recurrence_series"
+    entityId: $seriesId
+    action: "deleted"
+    summary: "excluiu toda a série recorrente."
+  })
+}
+
+mutation CancelCashFlowEntry(
+  $spaceId: UUID!
+  $entryId: UUID!
+  $reason: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  entry: cashFlowEntry_update(
+    first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}}
+    data: {
+      status: CANCELLED
+      cancelledByUserId_expr: "response.query.me.id"
+      cancelledAt_expr: "request.time"
+      cancellationReason: $reason
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  ) @check(expr: "this != null", message: "Movimentação não encontrada.")
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "cash_flow_entry"
+    entityId_expr: "response.entry.id"
+    action: "cancelled"
+    summary: "cancelou uma movimentação financeira."
+  })
+}
+
 mutation CreateCreditCard(
   $spaceId: UUID!
   $nickname: String!
@@ -905,6 +2007,18 @@ mutation CancelPurchase($spaceId: UUID!, $purchaseId: UUID!, $reason: String!)
     version_update: {inc: 1}
   }) @check(expr: "this != null", message: "Compra não encontrada.")
   installments: purchaseInstallment_updateMany(where: {purchaseId: {eq: $purchaseId}, financialSpaceId: {eq: $spaceId}}, data: {status: CANCELLED, updatedAt_expr: "request.time"})
+  cashFlow: cashFlowEntry_updateMany(
+    where: {financialSpaceId: {eq: $spaceId}, sourceType: {eq: "purchase"}, sourceEntityId: {eq: $purchaseId}, status: {eq: CONFIRMED}}
+    data: {
+      status: CANCELLED
+      cancelledByUserId_expr: "response.query.me.id"
+      cancelledAt_expr: "request.time"
+      cancellationReason: $reason
+      updatedByUserId_expr: "response.query.me.id"
+      updatedAt_expr: "request.time"
+      version_update: {inc: 1}
+    }
+  )
 }
 
 mutation RegisterInvoicePayment(
@@ -1299,4 +2413,57 @@ mutation ArchiveCreditCard($spaceId: UUID!, $cardId: UUID!)
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   card: creditCard_update(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}}, data: {status: ARCHIVED, archivedAt_expr: "request.time", updatedByUserId_expr: "response.query.me.id", updatedAt_expr: "request.time", version_update: {inc: 1}})
+}
+
+mutation DeleteCreditCardCascade($spaceId: UUID!, $cardId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}, removedAt: {isNull: true}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    target: creditCard(first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}}})
+    @check(expr: "this != null", message: "Cartão não encontrado neste espaço.") {
+      id
+      nickname
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+
+  directNotifications: notificationDelivery_deleteMany(
+    where: {financialSpaceId: {eq: $spaceId}, entityType: {eq: "credit_card"}, entityId: {eq: $cardId}}
+  )
+  invoicePayments: invoicePayment_deleteMany(
+    where: {financialSpaceId: {eq: $spaceId}, invoice: {creditCardId: {eq: $cardId}}}
+  )
+  installments: purchaseInstallment_deleteMany(
+    where: {
+      _and: [
+        {financialSpaceId: {eq: $spaceId}}
+        {_or: [
+          {purchase: {creditCardId: {eq: $cardId}}}
+          {invoice: {creditCardId: {eq: $cardId}}}
+        ]}
+      ]
+    }
+  )
+  generatedCashFlow: cashFlowEntry_deleteMany(
+    where: {financialSpaceId: {eq: $spaceId}, sourceType: {eq: "credit_card"}, sourceEntityId: {eq: $cardId}}
+  )
+  invoices: creditCardInvoice_deleteMany(
+    where: {financialSpaceId: {eq: $spaceId}, creditCardId: {eq: $cardId}}
+  )
+  purchases: purchase_deleteMany(
+    where: {financialSpaceId: {eq: $spaceId}, creditCardId: {eq: $cardId}}
+  )
+  card: creditCard_delete(
+    first: {where: {id: {eq: $cardId}, financialSpaceId: {eq: $spaceId}}}
+  ) @check(expr: "this != null", message: "Não foi possível excluir o cartão.")
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "credit_card"
+    entityId: $cardId
+    action: "deleted_cascade"
+    summary_expr: "'excluiu permanentemente o cartão ' + response.query.target.nickname + ' e seus vínculos.'"
+  })
 }

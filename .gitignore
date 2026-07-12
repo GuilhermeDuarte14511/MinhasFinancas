@@ -38,6 +38,7 @@ migrate_working_dir/
 .env.*
 !.env.example
 firebase-debug.log
+.firebase/*.cache
 service-account*.json
 *.pem
 *.p12

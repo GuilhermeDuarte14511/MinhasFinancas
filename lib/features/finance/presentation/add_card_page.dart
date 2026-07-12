@@ -115,46 +115,15 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
                   ),
                   const SizedBox(height: 16),
                   CurrencyField(
-                    label: 'Limite em centavos',
+                    label: 'Limite total',
                     onChanged: (value) => _limit = value,
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<int>(
-                          initialValue: _closingDay,
-                          decoration: const InputDecoration(
-                            labelText: 'Fechamento',
-                          ),
-                          items: [
-                            for (var day = 1; day <= 31; day++)
-                              DropdownMenuItem(
-                                value: day,
-                                child: Text('Dia $day'),
-                              ),
-                          ],
-                          onChanged: (value) => _closingDay = value ?? 10,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: DropdownButtonFormField<int>(
-                          initialValue: _dueDay,
-                          decoration: const InputDecoration(
-                            labelText: 'Vencimento',
-                          ),
-                          items: [
-                            for (var day = 1; day <= 31; day++)
-                              DropdownMenuItem(
-                                value: day,
-                                child: Text('Dia $day'),
-                              ),
-                          ],
-                          onChanged: (value) => _dueDay = value ?? 17,
-                        ),
-                      ),
-                    ],
+                  _BillingDaysFields(
+                    closingDay: _closingDay,
+                    dueDay: _dueDay,
+                    onClosingChanged: (value) => _closingDay = value,
+                    onDueChanged: (value) => _dueDay = value,
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -163,7 +132,8 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
                   ),
                   const SizedBox(height: 10),
                   Wrap(
-                    spacing: 12,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
                       for (final color in const [
                         0xFF3525CD,
@@ -181,7 +151,7 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 24),
                   FilledButton(
                     onPressed: _saving ? null : _save,
                     child: Text(_saving ? 'Salvando...' : 'Salvar cartão'),
@@ -192,6 +162,74 @@ class _AddCardPageState extends ConsumerState<AddCardPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _BillingDaysFields extends StatelessWidget {
+  const _BillingDaysFields({
+    required this.closingDay,
+    required this.dueDay,
+    required this.onClosingChanged,
+    required this.onDueChanged,
+  });
+
+  final int closingDay;
+  final int dueDay;
+  final ValueChanged<int> onClosingChanged;
+  final ValueChanged<int> onDueChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final closing = _DayField(
+          label: 'Fechamento',
+          value: closingDay,
+          onChanged: onClosingChanged,
+        );
+        final due = _DayField(
+          label: 'Vencimento',
+          value: dueDay,
+          onChanged: onDueChanged,
+        );
+        if (constraints.maxWidth < 330) {
+          return Column(children: [closing, const SizedBox(height: 16), due]);
+        }
+        return Row(
+          children: [
+            Expanded(child: closing),
+            const SizedBox(width: 12),
+            Expanded(child: due),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DayField extends StatelessWidget {
+  const _DayField({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<int>(
+      initialValue: value,
+      isExpanded: true,
+      decoration: InputDecoration(labelText: label),
+      items: [
+        for (var day = 1; day <= 31; day++)
+          DropdownMenuItem(value: day, child: Text('Dia $day')),
+      ],
+      onChanged: (selected) => onChanged(selected ?? value),
     );
   }
 }

@@ -70,11 +70,13 @@ class CancelPurchasePurchase {
 class CancelPurchaseData {
   final CancelPurchasePurchase? purchase;
   final int installments;
+  final int cashFlow;
   CancelPurchaseData.fromJson(dynamic json)
     : purchase = json['purchase'] == null
           ? null
           : CancelPurchasePurchase.fromJson(json['purchase']),
-      installments = nativeFromJson<int>(json['installments']);
+      installments = nativeFromJson<int>(json['installments']),
+      cashFlow = nativeFromJson<int>(json['cashFlow']);
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -86,12 +88,16 @@ class CancelPurchaseData {
 
     final CancelPurchaseData otherTyped = other as CancelPurchaseData;
     return purchase == otherTyped.purchase &&
-        installments == otherTyped.installments;
+        installments == otherTyped.installments &&
+        cashFlow == otherTyped.cashFlow;
   }
 
   @override
-  int get hashCode =>
-      Object.hashAll([purchase.hashCode, installments.hashCode]);
+  int get hashCode => Object.hashAll([
+    purchase.hashCode,
+    installments.hashCode,
+    cashFlow.hashCode,
+  ]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -99,10 +105,15 @@ class CancelPurchaseData {
       json['purchase'] = purchase!.toJson();
     }
     json['installments'] = nativeToJson<int>(installments);
+    json['cashFlow'] = nativeToJson<int>(cashFlow);
     return json;
   }
 
-  CancelPurchaseData({this.purchase, required this.installments});
+  CancelPurchaseData({
+    this.purchase,
+    required this.installments,
+    required this.cashFlow,
+  });
 }
 
 @immutable

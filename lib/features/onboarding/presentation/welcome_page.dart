@@ -14,10 +14,11 @@ class WelcomePage extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: AppContent(
-            maxWidth: 620,
+            maxWidth: 520,
             child: StaggeredColumn(
               initialDelay: const Duration(milliseconds: 60),
               step: const Duration(milliseconds: 90),
+              spacing: 16,
               children: [
                 Container(
                   height: 190,
@@ -26,26 +27,20 @@ class WelcomePage extends StatelessWidget {
                     color: AppColors.surfaceLow,
                     borderRadius: BorderRadius.circular(28),
                   ),
-                  child: const Stack(
-                    alignment: Alignment.center,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Positioned(
-                        left: 70,
-                        child: CircleAvatar(
-                          radius: 44,
-                          backgroundColor: AppColors.secondaryContainer,
-                          child: Icon(Icons.person_rounded, size: 48),
-                        ),
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: AppColors.secondaryContainer,
+                        child: Icon(Icons.person_rounded, size: 44),
                       ),
-                      Positioned(
-                        right: 70,
-                        child: CircleAvatar(
-                          radius: 44,
-                          backgroundColor: Color(0xFFE2DFFF),
-                          child: Icon(Icons.person_rounded, size: 48),
-                        ),
+                      BrandMark(size: 52),
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Color(0xFFE2DFFF),
+                        child: Icon(Icons.person_rounded, size: 44),
                       ),
-                      BrandMark(size: 56),
                     ],
                   ),
                 ),
@@ -55,7 +50,7 @@ class WelcomePage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const Text(
-                  'Um espaço financeiro reúne cartões, compras, faturas e membros em um ambiente compartilhado.',
+                  'Reúna entradas, despesas, contas, cartões e membros em um só espaço financeiro.',
                   textAlign: TextAlign.center,
                 ),
                 _WelcomeAction(
@@ -65,7 +60,6 @@ class WelcomePage extends StatelessWidget {
                   subtitle: 'Comece um novo ambiente para vocês.',
                   onTap: () => context.push('/create-space'),
                 ),
-                const SizedBox(height: 16),
                 _WelcomeAction(
                   icon: Icons.mail_rounded,
                   color: AppColors.secondary,

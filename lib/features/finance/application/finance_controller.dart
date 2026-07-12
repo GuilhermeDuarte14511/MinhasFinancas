@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money.dart';
+import '../domain/cash_flow.dart';
 import '../domain/finance_models.dart';
 import 'finance_repository.dart';
 
@@ -23,6 +24,8 @@ final class FinanceState {
     required this.spaceColorValue,
     required this.cards,
     required this.purchases,
+    required this.cashFlowEntries,
+    required this.cashFlowOverview,
     required this.purchaseInstallments,
     required this.invoices,
     required this.loans,
@@ -47,6 +50,8 @@ final class FinanceState {
   final int spaceColorValue;
   final List<CreditCardAccount> cards;
   final List<PurchaseRecord> purchases;
+  final List<CashFlowEntry> cashFlowEntries;
+  final CashFlowOverview cashFlowOverview;
   final List<PurchaseInstallmentRecord> purchaseInstallments;
   final List<InvoiceSummary> invoices;
   final List<LoanContract> loans;
@@ -105,6 +110,8 @@ final class FinanceState {
     int? spaceColorValue,
     List<CreditCardAccount>? cards,
     List<PurchaseRecord>? purchases,
+    List<CashFlowEntry>? cashFlowEntries,
+    CashFlowOverview? cashFlowOverview,
     List<PurchaseInstallmentRecord>? purchaseInstallments,
     List<InvoiceSummary>? invoices,
     List<LoanContract>? loans,
@@ -129,6 +136,8 @@ final class FinanceState {
     spaceColorValue: spaceColorValue ?? this.spaceColorValue,
     cards: cards ?? this.cards,
     purchases: purchases ?? this.purchases,
+    cashFlowEntries: cashFlowEntries ?? this.cashFlowEntries,
+    cashFlowOverview: cashFlowOverview ?? this.cashFlowOverview,
     purchaseInstallments: purchaseInstallments ?? this.purchaseInstallments,
     invoices: invoices ?? this.invoices,
     loans: loans ?? this.loans,
@@ -161,7 +170,7 @@ final class FinanceController extends Notifier<FinanceState> {
       }
     });
     ref.onDispose(timer.cancel);
-    return const FinanceState(
+    return FinanceState(
       hasFinancialSpace: false,
       spaceId: null,
       userName: 'Você',
@@ -170,6 +179,8 @@ final class FinanceController extends Notifier<FinanceState> {
       spaceColorValue: 0xFF3525CD,
       cards: [],
       purchases: [],
+      cashFlowEntries: const [],
+      cashFlowOverview: CashFlowOverview.empty(DateTime.now()),
       purchaseInstallments: [],
       invoices: [],
       loans: [],
@@ -385,6 +396,149 @@ final class FinanceController extends Notifier<FinanceState> {
     }
   }
 
+  Future<void> addCashFlowEntry({
+    required CashFlowDirection direction,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    CashFlowStatus? status,
+    RecurrenceRule? recurrence,
+    String? category,
+    String? notes,
+  }) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    final categoryId = category == null
+        ? null
+        : state.categoryIdsByName[category];
+    if (direction == CashFlowDirection.expense && categoryId == null) {
+      throw StateError('Selecione uma categoria para esta saída.');
+    }
+    final effectiveStatus =
+        status ??
+        (direction == CashFlowDirection.income && _isFutureDate(occurredAt)
+            ? CashFlowStatus.scheduled
+            : CashFlowStatus.confirmed);
+    try {
+      await _repository.createCashFlowEntry(
+        spaceId: spaceId,
+        direction: direction,
+        kind: kind,
+        paymentMethod: paymentMethod,
+        description: description,
+        amount: amount,
+        occurredAt: occurredAt,
+        status: effectiveStatus,
+        recurrence: recurrence,
+        categoryId: categoryId,
+        notes: notes,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> updateCashFlowEntry({
+    required String entryId,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required CashFlowStatus status,
+    required RecurrenceScope scope,
+    String? category,
+    String? notes,
+  }) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    final entry = state.cashFlowEntries.firstWhere(
+      (item) => item.id == entryId,
+    );
+    final categoryId = category == null
+        ? null
+        : state.categoryIdsByName[category];
+    if (!entry.isIncome && categoryId == null) {
+      throw StateError('Selecione uma categoria para esta saída.');
+    }
+    try {
+      await _repository.updateCashFlowEntry(
+        spaceId: spaceId,
+        entryId: entryId,
+        direction: entry.direction,
+        recurrenceSeriesId: entry.recurrenceSeriesId,
+        originalOccurredAt: entry.occurredAt,
+        kind: kind,
+        paymentMethod: paymentMethod,
+        description: description,
+        amount: amount,
+        occurredAt: occurredAt,
+        status: status,
+        scope: entry.isRecurring ? scope : RecurrenceScope.single,
+        categoryId: categoryId,
+        notes: notes,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> updateCashFlowStatus(
+    String entryId,
+    CashFlowStatus status,
+  ) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    final entry = state.cashFlowEntries.firstWhere(
+      (item) => item.id == entryId,
+    );
+    try {
+      await _repository.updateCashFlowStatus(
+        spaceId: spaceId,
+        entryId: entryId,
+        direction: entry.direction,
+        status: status,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteCashFlowEntry(
+    String entryId,
+    RecurrenceScope scope,
+  ) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    final entry = state.cashFlowEntries.firstWhere(
+      (item) => item.id == entryId,
+    );
+    try {
+      await _repository.deleteCashFlowEntry(
+        spaceId: spaceId,
+        entryId: entryId,
+        recurrenceSeriesId: entry.recurrenceSeriesId,
+        occurredAt: entry.occurredAt,
+        scope: entry.isRecurring ? scope : RecurrenceScope.single,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> cancelCashFlowEntry(String entryId) =>
+      deleteCashFlowEntry(entryId, RecurrenceScope.single);
+
   Future<void> updateCategory(String categoryId, String name) async {
     final spaceId = _requireSpaceId();
     _requireEditor();
@@ -475,6 +629,18 @@ final class FinanceController extends Notifier<FinanceState> {
     _requireEditor();
     try {
       await _repository.archiveCard(spaceId: spaceId, cardId: cardId);
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteCard(String cardId) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.deleteCard(spaceId: spaceId, cardId: cardId);
       await _loadWorkspace(spaceId);
     } catch (error) {
       _recordError(error);
@@ -666,6 +832,8 @@ final class FinanceController extends Notifier<FinanceState> {
       clearSpaceId: true,
       cards: const [],
       purchases: const [],
+      cashFlowEntries: const [],
+      cashFlowOverview: CashFlowOverview.empty(DateTime.now()),
       purchaseInstallments: const [],
       invoices: const [],
       loans: const [],
@@ -688,6 +856,8 @@ final class FinanceController extends Notifier<FinanceState> {
       spaceColorValue: snapshot.colorValue,
       cards: snapshot.cards,
       purchases: snapshot.purchases,
+      cashFlowEntries: snapshot.cashFlowEntries,
+      cashFlowOverview: snapshot.cashFlowOverview,
       purchaseInstallments: snapshot.purchaseInstallments,
       invoices: snapshot.invoices,
       loans: snapshot.loans,
@@ -748,4 +918,10 @@ String _friendlyDataError(Object error) {
   }
   if (error is StateError) return error.message;
   return 'Não foi possível sincronizar os dados. Tente novamente.';
+}
+
+bool _isFutureDate(DateTime value) {
+  final today = DateTime.now();
+  final date = DateTime(value.year, value.month, value.day);
+  return date.isAfter(DateTime(today.year, today.month, today.day));
 }

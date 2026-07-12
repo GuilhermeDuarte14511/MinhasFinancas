@@ -111,45 +111,51 @@ class _CreateSpacePageState extends ConsumerState<CreateSpacePage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 14,
-                    runSpacing: 12,
-                    children: [
-                      for (final colorValue in _spaceColors)
-                        Semantics(
-                          label: 'Selecionar cor do espaço',
-                          selected: _selectedColor == colorValue,
-                          button: true,
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: () =>
-                                setState(() => _selectedColor = colorValue),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 220),
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Color(colorValue),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: _selectedColor == colorValue
-                                      ? AppColors.text
-                                      : Colors.transparent,
-                                  width: 3,
-                                ),
-                              ),
-                              child: AnimatedScale(
-                                duration: const Duration(milliseconds: 180),
-                                scale: _selectedColor == colorValue ? 1 : 0,
-                                child: const Icon(
-                                  Icons.check_rounded,
-                                  color: Colors.white,
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final size = constraints.maxWidth < 340 ? 44.0 : 50.0;
+                      return Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        spacing: 8,
+                        runSpacing: 12,
+                        children: [
+                          for (final colorValue in _spaceColors)
+                            Semantics(
+                              label: 'Selecionar cor do espaço',
+                              selected: _selectedColor == colorValue,
+                              button: true,
+                              child: InkWell(
+                                customBorder: const CircleBorder(),
+                                onTap: () =>
+                                    setState(() => _selectedColor = colorValue),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 220),
+                                  width: size,
+                                  height: size,
+                                  decoration: BoxDecoration(
+                                    color: Color(colorValue),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: _selectedColor == colorValue
+                                          ? AppColors.text
+                                          : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  child: AnimatedScale(
+                                    duration: const Duration(milliseconds: 180),
+                                    scale: _selectedColor == colorValue ? 1 : 0,
+                                    child: const Icon(
+                                      Icons.check_rounded,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                    ],
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 18),
                   Card(

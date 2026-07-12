@@ -9,6 +9,24 @@ extend type Mutation {
     data: AuditEvent_Data!
   ): AuditEvent_KeyOutput! @fdc_generated(from: "AuditEvent", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `CashFlowEntry` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cashFlowEntry_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CashFlowEntry_Data!
+  ): CashFlowEntry_KeyOutput! @fdc_generated(from: "CashFlowEntry", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `CashFlowRecurrenceSeries` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cashFlowRecurrenceSeries_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CashFlowRecurrenceSeries_Data!
+  ): CashFlowRecurrenceSeries_KeyOutput! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `Category` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   category_insert(
@@ -170,6 +188,24 @@ extend type Mutation {
     """
     data: [AuditEvent_Data!]!
   ): [AuditEvent_KeyOutput!]! @fdc_generated(from: "AuditEvent", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CashFlowEntry` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cashFlowEntry_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CashFlowEntry_Data!]!
+  ): [CashFlowEntry_KeyOutput!]! @fdc_generated(from: "CashFlowEntry", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CashFlowRecurrenceSeries` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cashFlowRecurrenceSeries_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CashFlowRecurrenceSeries_Data!]!
+  ): [CashFlowRecurrenceSeries_KeyOutput!]! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Category` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -333,6 +369,24 @@ extend type Mutation {
     data: AuditEvent_Data!
   ): AuditEvent_KeyOutput! @fdc_generated(from: "AuditEvent", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `CashFlowEntry` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CashFlowEntry`.
+  """
+  cashFlowEntry_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CashFlowEntry_Data!
+  ): CashFlowEntry_KeyOutput! @fdc_generated(from: "CashFlowEntry", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `CashFlowRecurrenceSeries` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CashFlowRecurrenceSeries`.
+  """
+  cashFlowRecurrenceSeries_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CashFlowRecurrenceSeries_Data!
+  ): CashFlowRecurrenceSeries_KeyOutput! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `Category` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Category`.
   """
   category_upsert(
@@ -494,6 +548,24 @@ extend type Mutation {
     """
     data: [AuditEvent_Data!]!
   ): [AuditEvent_KeyOutput!]! @fdc_generated(from: "AuditEvent", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CashFlowEntry` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CashFlowEntry`.
+  """
+  cashFlowEntry_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CashFlowEntry_Data!]!
+  ): [CashFlowEntry_KeyOutput!]! @fdc_generated(from: "CashFlowEntry", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CashFlowRecurrenceSeries` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CashFlowRecurrenceSeries`.
+  """
+  cashFlowRecurrenceSeries_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CashFlowRecurrenceSeries_Data!]!
+  ): [CashFlowRecurrenceSeries_KeyOutput!]! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Category` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Category`.
   """
@@ -671,6 +743,54 @@ extend type Mutation {
     """
     data: AuditEvent_Data!
   ): AuditEvent_KeyOutput @fdc_generated(from: "AuditEvent", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CashFlowEntry` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CashFlowEntry` or `null` if not found.
+  """
+  cashFlowEntry_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowEntry_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowEntry_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CashFlowEntry_Data!
+  ): CashFlowEntry_KeyOutput @fdc_generated(from: "CashFlowEntry", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CashFlowRecurrenceSeries` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CashFlowRecurrenceSeries` or `null` if not found.
+  """
+  cashFlowRecurrenceSeries_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowRecurrenceSeries_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowRecurrenceSeries_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CashFlowRecurrenceSeries_Data!
+  ): CashFlowRecurrenceSeries_KeyOutput @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Category` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Category` or `null` if not found.
   """
@@ -1099,6 +1219,44 @@ extend type Mutation {
     data: AuditEvent_Data!
   ): Int! @fdc_generated(from: "AuditEvent", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Update `CashFlowEntry` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  cashFlowEntry_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CashFlowEntry_Data!
+  ): Int! @fdc_generated(from: "CashFlowEntry", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `CashFlowRecurrenceSeries` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  cashFlowRecurrenceSeries_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CashFlowRecurrenceSeries_Data!
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `Category` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   category_updateMany(
@@ -1441,6 +1599,44 @@ extend type Mutation {
     first: AuditEvent_FirstRow
   ): AuditEvent_KeyOutput @fdc_generated(from: "AuditEvent", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `CashFlowEntry` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  cashFlowEntry_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowEntry_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowEntry_FirstRow
+  ): CashFlowEntry_KeyOutput @fdc_generated(from: "CashFlowEntry", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `CashFlowRecurrenceSeries` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  cashFlowRecurrenceSeries_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CashFlowRecurrenceSeries_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CashFlowRecurrenceSeries_FirstRow
+  ): CashFlowRecurrenceSeries_KeyOutput @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `Category` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   category_delete(
@@ -1777,6 +1973,34 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "AuditEvent", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CashFlowEntry` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  cashFlowEntry_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CashFlowRecurrenceSeries` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  cashFlowRecurrenceSeries_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Category` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

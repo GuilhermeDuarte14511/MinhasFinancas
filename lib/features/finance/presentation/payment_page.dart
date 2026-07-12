@@ -102,8 +102,11 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                   ),
                   const SizedBox(height: 24),
                   CurrencyField(
-                    label: 'Valor pago em centavos',
-                    initialCents: invoice.pending.cents,
+                    key: ValueKey('invoice-payment-${_amount.cents}'),
+                    label: 'Valor pago',
+                    initialCents: _amount.isZero
+                        ? invoice.pending.cents
+                        : _amount.cents,
                     large: true,
                     onChanged: (value) => _amount = value,
                   ),

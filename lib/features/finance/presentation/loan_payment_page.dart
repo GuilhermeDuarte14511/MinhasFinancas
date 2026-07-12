@@ -123,8 +123,11 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
                   ),
                   const SizedBox(height: 24),
                   CurrencyField(
-                    label: 'Valor pago em centavos',
-                    initialCents: loan.installmentAmount.cents,
+                    key: ValueKey('loan-payment-${_amount.cents}'),
+                    label: 'Valor pago',
+                    initialCents: _amount.isZero
+                        ? loan.installmentAmount.cents
+                        : _amount.cents,
                     large: true,
                     onChanged: (value) => _amount = value,
                   ),

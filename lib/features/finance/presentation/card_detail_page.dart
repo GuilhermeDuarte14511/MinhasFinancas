@@ -18,6 +18,7 @@ class CardDetailPage extends ConsumerStatefulWidget {
 
 class _CardDetailPageState extends ConsumerState<CardDetailPage> {
   var _isArchiving = false;
+  var _isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +99,7 @@ class _CardDetailPageState extends ConsumerState<CardDetailPage> {
                             ),
                           const SizedBox(height: 28),
                           OutlinedButton.icon(
-                            onPressed: _isArchiving || !canEdit
+                            onPressed: _isArchiving || _isDeleting || !canEdit
                                 ? null
                                 : () => _archive(card),
                             icon: _isArchiving
@@ -110,6 +111,25 @@ class _CardDetailPageState extends ConsumerState<CardDetailPage> {
                                   )
                                 : const Icon(Icons.archive_outlined),
                             label: const Text('Arquivar cartão'),
+                          ),
+                          const SizedBox(height: 12),
+                          FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFDAD6),
+                              foregroundColor: const Color(0xFF93000A),
+                            ),
+                            onPressed: _isDeleting || _isArchiving || !canEdit
+                                ? null
+                                : () => _delete(card),
+                            icon: _isDeleting
+                                ? const SizedBox.square(
+                                    dimension: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.delete_forever_outlined),
+                            label: const Text('Excluir cartão e histórico'),
                           ),
                           if (!canEdit) ...[
                             const SizedBox(height: 8),
@@ -164,6 +184,62 @@ class _CardDetailPageState extends ConsumerState<CardDetailPage> {
       );
     } finally {
       if (mounted) setState(() => _isArchiving = false);
+    }
+  }
+
+  Future<void> _delete(CreditCardAccount card) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: AppColors.error,
+          size: 34,
+        ),
+        title: const Text('Excluir cartão permanentemente?'),
+        content: Text(
+          'Tem certeza de que deseja excluir “${card.nickname}”? Todas as faturas, compras e parcelas vinculadas também serão excluídas permanentemente. Esta ação não pode ser desfeita.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Manter cartão'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir tudo'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _isDeleting = true);
+    try {
+      await ref.read(financeControllerProvider.notifier).deleteCard(card.id);
+      if (!mounted) return;
+      showSuccessMessage(context, 'Cartão e lançamentos vinculados excluídos.');
+      context.go('/app/cards');
+    } catch (_) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Não foi possível excluir'),
+          content: SelectableText(
+            ref.read(financeControllerProvider).errorMessage ??
+                'Nenhuma alteração foi aplicada. Tente novamente.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Entendi'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
     }
   }
 }

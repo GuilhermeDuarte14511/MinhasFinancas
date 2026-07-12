@@ -692,6 +692,518 @@ class GetWorkspaceSnapshotPurchasesCreatedByUser {
 }
 
 @immutable
+class GetWorkspaceSnapshotCashFlowEntries {
+  final String id;
+  final EnumValue<CashFlowDirection> direction;
+  final EnumValue<CashFlowKind> kind;
+  final EnumValue<CashFlowPaymentMethod> paymentMethod;
+  final String description;
+  final BigInt amountCents;
+  final Timestamp occurredAt;
+  final DateTime competenceMonth;
+  final String? notes;
+  final EnumValue<CashFlowStatus> status;
+  final int? occurrenceIndex;
+  final bool isRecurrenceException;
+  final Timestamp? receivedAt;
+  final Timestamp? paidAt;
+  final String? sourceType;
+  final String? sourceEntityId;
+  final GetWorkspaceSnapshotCashFlowEntriesCategory? category;
+  final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries? recurrenceSeries;
+  final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser createdByUser;
+  GetWorkspaceSnapshotCashFlowEntries.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      direction = cashFlowDirectionDeserializer(json['direction']),
+      kind = cashFlowKindDeserializer(json['kind']),
+      paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
+      description = nativeFromJson<String>(json['description']),
+      amountCents = bigIntFromJson(json['amountCents']),
+      occurredAt = Timestamp.fromJson(json['occurredAt']),
+      competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
+      notes = json['notes'] == null
+          ? null
+          : nativeFromJson<String>(json['notes']),
+      status = cashFlowStatusDeserializer(json['status']),
+      occurrenceIndex = json['occurrenceIndex'] == null
+          ? null
+          : nativeFromJson<int>(json['occurrenceIndex']),
+      isRecurrenceException = nativeFromJson<bool>(
+        json['isRecurrenceException'],
+      ),
+      receivedAt = json['receivedAt'] == null
+          ? null
+          : Timestamp.fromJson(json['receivedAt']),
+      paidAt = json['paidAt'] == null
+          ? null
+          : Timestamp.fromJson(json['paidAt']),
+      sourceType = json['sourceType'] == null
+          ? null
+          : nativeFromJson<String>(json['sourceType']),
+      sourceEntityId = json['sourceEntityId'] == null
+          ? null
+          : nativeFromJson<String>(json['sourceEntityId']),
+      category = json['category'] == null
+          ? null
+          : GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(
+              json['category'],
+            ),
+      recurrenceSeries = json['recurrenceSeries'] == null
+          ? null
+          : GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(
+              json['recurrenceSeries'],
+            ),
+      createdByUser = GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(
+        json['createdByUser'],
+      );
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotCashFlowEntries otherTyped =
+        other as GetWorkspaceSnapshotCashFlowEntries;
+    return id == otherTyped.id &&
+        direction == otherTyped.direction &&
+        kind == otherTyped.kind &&
+        paymentMethod == otherTyped.paymentMethod &&
+        description == otherTyped.description &&
+        amountCents == otherTyped.amountCents &&
+        occurredAt == otherTyped.occurredAt &&
+        competenceMonth == otherTyped.competenceMonth &&
+        notes == otherTyped.notes &&
+        status == otherTyped.status &&
+        occurrenceIndex == otherTyped.occurrenceIndex &&
+        isRecurrenceException == otherTyped.isRecurrenceException &&
+        receivedAt == otherTyped.receivedAt &&
+        paidAt == otherTyped.paidAt &&
+        sourceType == otherTyped.sourceType &&
+        sourceEntityId == otherTyped.sourceEntityId &&
+        category == otherTyped.category &&
+        recurrenceSeries == otherTyped.recurrenceSeries &&
+        createdByUser == otherTyped.createdByUser;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id.hashCode,
+    direction.hashCode,
+    kind.hashCode,
+    paymentMethod.hashCode,
+    description.hashCode,
+    amountCents.hashCode,
+    occurredAt.hashCode,
+    competenceMonth.hashCode,
+    notes.hashCode,
+    status.hashCode,
+    occurrenceIndex.hashCode,
+    isRecurrenceException.hashCode,
+    receivedAt.hashCode,
+    paidAt.hashCode,
+    sourceType.hashCode,
+    sourceEntityId.hashCode,
+    category.hashCode,
+    recurrenceSeries.hashCode,
+    createdByUser.hashCode,
+  ]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['kind'] = cashFlowKindSerializer(kind);
+    json['paymentMethod'] = cashFlowPaymentMethodSerializer(paymentMethod);
+    json['description'] = nativeToJson<String>(description);
+    json['amountCents'] = bigIntToJson(amountCents);
+    json['occurredAt'] = occurredAt.toJson();
+    json['competenceMonth'] = nativeToJson<DateTime>(competenceMonth);
+    if (notes != null) {
+      json['notes'] = nativeToJson<String?>(notes);
+    }
+    json['status'] = cashFlowStatusSerializer(status);
+    if (occurrenceIndex != null) {
+      json['occurrenceIndex'] = nativeToJson<int?>(occurrenceIndex);
+    }
+    json['isRecurrenceException'] = nativeToJson<bool>(isRecurrenceException);
+    if (receivedAt != null) {
+      json['receivedAt'] = receivedAt!.toJson();
+    }
+    if (paidAt != null) {
+      json['paidAt'] = paidAt!.toJson();
+    }
+    if (sourceType != null) {
+      json['sourceType'] = nativeToJson<String?>(sourceType);
+    }
+    if (sourceEntityId != null) {
+      json['sourceEntityId'] = nativeToJson<String?>(sourceEntityId);
+    }
+    if (category != null) {
+      json['category'] = category!.toJson();
+    }
+    if (recurrenceSeries != null) {
+      json['recurrenceSeries'] = recurrenceSeries!.toJson();
+    }
+    json['createdByUser'] = createdByUser.toJson();
+    return json;
+  }
+
+  GetWorkspaceSnapshotCashFlowEntries({
+    required this.id,
+    required this.direction,
+    required this.kind,
+    required this.paymentMethod,
+    required this.description,
+    required this.amountCents,
+    required this.occurredAt,
+    required this.competenceMonth,
+    this.notes,
+    required this.status,
+    this.occurrenceIndex,
+    required this.isRecurrenceException,
+    this.receivedAt,
+    this.paidAt,
+    this.sourceType,
+    this.sourceEntityId,
+    this.category,
+    this.recurrenceSeries,
+    required this.createdByUser,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotCashFlowEntriesCategory {
+  final String id;
+  final String name;
+  GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      name = nativeFromJson<String>(json['name']);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotCashFlowEntriesCategory otherTyped =
+        other as GetWorkspaceSnapshotCashFlowEntriesCategory;
+    return id == otherTyped.id && name == otherTyped.name;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['name'] = nativeToJson<String>(name);
+    return json;
+  }
+
+  GetWorkspaceSnapshotCashFlowEntriesCategory({
+    required this.id,
+    required this.name,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries {
+  final String id;
+  final EnumValue<CashFlowRecurrenceFrequency> frequency;
+  final DateTime startDate;
+  final DateTime? endDate;
+  final int? preferredDay;
+  final EnumValue<CashFlowRecurrenceSeriesStatus> status;
+  GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
+      startDate = nativeFromJson<DateTime>(json['startDate']),
+      endDate = json['endDate'] == null
+          ? null
+          : nativeFromJson<DateTime>(json['endDate']),
+      preferredDay = json['preferredDay'] == null
+          ? null
+          : nativeFromJson<int>(json['preferredDay']),
+      status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries otherTyped =
+        other as GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries;
+    return id == otherTyped.id &&
+        frequency == otherTyped.frequency &&
+        startDate == otherTyped.startDate &&
+        endDate == otherTyped.endDate &&
+        preferredDay == otherTyped.preferredDay &&
+        status == otherTyped.status;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id.hashCode,
+    frequency.hashCode,
+    startDate.hashCode,
+    endDate.hashCode,
+    preferredDay.hashCode,
+    status.hashCode,
+  ]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['frequency'] = cashFlowRecurrenceFrequencySerializer(frequency);
+    json['startDate'] = nativeToJson<DateTime>(startDate);
+    if (endDate != null) {
+      json['endDate'] = nativeToJson<DateTime?>(endDate);
+    }
+    if (preferredDay != null) {
+      json['preferredDay'] = nativeToJson<int?>(preferredDay);
+    }
+    json['status'] = cashFlowRecurrenceSeriesStatusSerializer(status);
+    return json;
+  }
+
+  GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries({
+    required this.id,
+    required this.frequency,
+    required this.startDate,
+    this.endDate,
+    this.preferredDay,
+    required this.status,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotCashFlowEntriesCreatedByUser {
+  final String id;
+  final String displayName;
+  GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      displayName = nativeFromJson<String>(json['displayName']);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser otherTyped =
+        other as GetWorkspaceSnapshotCashFlowEntriesCreatedByUser;
+    return id == otherTyped.id && displayName == otherTyped.displayName;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, displayName.hashCode]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['displayName'] = nativeToJson<String>(displayName);
+    return json;
+  }
+
+  GetWorkspaceSnapshotCashFlowEntriesCreatedByUser({
+    required this.id,
+    required this.displayName,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotRecurrenceSeries {
+  final String id;
+  final EnumValue<CashFlowDirection> direction;
+  final EnumValue<CashFlowKind> kind;
+  final EnumValue<CashFlowPaymentMethod> paymentMethod;
+  final String description;
+  final BigInt amountCents;
+  final String? notes;
+  final EnumValue<CashFlowRecurrenceFrequency> frequency;
+  final DateTime startDate;
+  final DateTime? endDate;
+  final int? occurrenceLimit;
+  final int? preferredDay;
+  final DateTime? nextOccurrenceDate;
+  final EnumValue<CashFlowRecurrenceSeriesStatus> status;
+  final GetWorkspaceSnapshotRecurrenceSeriesCategory? category;
+  GetWorkspaceSnapshotRecurrenceSeries.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      direction = cashFlowDirectionDeserializer(json['direction']),
+      kind = cashFlowKindDeserializer(json['kind']),
+      paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
+      description = nativeFromJson<String>(json['description']),
+      amountCents = bigIntFromJson(json['amountCents']),
+      notes = json['notes'] == null
+          ? null
+          : nativeFromJson<String>(json['notes']),
+      frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
+      startDate = nativeFromJson<DateTime>(json['startDate']),
+      endDate = json['endDate'] == null
+          ? null
+          : nativeFromJson<DateTime>(json['endDate']),
+      occurrenceLimit = json['occurrenceLimit'] == null
+          ? null
+          : nativeFromJson<int>(json['occurrenceLimit']),
+      preferredDay = json['preferredDay'] == null
+          ? null
+          : nativeFromJson<int>(json['preferredDay']),
+      nextOccurrenceDate = json['nextOccurrenceDate'] == null
+          ? null
+          : nativeFromJson<DateTime>(json['nextOccurrenceDate']),
+      status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']),
+      category = json['category'] == null
+          ? null
+          : GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(
+              json['category'],
+            );
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotRecurrenceSeries otherTyped =
+        other as GetWorkspaceSnapshotRecurrenceSeries;
+    return id == otherTyped.id &&
+        direction == otherTyped.direction &&
+        kind == otherTyped.kind &&
+        paymentMethod == otherTyped.paymentMethod &&
+        description == otherTyped.description &&
+        amountCents == otherTyped.amountCents &&
+        notes == otherTyped.notes &&
+        frequency == otherTyped.frequency &&
+        startDate == otherTyped.startDate &&
+        endDate == otherTyped.endDate &&
+        occurrenceLimit == otherTyped.occurrenceLimit &&
+        preferredDay == otherTyped.preferredDay &&
+        nextOccurrenceDate == otherTyped.nextOccurrenceDate &&
+        status == otherTyped.status &&
+        category == otherTyped.category;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id.hashCode,
+    direction.hashCode,
+    kind.hashCode,
+    paymentMethod.hashCode,
+    description.hashCode,
+    amountCents.hashCode,
+    notes.hashCode,
+    frequency.hashCode,
+    startDate.hashCode,
+    endDate.hashCode,
+    occurrenceLimit.hashCode,
+    preferredDay.hashCode,
+    nextOccurrenceDate.hashCode,
+    status.hashCode,
+    category.hashCode,
+  ]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['kind'] = cashFlowKindSerializer(kind);
+    json['paymentMethod'] = cashFlowPaymentMethodSerializer(paymentMethod);
+    json['description'] = nativeToJson<String>(description);
+    json['amountCents'] = bigIntToJson(amountCents);
+    if (notes != null) {
+      json['notes'] = nativeToJson<String?>(notes);
+    }
+    json['frequency'] = cashFlowRecurrenceFrequencySerializer(frequency);
+    json['startDate'] = nativeToJson<DateTime>(startDate);
+    if (endDate != null) {
+      json['endDate'] = nativeToJson<DateTime?>(endDate);
+    }
+    if (occurrenceLimit != null) {
+      json['occurrenceLimit'] = nativeToJson<int?>(occurrenceLimit);
+    }
+    if (preferredDay != null) {
+      json['preferredDay'] = nativeToJson<int?>(preferredDay);
+    }
+    if (nextOccurrenceDate != null) {
+      json['nextOccurrenceDate'] = nativeToJson<DateTime?>(nextOccurrenceDate);
+    }
+    json['status'] = cashFlowRecurrenceSeriesStatusSerializer(status);
+    if (category != null) {
+      json['category'] = category!.toJson();
+    }
+    return json;
+  }
+
+  GetWorkspaceSnapshotRecurrenceSeries({
+    required this.id,
+    required this.direction,
+    required this.kind,
+    required this.paymentMethod,
+    required this.description,
+    required this.amountCents,
+    this.notes,
+    required this.frequency,
+    required this.startDate,
+    this.endDate,
+    this.occurrenceLimit,
+    this.preferredDay,
+    this.nextOccurrenceDate,
+    required this.status,
+    this.category,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotRecurrenceSeriesCategory {
+  final String id;
+  final String name;
+  GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(dynamic json)
+    : id = nativeFromJson<String>(json['id']),
+      name = nativeFromJson<String>(json['name']);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotRecurrenceSeriesCategory otherTyped =
+        other as GetWorkspaceSnapshotRecurrenceSeriesCategory;
+    return id == otherTyped.id && name == otherTyped.name;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['name'] = nativeToJson<String>(name);
+    return json;
+  }
+
+  GetWorkspaceSnapshotRecurrenceSeriesCategory({
+    required this.id,
+    required this.name,
+  });
+}
+
+@immutable
 class GetWorkspaceSnapshotCreditCardInvoices {
   final String id;
   final DateTime referenceMonth;
@@ -1606,6 +2118,8 @@ class GetWorkspaceSnapshotData {
   final List<GetWorkspaceSnapshotCategories> categories;
   final List<GetWorkspaceSnapshotCreditCards> creditCards;
   final List<GetWorkspaceSnapshotPurchases> purchases;
+  final List<GetWorkspaceSnapshotCashFlowEntries> cashFlowEntries;
+  final List<GetWorkspaceSnapshotRecurrenceSeries> recurrenceSeries;
   final List<GetWorkspaceSnapshotCreditCardInvoices> creditCardInvoices;
   final List<GetWorkspaceSnapshotPurchaseInstallments> purchaseInstallments;
   final List<GetWorkspaceSnapshotInvoicePayments> invoicePayments;
@@ -1630,6 +2144,12 @@ class GetWorkspaceSnapshotData {
           .toList(),
       purchases = (json['purchases'] as List<dynamic>)
           .map((e) => GetWorkspaceSnapshotPurchases.fromJson(e))
+          .toList(),
+      cashFlowEntries = (json['cashFlowEntries'] as List<dynamic>)
+          .map((e) => GetWorkspaceSnapshotCashFlowEntries.fromJson(e))
+          .toList(),
+      recurrenceSeries = (json['recurrenceSeries'] as List<dynamic>)
+          .map((e) => GetWorkspaceSnapshotRecurrenceSeries.fromJson(e))
           .toList(),
       creditCardInvoices = (json['creditCardInvoices'] as List<dynamic>)
           .map((e) => GetWorkspaceSnapshotCreditCardInvoices.fromJson(e))
@@ -1674,6 +2194,8 @@ class GetWorkspaceSnapshotData {
         categories == otherTyped.categories &&
         creditCards == otherTyped.creditCards &&
         purchases == otherTyped.purchases &&
+        cashFlowEntries == otherTyped.cashFlowEntries &&
+        recurrenceSeries == otherTyped.recurrenceSeries &&
         creditCardInvoices == otherTyped.creditCardInvoices &&
         purchaseInstallments == otherTyped.purchaseInstallments &&
         invoicePayments == otherTyped.invoicePayments &&
@@ -1691,6 +2213,8 @@ class GetWorkspaceSnapshotData {
     categories.hashCode,
     creditCards.hashCode,
     purchases.hashCode,
+    cashFlowEntries.hashCode,
+    recurrenceSeries.hashCode,
     creditCardInvoices.hashCode,
     purchaseInstallments.hashCode,
     invoicePayments.hashCode,
@@ -1710,6 +2234,8 @@ class GetWorkspaceSnapshotData {
     json['categories'] = categories.map((e) => e.toJson()).toList();
     json['creditCards'] = creditCards.map((e) => e.toJson()).toList();
     json['purchases'] = purchases.map((e) => e.toJson()).toList();
+    json['cashFlowEntries'] = cashFlowEntries.map((e) => e.toJson()).toList();
+    json['recurrenceSeries'] = recurrenceSeries.map((e) => e.toJson()).toList();
     json['creditCardInvoices'] = creditCardInvoices
         .map((e) => e.toJson())
         .toList();
@@ -1735,6 +2261,8 @@ class GetWorkspaceSnapshotData {
     required this.categories,
     required this.creditCards,
     required this.purchases,
+    required this.cashFlowEntries,
+    required this.recurrenceSeries,
     required this.creditCardInvoices,
     required this.purchaseInstallments,
     required this.invoicePayments,

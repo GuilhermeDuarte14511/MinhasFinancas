@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nossa_grana/core/money/money.dart';
 import 'package:nossa_grana/features/finance/application/finance_controller.dart';
 import 'package:nossa_grana/features/finance/application/finance_repository.dart';
+import 'package:nossa_grana/features/finance/domain/cash_flow.dart';
 import 'package:nossa_grana/features/finance/domain/finance_models.dart';
 
 void main() {
@@ -67,12 +68,38 @@ void main() {
       await expectLater(controller.addCategory('Viagens'), throwsStateError);
     },
   );
+
+  test('income is persisted through the general cash flow port', () async {
+    final repository = _FakeFinanceRepository();
+    final container = ProviderContainer.test(
+      overrides: [financeRepositoryProvider.overrideWithValue(repository)],
+    );
+    addTearDown(container.dispose);
+    final controller = container.read(financeControllerProvider.notifier);
+
+    await controller.createSpace('Família Silva');
+    await controller.addCashFlowEntry(
+      direction: CashFlowDirection.income,
+      kind: CashFlowKind.salary,
+      paymentMethod: CashFlowPaymentMethod.bankTransfer,
+      description: 'Salário de julho',
+      amount: Money.fromCents(450000),
+      occurredAt: DateTime(2026, 7, 5),
+    );
+
+    expect(repository.cashFlowDescription, 'Salário de julho');
+    expect(repository.cashFlowDirection, CashFlowDirection.income);
+    expect(repository.cashFlowAmount?.cents, 450000);
+  });
 }
 
 final class _FakeFinanceRepository implements FinanceRepository {
   WorkspaceSummary? _space;
   String? invitedEmail;
   MembershipRole? invitedRole;
+  String? cashFlowDescription;
+  CashFlowDirection? cashFlowDirection;
+  Money? cashFlowAmount;
   MembershipRole currentRole = MembershipRole.owner;
 
   @override
@@ -88,6 +115,8 @@ final class _FakeFinanceRepository implements FinanceRepository {
       colorValue: space.colorValue,
       cards: const [],
       purchases: const [],
+      cashFlowEntries: const [],
+      cashFlowOverview: CashFlowOverview.empty(DateTime(2026, 7)),
       invoices: const [],
       loans: const [],
       purchaseInstallments: const [],
@@ -197,6 +226,60 @@ final class _FakeFinanceRepository implements FinanceRepository {
   }) async {}
 
   @override
+  Future<void> createCashFlowEntry({
+    required String spaceId,
+    required CashFlowDirection direction,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required CashFlowStatus status,
+    RecurrenceRule? recurrence,
+    String? categoryId,
+    String? notes,
+  }) async {
+    cashFlowDescription = description;
+    cashFlowDirection = direction;
+    cashFlowAmount = amount;
+  }
+
+  @override
+  Future<void> updateCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required CashFlowDirection direction,
+    required String? recurrenceSeriesId,
+    required DateTime originalOccurredAt,
+    required CashFlowKind kind,
+    required CashFlowPaymentMethod paymentMethod,
+    required String description,
+    required Money amount,
+    required DateTime occurredAt,
+    required CashFlowStatus status,
+    required RecurrenceScope scope,
+    String? categoryId,
+    String? notes,
+  }) async {}
+
+  @override
+  Future<void> updateCashFlowStatus({
+    required String spaceId,
+    required String entryId,
+    required CashFlowDirection direction,
+    required CashFlowStatus status,
+  }) async {}
+
+  @override
+  Future<void> deleteCashFlowEntry({
+    required String spaceId,
+    required String entryId,
+    required String? recurrenceSeriesId,
+    required DateTime occurredAt,
+    required RecurrenceScope scope,
+  }) async {}
+
+  @override
   Future<void> createCard({
     required String spaceId,
     required String nickname,
@@ -220,6 +303,12 @@ final class _FakeFinanceRepository implements FinanceRepository {
 
   @override
   Future<void> archiveCard({
+    required String spaceId,
+    required String cardId,
+  }) async {}
+
+  @override
+  Future<void> deleteCard({
     required String spaceId,
     required String cardId,
   }) async {}

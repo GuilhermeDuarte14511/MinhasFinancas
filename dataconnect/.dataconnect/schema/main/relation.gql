@@ -101,7 +101,900 @@ extend type AuditEvent {
   """
   _id: ID! @fdc_generated(from: "AuditEvent.id", purpose: ENTITY_ID)
 }
+extend type CashFlowEntry {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "CashFlowEntry", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table.
+  """
+  _count: Int! @fdc_generated(from: "CashFlowEntry.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `amountCents` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  amountCents_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.amountCents", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `cancellationReason` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancellationReason_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.cancellationReason", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `cancelledAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancelledAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.cancelledAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `cancelledByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancelledByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.cancelledByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `competenceMonth` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  competenceMonth_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.competenceMonth", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `createdByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.createdByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `direction` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  direction_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.direction", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `financialSpaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  financialSpaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.financialSpaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `idempotencyKey` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  idempotencyKey_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.idempotencyKey", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `isRecurrenceException` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isRecurrenceException_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.isRecurrenceException", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `kind` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  kind_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.kind", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `notes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  notes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.notes", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `occurredAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  occurredAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.occurredAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `occurrenceIndex` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  occurrenceIndex_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.occurrenceIndex", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `paidAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  paidAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.paidAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `paymentMethod` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  paymentMethod_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.paymentMethod", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `receivedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  receivedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.receivedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `recurrenceSeriesId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  recurrenceSeriesId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.recurrenceSeriesId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `sourceEntityId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  sourceEntityId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.sourceEntityId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `sourceType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  sourceType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.sourceType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `status` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  status_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.status", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `updatedByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.updatedByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowEntry` table where the `version` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  version_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowEntry.version", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `amountCents` field in the `CashFlowEntry` table.
+  """
+  amountCents_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int64 @fdc_generated(from: "CashFlowEntry.amountCents", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `occurrenceIndex` field in the `CashFlowEntry` table.
+  """
+  occurrenceIndex_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CashFlowEntry.occurrenceIndex", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `version` field in the `CashFlowEntry` table.
+  """
+  version_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CashFlowEntry.version", purpose: QUERY_SUM)
+  """
+  ✨ Average the `amountCents` field in the `CashFlowEntry` table.
+  """
+  amountCents_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowEntry.amountCents", purpose: QUERY_AVG)
+  """
+  ✨ Average the `occurrenceIndex` field in the `CashFlowEntry` table.
+  """
+  occurrenceIndex_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowEntry.occurrenceIndex", purpose: QUERY_AVG)
+  """
+  ✨ Average the `version` field in the `CashFlowEntry` table.
+  """
+  version_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowEntry.version", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `amountCents` field in the `CashFlowEntry` table.
+  """
+  amountCents_min: Int64 @fdc_generated(from: "CashFlowEntry.amountCents", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `cancelledAt` field in the `CashFlowEntry` table.
+  """
+  cancelledAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.cancelledAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `competenceMonth` field in the `CashFlowEntry` table.
+  """
+  competenceMonth_min: Date @fdc_generated(from: "CashFlowEntry.competenceMonth", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `createdAt` field in the `CashFlowEntry` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `occurredAt` field in the `CashFlowEntry` table.
+  """
+  occurredAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.occurredAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `occurrenceIndex` field in the `CashFlowEntry` table.
+  """
+  occurrenceIndex_min: Int @fdc_generated(from: "CashFlowEntry.occurrenceIndex", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `paidAt` field in the `CashFlowEntry` table.
+  """
+  paidAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.paidAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `receivedAt` field in the `CashFlowEntry` table.
+  """
+  receivedAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.receivedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `CashFlowEntry` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "CashFlowEntry.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `version` field in the `CashFlowEntry` table.
+  """
+  version_min: Int @fdc_generated(from: "CashFlowEntry.version", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `amountCents` field in the `CashFlowEntry` table.
+  """
+  amountCents_max: Int64 @fdc_generated(from: "CashFlowEntry.amountCents", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `cancelledAt` field in the `CashFlowEntry` table.
+  """
+  cancelledAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.cancelledAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `competenceMonth` field in the `CashFlowEntry` table.
+  """
+  competenceMonth_max: Date @fdc_generated(from: "CashFlowEntry.competenceMonth", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `createdAt` field in the `CashFlowEntry` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `occurredAt` field in the `CashFlowEntry` table.
+  """
+  occurredAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.occurredAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `occurrenceIndex` field in the `CashFlowEntry` table.
+  """
+  occurrenceIndex_max: Int @fdc_generated(from: "CashFlowEntry.occurrenceIndex", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `paidAt` field in the `CashFlowEntry` table.
+  """
+  paidAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.paidAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `receivedAt` field in the `CashFlowEntry` table.
+  """
+  receivedAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.receivedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `CashFlowEntry` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "CashFlowEntry.updatedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `version` field in the `CashFlowEntry` table.
+  """
+  version_max: Int @fdc_generated(from: "CashFlowEntry.version", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "CashFlowEntry.id", purpose: ENTITY_ID)
+}
+extend type CashFlowRecurrenceSeries {
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`recurrenceSeries` is this object).
+  """
+  cashFlowEntries_on_recurrenceSeries(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.recurrenceSeries", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "CashFlowRecurrenceSeries", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table.
+  """
+  _count: Int! @fdc_generated(from: "CashFlowRecurrenceSeries.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `amountCents` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  amountCents_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.amountCents", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `cancellationReason` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancellationReason_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.cancellationReason", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `cancelledAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancelledAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `cancelledByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cancelledByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `createdByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.createdByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `direction` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  direction_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.direction", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `endDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  endDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.endDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `financialSpaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  financialSpaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.financialSpaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `frequency` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  frequency_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.frequency", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `idempotencyKey` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  idempotencyKey_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.idempotencyKey", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `kind` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  kind_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.kind", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `nextOccurrenceDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  nextOccurrenceDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.nextOccurrenceDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `notes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  notes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.notes", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `occurrenceLimit` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  occurrenceLimit_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.occurrenceLimit", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `paymentMethod` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  paymentMethod_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.paymentMethod", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `preferredDay` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  preferredDay_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.preferredDay", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `startDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  startDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.startDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `status` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  status_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.status", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `updatedByUserId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedByUserId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.updatedByUserId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `CashFlowRecurrenceSeries` table where the `version` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  version_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CashFlowRecurrenceSeries.version", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `amountCents` field in the `CashFlowRecurrenceSeries` table.
+  """
+  amountCents_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int64 @fdc_generated(from: "CashFlowRecurrenceSeries.amountCents", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `occurrenceLimit` field in the `CashFlowRecurrenceSeries` table.
+  """
+  occurrenceLimit_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CashFlowRecurrenceSeries.occurrenceLimit", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `preferredDay` field in the `CashFlowRecurrenceSeries` table.
+  """
+  preferredDay_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CashFlowRecurrenceSeries.preferredDay", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `version` field in the `CashFlowRecurrenceSeries` table.
+  """
+  version_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CashFlowRecurrenceSeries.version", purpose: QUERY_SUM)
+  """
+  ✨ Average the `amountCents` field in the `CashFlowRecurrenceSeries` table.
+  """
+  amountCents_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowRecurrenceSeries.amountCents", purpose: QUERY_AVG)
+  """
+  ✨ Average the `occurrenceLimit` field in the `CashFlowRecurrenceSeries` table.
+  """
+  occurrenceLimit_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowRecurrenceSeries.occurrenceLimit", purpose: QUERY_AVG)
+  """
+  ✨ Average the `preferredDay` field in the `CashFlowRecurrenceSeries` table.
+  """
+  preferredDay_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowRecurrenceSeries.preferredDay", purpose: QUERY_AVG)
+  """
+  ✨ Average the `version` field in the `CashFlowRecurrenceSeries` table.
+  """
+  version_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CashFlowRecurrenceSeries.version", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `amountCents` field in the `CashFlowRecurrenceSeries` table.
+  """
+  amountCents_min: Int64 @fdc_generated(from: "CashFlowRecurrenceSeries.amountCents", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `cancelledAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  cancelledAt_min: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `createdAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `endDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  endDate_min: Date @fdc_generated(from: "CashFlowRecurrenceSeries.endDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `nextOccurrenceDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  nextOccurrenceDate_min: Date @fdc_generated(from: "CashFlowRecurrenceSeries.nextOccurrenceDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `occurrenceLimit` field in the `CashFlowRecurrenceSeries` table.
+  """
+  occurrenceLimit_min: Int @fdc_generated(from: "CashFlowRecurrenceSeries.occurrenceLimit", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `preferredDay` field in the `CashFlowRecurrenceSeries` table.
+  """
+  preferredDay_min: Int @fdc_generated(from: "CashFlowRecurrenceSeries.preferredDay", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `startDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  startDate_min: Date @fdc_generated(from: "CashFlowRecurrenceSeries.startDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `version` field in the `CashFlowRecurrenceSeries` table.
+  """
+  version_min: Int @fdc_generated(from: "CashFlowRecurrenceSeries.version", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `amountCents` field in the `CashFlowRecurrenceSeries` table.
+  """
+  amountCents_max: Int64 @fdc_generated(from: "CashFlowRecurrenceSeries.amountCents", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `cancelledAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  cancelledAt_max: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `createdAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `endDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  endDate_max: Date @fdc_generated(from: "CashFlowRecurrenceSeries.endDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `nextOccurrenceDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  nextOccurrenceDate_max: Date @fdc_generated(from: "CashFlowRecurrenceSeries.nextOccurrenceDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `occurrenceLimit` field in the `CashFlowRecurrenceSeries` table.
+  """
+  occurrenceLimit_max: Int @fdc_generated(from: "CashFlowRecurrenceSeries.occurrenceLimit", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `preferredDay` field in the `CashFlowRecurrenceSeries` table.
+  """
+  preferredDay_max: Int @fdc_generated(from: "CashFlowRecurrenceSeries.preferredDay", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `startDate` field in the `CashFlowRecurrenceSeries` table.
+  """
+  startDate_max: Date @fdc_generated(from: "CashFlowRecurrenceSeries.startDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `CashFlowRecurrenceSeries` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "CashFlowRecurrenceSeries.updatedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `version` field in the `CashFlowRecurrenceSeries` table.
+  """
+  version_max: Int @fdc_generated(from: "CashFlowRecurrenceSeries.version", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "CashFlowRecurrenceSeries.id", purpose: ENTITY_ID)
+}
 extend type Category {
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`category` is this object).
+  """
+  cashFlowEntries_on_category(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.category", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in a one-to-many relationship (where `CashFlowRecurrenceSeries`.`category` is this object).
+  """
+  cashFlowRecurrenceSeriess_on_category(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries.category", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Purchase` objects in a one-to-many relationship (where `Purchase`.`category` is this object).
   """
@@ -1202,6 +2095,74 @@ extend type FinancialSpace {
     """
     having: AuditEvent_Having
   ): [AuditEvent!]! @fdc_generated(from: "AuditEvent.financialSpace", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`financialSpace` is this object).
+  """
+  cashFlowEntries_on_financialSpace(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.financialSpace", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in a one-to-many relationship (where `CashFlowRecurrenceSeries`.`financialSpace` is this object).
+  """
+  cashFlowRecurrenceSeriess_on_financialSpace(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries.financialSpace", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Category` objects in a one-to-many relationship (where `Category`.`financialSpace` is this object).
   """
@@ -4597,6 +5558,210 @@ extend type UserProfile {
     """
     having: AuditEvent_Having
   ): [AuditEvent!]! @fdc_generated(from: "AuditEvent.actorUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`cancelledByUser` is this object).
+  """
+  cashFlowEntries_on_cancelledByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.cancelledByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`createdByUser` is this object).
+  """
+  cashFlowEntries_on_createdByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.createdByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowEntry` objects in a one-to-many relationship (where `CashFlowEntry`.`updatedByUser` is this object).
+  """
+  cashFlowEntries_on_updatedByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowEntry_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowEntry_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowEntry_Having
+  ): [CashFlowEntry!]! @fdc_generated(from: "CashFlowEntry.updatedByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in a one-to-many relationship (where `CashFlowRecurrenceSeries`.`cancelledByUser` is this object).
+  """
+  cashFlowRecurrenceSeriess_on_cancelledByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in a one-to-many relationship (where `CashFlowRecurrenceSeries`.`createdByUser` is this object).
+  """
+  cashFlowRecurrenceSeriess_on_createdByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries.createdByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `CashFlowRecurrenceSeries` objects in a one-to-many relationship (where `CashFlowRecurrenceSeries`.`updatedByUser` is this object).
+  """
+  cashFlowRecurrenceSeriess_on_updatedByUser(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CashFlowRecurrenceSeries_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CashFlowRecurrenceSeries_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CashFlowRecurrenceSeries_Having
+  ): [CashFlowRecurrenceSeries!]! @fdc_generated(from: "CashFlowRecurrenceSeries.updatedByUser", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Category` objects in a one-to-many relationship (where `Category`.`createdByUser` is this object).
   """

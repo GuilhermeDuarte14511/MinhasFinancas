@@ -8,6 +8,54 @@ extend type AuditEvent {
   """
   financialSpaceId: UUID! @fdc_generated(from: "AuditEvent.financialSpace", purpose: IMPLICIT_REF_FIELD)
 }
+extend type CashFlowEntry {
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`cancelledByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  cancelledByUserId: UUID @fdc_generated(from: "CashFlowEntry.cancelledByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`category`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  categoryId: UUID @fdc_generated(from: "CashFlowEntry.category", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "CashFlowEntry.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "CashFlowEntry.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`recurrenceSeries`. It must match the value of `CashFlowRecurrenceSeries`.`id`. See `@ref` for how to customize it.
+  """
+  recurrenceSeriesId: UUID @fdc_generated(from: "CashFlowEntry.recurrenceSeries", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowEntry`.`updatedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  updatedByUserId: UUID! @fdc_generated(from: "CashFlowEntry.updatedByUser", purpose: IMPLICIT_REF_FIELD)
+}
+extend type CashFlowRecurrenceSeries {
+  """
+  ✨ Implicit foreign key field based on `CashFlowRecurrenceSeries`.`cancelledByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  cancelledByUserId: UUID @fdc_generated(from: "CashFlowRecurrenceSeries.cancelledByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowRecurrenceSeries`.`category`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  categoryId: UUID @fdc_generated(from: "CashFlowRecurrenceSeries.category", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowRecurrenceSeries`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  createdByUserId: UUID! @fdc_generated(from: "CashFlowRecurrenceSeries.createdByUser", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowRecurrenceSeries`.`financialSpace`. It must match the value of `FinancialSpace`.`id`. See `@ref` for how to customize it.
+  """
+  financialSpaceId: UUID! @fdc_generated(from: "CashFlowRecurrenceSeries.financialSpace", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `CashFlowRecurrenceSeries`.`updatedByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.
+  """
+  updatedByUserId: UUID! @fdc_generated(from: "CashFlowRecurrenceSeries.updatedByUser", purpose: IMPLICIT_REF_FIELD)
+}
 extend type Category {
   """
   ✨ Implicit foreign key field based on `Category`.`createdByUser`. It must match the value of `UserProfile`.`id`. See `@ref` for how to customize it.

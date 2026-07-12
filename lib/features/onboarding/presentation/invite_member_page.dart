@@ -140,32 +140,32 @@ class _InviteMemberPageState extends ConsumerState<InviteMemberPage> {
                         ),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const Stack(
-                        alignment: Alignment.center,
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Positioned(
-                            left: 95,
-                            child: CircleAvatar(
-                              radius: 38,
-                              backgroundColor: Color(0xFFDAD7FF),
-                              child: Icon(Icons.person_rounded, size: 40),
+                          CircleAvatar(
+                            radius: 34,
+                            backgroundColor: Color(0xFFDAD7FF),
+                            child: Icon(Icons.person_rounded, size: 36),
+                          ),
+                          SizedBox(width: 14),
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Colors.white24,
+                            child: Icon(
+                              Icons.link_rounded,
+                              color: Colors.white,
+                              size: 28,
                             ),
                           ),
-                          Positioned(
-                            right: 95,
-                            child: CircleAvatar(
-                              radius: 38,
-                              backgroundColor: AppColors.secondaryContainer,
-                              child: Icon(
-                                Icons.person_add_alt_1_rounded,
-                                size: 38,
-                              ),
+                          SizedBox(width: 14),
+                          CircleAvatar(
+                            radius: 34,
+                            backgroundColor: AppColors.secondaryContainer,
+                            child: Icon(
+                              Icons.person_add_alt_1_rounded,
+                              size: 34,
                             ),
-                          ),
-                          Icon(
-                            Icons.link_rounded,
-                            color: Colors.white,
-                            size: 42,
                           ),
                         ],
                       ),
@@ -200,30 +200,41 @@ class _InviteMemberPageState extends ConsumerState<InviteMemberPage> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _RoleCard(
-                            selected: _role == MembershipRole.editor,
-                            icon: Icons.edit_square,
-                            title: 'Editor',
-                            subtitle: 'Adiciona e edita transações.',
-                            onTap: () =>
-                                setState(() => _role = MembershipRole.editor),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _RoleCard(
-                            selected: _role == MembershipRole.viewer,
-                            icon: Icons.visibility_outlined,
-                            title: 'Leitura',
-                            subtitle: 'Apenas visualiza os dados.',
-                            onTap: () =>
-                                setState(() => _role = MembershipRole.viewer),
-                          ),
-                        ),
-                      ],
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final editor = _RoleCard(
+                          selected: _role == MembershipRole.editor,
+                          icon: Icons.edit_square,
+                          title: 'Editor',
+                          subtitle: 'Adiciona e edita movimentações.',
+                          onTap: () =>
+                              setState(() => _role = MembershipRole.editor),
+                        );
+                        final viewer = _RoleCard(
+                          selected: _role == MembershipRole.viewer,
+                          icon: Icons.visibility_outlined,
+                          title: 'Leitura',
+                          subtitle: 'Apenas visualiza os dados.',
+                          onTap: () =>
+                              setState(() => _role = MembershipRole.viewer),
+                        );
+                        if (constraints.maxWidth < 380) {
+                          return Column(
+                            children: [
+                              editor,
+                              const SizedBox(height: 12),
+                              viewer,
+                            ],
+                          );
+                        }
+                        return Row(
+                          children: [
+                            Expanded(child: editor),
+                            const SizedBox(width: 12),
+                            Expanded(child: viewer),
+                          ],
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
                     const Card(

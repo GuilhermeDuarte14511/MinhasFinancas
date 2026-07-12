@@ -12,20 +12,31 @@ O arquivo executável inicial é `dataconnect/schema/schema.gql` e contém:
 8. `credit_card_invoice`
 9. `purchase_installment`
 10. `invoice_payment`
-11. `loan`
-12. `loan_installment`
-13. `loan_payment`
-14. `notification_preference`
-15. `notification_rule`
-16. `device_subscription`
-17. `notification_delivery`
-18. `audit_event`
+11. `cash_flow_recurrence_series`
+12. `cash_flow_entry`
+13. `loan`
+14. `loan_installment`
+15. `loan_payment`
+16. `notification_preference`
+17. `notification_rule`
+18. `device_subscription`
+19. `notification_delivery`
+20. `audit_event`
 
 Todas as tabelas financeiras referenciam `FinancialSpace`. UUID é a chave
 primária, valores monetários usam `Int64` em centavos e timestamps usam
 `Timestamp`/`timestamptz`.
 
-Antes de migrar, o diff gerado pelo CLI deve receber constraints adicionais:
+`cash_flow_entry` é o livro de movimentações manuais e recorrentes. Ele separa
+direção, tipo, meio de pagamento, competência e status previsto/realizado. A
+série guarda frequência, limites e próximo materializável; cada ocorrência tem
+índice único, vínculo opcional e marca de exceção. O relatório também agrega
+diretamente `credit_card_invoice.total_amount_cents` por mês de referência e
+`loan_payment.amount_cents` por data de pagamento. Essas tabelas canônicas
+preservam o histórico anterior à evolução e evitam dupla contagem: pagamento de
+fatura não é outra despesa.
+
+O schema publicado inclui:
 
 - unique composto de membership, categoria, fatura e parcelas;
 - checks de valores positivos e intervalos de dias/parcelas;
@@ -34,6 +45,5 @@ Antes de migrar, o diff gerado pelo CLI deve receber constraints adicionais:
 - proteção append-only para `audit_event`;
 - unicidade de token/endpoint por hash.
 
-Esses detalhes não foram simulados em arquivos SQL separados para evitar uma
-segunda fonte de verdade. A migração proposta por `firebase dataconnect:sql:diff`
-deve ser revisada antes de qualquer deploy.
+Esses detalhes não são duplicados em arquivos SQL separados. Em 12/07/2026 a
+migration aditiva de recorrência/status foi aplicada e o schema foi publicado.

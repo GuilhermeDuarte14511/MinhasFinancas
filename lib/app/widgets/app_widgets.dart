@@ -18,11 +18,18 @@ class AppContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width <= 360;
+    final resolvedPadding = compact
+        ? padding.copyWith(
+            left: padding.left.clamp(0, 16),
+            right: padding.right.clamp(0, 16),
+          )
+        : padding;
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: Padding(padding: padding, child: child),
+        child: Padding(padding: resolvedPadding, child: child),
       ),
     );
   }
@@ -74,6 +81,7 @@ class _AnimatedPageEntryState extends State<AnimatedPageEntry>
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) return widget.child;
     return FadeTransition(
       opacity: _fade,
       child: SlideTransition(position: _slide, child: widget.child),
@@ -88,6 +96,7 @@ class StaggeredColumn extends StatelessWidget {
     this.step = const Duration(milliseconds: 80),
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
+    this.spacing = 0,
     super.key,
   });
 
@@ -96,6 +105,7 @@ class StaggeredColumn extends StatelessWidget {
   final Duration step;
   final CrossAxisAlignment crossAxisAlignment;
   final MainAxisSize mainAxisSize;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +118,7 @@ class StaggeredColumn extends StatelessWidget {
             delay: initialDelay + step * index,
             child: children[index],
           ),
-          if (index < children.length - 1) const SizedBox(height: 0),
+          if (index < children.length - 1) SizedBox(height: spacing),
         ],
       ],
     );
@@ -122,20 +132,25 @@ class AnimatedPageSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 280),
+      duration: disableAnimations
+          ? Duration.zero
+          : const Duration(milliseconds: 280),
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
-      transitionBuilder: (child, animation) => FadeTransition(
-        opacity: animation,
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.02, 0),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        ),
-      ),
+      transitionBuilder: (child, animation) => disableAnimations
+          ? child
+          : FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.02, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            ),
       child: KeyedSubtree(key: ValueKey(child.runtimeType), child: child),
     );
   }
@@ -293,7 +308,7 @@ class BrandAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 64,
       automaticallyImplyLeading: showBack,
       title: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           if (!showBack) ...[
             const CircleAvatar(
@@ -303,11 +318,15 @@ class BrandAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: 12),
           ],
-          Text(
-            title,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -414,7 +433,18 @@ class _CurrencyFieldState extends State<CurrencyField> {
   void initState() {
     super.initState();
     _controller = TextEditingController(
-      text: widget.initialCents == 0 ? '' : widget.initialCents.toString(),
+      text: CurrencyInputFormatter.formatCents(widget.initialCents),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant CurrencyField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialCents == oldWidget.initialCents) return;
+    final formatted = CurrencyInputFormatter.formatCents(widget.initialCents);
+    _controller.value = TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 
@@ -429,7 +459,7 @@ class _CurrencyFieldState extends State<CurrencyField> {
     return TextFormField(
       controller: _controller,
       keyboardType: TextInputType.number,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      inputFormatters: const [CurrencyInputFormatter()],
       textAlign: widget.large ? TextAlign.center : TextAlign.start,
       style: widget.large
           ? const TextStyle(
@@ -440,7 +470,8 @@ class _CurrencyFieldState extends State<CurrencyField> {
           : null,
       decoration: InputDecoration(
         labelText: widget.label,
-        prefixText: 'R\$ ',
+        hintText: '0,00',
+        prefixText: 'R\$ ',
         prefixStyle: widget.large
             ? const TextStyle(
                 color: AppColors.primary,
@@ -450,13 +481,72 @@ class _CurrencyFieldState extends State<CurrencyField> {
             : null,
       ),
       validator: (value) {
-        final cents = int.tryParse(value ?? '') ?? 0;
+        final cents = CurrencyInputFormatter.centsFromText(value ?? '');
         return cents <= 0 ? 'Informe um valor maior que zero.' : null;
       },
       onChanged: (value) {
-        final cents = int.tryParse(value) ?? 0;
+        final cents = CurrencyInputFormatter.centsFromText(value);
         widget.onChanged(Money.fromCents(cents));
       },
+    );
+  }
+}
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  const CurrencyInputFormatter();
+
+  static int centsFromText(String value) {
+    final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+    return int.tryParse(digits) ?? 0;
+  }
+
+  static String formatCents(int cents) {
+    if (cents == 0) return '';
+    return Money.fromCents(cents).format().replaceFirst('R\$ ', '');
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final cents = centsFromText(newValue.text);
+    final formatted = formatCents(cents);
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
+class AnimatedMoneyText extends StatelessWidget {
+  const AnimatedMoneyText({
+    required this.value,
+    required this.style,
+    this.duration = const Duration(milliseconds: 520),
+    this.textAlign,
+    super.key,
+  });
+
+  final Money value;
+  final TextStyle? style;
+  final Duration duration;
+  final TextAlign? textAlign;
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveDuration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : duration;
+    return TweenAnimationBuilder<int>(
+      tween: IntTween(end: value.cents),
+      duration: effectiveDuration,
+      curve: Curves.easeOutCubic,
+      builder: (context, cents, _) => Text(
+        Money.fromCents(cents).format(),
+        style: style,
+        textAlign: textAlign,
+      ),
     );
   }
 }

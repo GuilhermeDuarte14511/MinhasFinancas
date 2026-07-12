@@ -229,7 +229,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Notificações push serão ativadas quando o Firebase Cloud Messaging estiver configurado. Lembretes internos continuam disponíveis.',
+                  'Ao permitir notificações, este dispositivo é registrado com segurança. O envio automático depende do worker de lembretes do Firebase.',
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),

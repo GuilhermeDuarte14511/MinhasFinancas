@@ -6,11 +6,11 @@ ClientConnector.instance.CreateMyProfile(createMyProfileVariables).execute();
 ClientConnector.instance.UpdateMyProfile(updateMyProfileVariables).execute();
 ClientConnector.instance.ListMySpaces().execute();
 ClientConnector.instance.GetWorkspaceSnapshot(getWorkspaceSnapshotVariables).execute();
+ClientConnector.instance.GetCashFlowSummary(getCashFlowSummaryVariables).execute();
+ClientConnector.instance.GetAgendaEntries(getAgendaEntriesVariables).execute();
 ClientConnector.instance.CreateFinancialSpace(createFinancialSpaceVariables).execute();
 ClientConnector.instance.ListSpaceInvitations(listSpaceInvitationsVariables).execute();
 ClientConnector.instance.CreateSpaceInvitation(createSpaceInvitationVariables).execute();
-ClientConnector.instance.AcceptSpaceInvitation(acceptSpaceInvitationVariables).execute();
-ClientConnector.instance.CreateCategory(createCategoryVariables).execute();
 
 ```
 

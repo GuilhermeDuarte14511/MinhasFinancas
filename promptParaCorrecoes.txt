@@ -1,0 +1,315 @@
+Preciso implementar os seguintes ajustes no aplicativo de finanças pessoais:
+
+## 1. Exclusão de cartão
+
+Adicionar a opção de excluir um cartão cadastrado.
+
+Ao excluir o cartão, o sistema deve:
+
+* Excluir o cartão do banco de dados.
+* Excluir todas as faturas vinculadas ao cartão.
+* Excluir todas as compras e parcelas vinculadas ao cartão.
+* Remover os vencimentos e lançamentos relacionados da tela de Agenda.
+* Atualizar imediatamente os resumos, limites, totais mensais e demais telas afetadas.
+* Garantir que não permaneçam registros órfãos no banco de dados.
+
+Antes de concluir a exclusão, exibir uma confirmação clara, por exemplo:
+
+“Tem certeza de que deseja excluir este cartão? Todas as faturas, compras e parcelas vinculadas também serão excluídas permanentemente.”
+
+A exclusão deve ser feita de forma segura ou transacional. Caso alguma etapa falhe, nenhuma exclusão parcial deve permanecer no banco.
+
+## 2. Cálculo correto da fatura do cartão
+
+Corrigir a regra responsável por identificar em qual fatura uma compra deve ser adicionada.
+
+O cálculo deve considerar:
+
+* Data da compra.
+* Dia de fechamento do cartão.
+* Dia de vencimento do cartão.
+
+Exemplo:
+
+* Fechamento do cartão: dia 15.
+* Vencimento do cartão: dia 31.
+* Data da compra: dia 12.
+
+Como a compra foi realizada antes do fechamento, ela deve entrar na fatura com vencimento no mesmo mês.
+
+Regras esperadas:
+
+* Compra realizada antes do dia de fechamento: entra na fatura atual.
+* Compra realizada no próprio dia de fechamento: entra na fatura atual.
+* Compra realizada depois do dia de fechamento: entra na próxima fatura.
+* O mês e o ano da fatura devem ser calculados corretamente.
+* A regra deve funcionar em viradas de mês e de ano.
+* Deve considerar meses com menos dias.
+
+Exemplos:
+
+* Fechamento dia 15 e compra dia 12: fatura atual.
+* Fechamento dia 15 e compra dia 15: fatura atual.
+* Fechamento dia 15 e compra dia 16: próxima fatura.
+* Fechamento dia 15 e compra em 20 de dezembro: fatura de janeiro do próximo ano.
+
+Caso o vencimento esteja configurado para um dia que não exista no mês, utilizar o último dia válido daquele mês.
+
+Exemplos:
+
+* Vencimento dia 31 em abril: utilizar 30 de abril.
+* Vencimento dia 31 em fevereiro: utilizar 28 ou 29 de fevereiro.
+* Vencimento dia 30 em fevereiro: utilizar 28 ou 29 de fevereiro.
+
+Criar testes unitários cobrindo essas regras e casos de borda.
+
+## 3. Exclusão de despesa
+
+Adicionar a opção de excluir uma despesa cadastrada.
+
+Ao excluir uma despesa, o sistema deve:
+
+* Remover a despesa do banco de dados.
+* Remover sua exibição da tela de despesas.
+* Remover sua exibição da Agenda.
+* Remover sua influência no resumo mensal.
+* Remover sua influência nos relatórios e totais financeiros.
+* Atualizar imediatamente as telas afetadas.
+
+Antes da exclusão, exibir uma confirmação para evitar remoções acidentais.
+
+Caso a despesa seja parcelada ou recorrente, perguntar qual ação o usuário deseja realizar:
+
+* Excluir apenas este lançamento.
+* Excluir este lançamento e os próximos.
+* Excluir toda a série.
+
+A exclusão deve respeitar a opção selecionada e não afetar lançamentos anteriores quando o usuário escolher excluir apenas os próximos.
+
+## 4. Permitir seleção de datas futuras em receitas e entradas
+
+O campo de data já existe na tela de cadastro de receitas ou entradas.
+
+Atualmente, ele permite selecionar apenas a data atual ou datas anteriores.
+
+Alterar o comportamento do campo para permitir também a seleção de datas futuras.
+
+O usuário deve conseguir:
+
+* Selecionar datas anteriores.
+* Selecionar a data atual.
+* Selecionar qualquer data futura.
+* Cadastrar antecipadamente uma entrada prevista.
+
+Exemplo:
+
+O usuário deve conseguir cadastrar hoje um salário que será recebido no dia 30 deste mês ou em qualquer mês futuro.
+
+Não deve existir uma limitação máxima baseada na data atual.
+
+Após salvar uma receita futura, ela deve aparecer corretamente:
+
+* Na Agenda, na data selecionada.
+* No resumo financeiro do mês correspondente.
+* Na lista de receitas ou entradas.
+* Nos totais de receitas previstas.
+
+Uma receita futura não deve ser contabilizada automaticamente como valor já recebido.
+
+Adicionar ou utilizar um status para diferenciar, quando aplicável:
+
+* Prevista.
+* Recebida.
+* Cancelada.
+
+A receita deve ser considerada efetivamente recebida apenas quando o usuário alterar seu status para recebida ou confirmar o recebimento.
+
+## 5. Recorrência de receitas e entradas
+
+Adicionar uma opção de recorrência no cadastro de receitas ou entradas.
+
+O objetivo é permitir o cadastro automático de receitas que se repetem sempre nos mesmos períodos, como salários.
+
+Opções sugeridas:
+
+* Sem recorrência.
+* Semanal.
+* Quinzenal.
+* Mensal.
+* Anual.
+
+Também permitir configurar:
+
+* Data inicial.
+* Data final.
+* Quantidade de repetições.
+* Repetir sem data final.
+* Dia preferencial do recebimento.
+
+Exemplo:
+
+* Descrição: Salário.
+* Valor: R$ 5.000,00.
+* Data inicial: 30/07/2026.
+* Recorrência: mensal.
+* Dia de recebimento: 30.
+
+Ao salvar, o sistema deve criar ou disponibilizar automaticamente as próximas ocorrências nos meses seguintes.
+
+Regras importantes:
+
+* Uma recorrência mensal deve manter o mesmo dia sempre que possível.
+* Caso o dia não exista no mês, utilizar o último dia válido.
+* Uma receita recorrente no dia 30 deve ocorrer em 28 ou 29 de fevereiro.
+* Uma receita recorrente no dia 31 deve ocorrer no último dia de meses com menos de 31 dias.
+* A recorrência deve funcionar corretamente na virada do ano.
+* Não criar lançamentos duplicados.
+* Todas as ocorrências devem possuir vínculo com uma mesma série recorrente.
+* Cada ocorrência deve poder possuir seu próprio status.
+* Uma ocorrência pode estar recebida enquanto as futuras continuam previstas.
+
+Ao editar uma receita recorrente, perguntar se a alteração deve ser aplicada em:
+
+* Apenas esta ocorrência.
+* Esta ocorrência e as próximas.
+* Toda a série.
+
+Ao excluir uma receita recorrente, apresentar as mesmas opções:
+
+* Excluir apenas esta ocorrência.
+* Excluir esta ocorrência e as próximas.
+* Excluir toda a série.
+
+Caso o usuário altere somente uma ocorrência, ela deve manter o vínculo com a série, mas registrar que possui uma alteração específica.
+
+## 6. Integração com a Agenda
+
+Todos os lançamentos financeiros devem ser refletidos automaticamente na Agenda.
+
+A Agenda deve exibir:
+
+* Vencimentos de faturas.
+* Despesas.
+* Despesas parceladas.
+* Receitas previstas.
+* Receitas recebidas.
+* Receitas recorrentes.
+* Parcelas futuras.
+
+Cada item deve exibir pelo menos:
+
+* Descrição.
+* Valor.
+* Data.
+* Tipo de lançamento.
+* Status.
+* Cartão relacionado, quando aplicável.
+
+Ao excluir um cartão, despesa, receita ou série recorrente, os respectivos itens também devem desaparecer da Agenda.
+
+A Agenda não deve armazenar cópias desconectadas dos lançamentos. Ela deve utilizar os próprios registros financeiros ou referências válidas, evitando inconsistências.
+
+## 7. Atualização das telas e dos totais
+
+Após qualquer inclusão, edição ou exclusão, atualizar imediatamente:
+
+* Tela de Agenda.
+* Tela de cartões.
+* Tela de faturas.
+* Tela de despesas.
+* Tela de receitas.
+* Resumo mensal.
+* Limites disponíveis.
+* Totais previstos.
+* Totais realizados.
+* Saldo mensal.
+
+Não deve ser necessário fechar e abrir novamente o aplicativo para visualizar as alterações.
+
+## 8. Regras de banco de dados
+
+Garantir integridade entre:
+
+* Cartões.
+* Faturas.
+* Compras.
+* Parcelas.
+* Despesas.
+* Receitas.
+* Recorrências.
+* Eventos da Agenda.
+
+Ao excluir um cartão, utilizar exclusão em cascata controlada ou implementar a remoção explícita dos registros dependentes.
+
+Não deixar:
+
+* Faturas sem cartão.
+* Compras sem cartão ou fatura.
+* Parcelas sem compra.
+* Ocorrências sem série recorrente válida, salvo quando propositalmente desvinculadas.
+* Eventos da Agenda apontando para registros inexistentes.
+
+Caso seja necessário, criar migrations ou alterar o schema do banco de dados.
+
+## 9. Critérios técnicos e de qualidade
+
+* Manter a arquitetura atual do projeto.
+* Manter o padrão visual já utilizado no aplicativo.
+* Reutilizar componentes existentes sempre que possível.
+* Não criar telas ou serviços duplicados.
+* Não alterar funcionalidades existentes que não estejam relacionadas a estes ajustes.
+* Implementar tratamento de erros.
+* Exibir mensagens claras de sucesso e falha.
+* Evitar registros duplicados.
+* Garantir a consistência dos dados.
+* Criar testes unitários.
+* Criar testes para as principais regras de negócio.
+* Validar os fluxos antes de finalizar.
+
+## 10. Testes obrigatórios
+
+Criar testes para os seguintes cenários:
+
+### Cartões e faturas
+
+* Compra antes do fechamento.
+* Compra no dia do fechamento.
+* Compra depois do fechamento.
+* Compra em dezembro com fatura em janeiro.
+* Vencimento dia 31 em mês com 30 dias.
+* Vencimento dia 31 em fevereiro.
+* Exclusão de cartão com faturas e compras vinculadas.
+* Confirmação de que os registros desapareceram da Agenda.
+
+### Despesas
+
+* Exclusão de despesa comum.
+* Exclusão de apenas uma ocorrência recorrente.
+* Exclusão desta ocorrência e das próximas.
+* Exclusão de toda a série.
+* Atualização dos totais após a exclusão.
+
+### Receitas
+
+* Seleção de uma data passada.
+* Seleção da data atual.
+* Seleção de uma data futura.
+* Cadastro de salário futuro.
+* Receita futura aparecendo como prevista.
+* Alteração da receita de prevista para recebida.
+* Recorrência mensal no dia 30.
+* Recorrência mensal no dia 31.
+* Recorrência durante fevereiro.
+* Recorrência na virada do ano.
+* Edição de apenas uma ocorrência.
+* Edição desta ocorrência e das próximas.
+* Edição de toda a série.
+* Proteção contra lançamentos duplicados.
+
+Antes de finalizar, revisar a implementação completa e informar:
+
+* Quais arquivos foram alterados.
+* Quais regras foram implementadas.
+* Quais alterações de banco de dados foram necessárias.
+* Quais testes foram criados.
+* Quais comandos precisam ser executados para migrations, geração de código ou atualização do banco.

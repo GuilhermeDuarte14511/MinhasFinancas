@@ -55,7 +55,9 @@ class _MembersPageState extends ConsumerState<MembersPage> {
                     ),
                     const SizedBox(height: 4),
                     const Text('Pessoas que organizam as finanças com você.'),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 28),
+                    SectionHeading(title: 'Membros (${activeMembers.length})'),
+                    const SizedBox(height: 12),
                     if (activeMembers.isEmpty)
                       const _MembersEmptyState()
                     else
@@ -99,7 +101,7 @@ class _MembersPageState extends ConsumerState<MembersPage> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 24),
                     FilledButton.icon(
                       onPressed: canInvite
                           ? () => context.push('/invite-member')
@@ -208,37 +210,68 @@ class _MemberTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleName = member.name.trim().isEmpty ? member.email : member.name;
-    return ListTile(
-      minTileHeight: 82,
-      leading: CircleAvatar(
-        backgroundColor: member.isCurrentUser
-            ? AppColors.secondaryContainer
-            : const Color(0xFFE2DFFF),
-        child: Text(visibleName.characters.first.toUpperCase()),
-      ),
-      title: Row(
-        children: [
-          Flexible(child: Text(visibleName)),
-          if (member.isCurrentUser) ...[
-            const SizedBox(width: 6),
-            const Text(
-              '(você)',
-              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+    return Semantics(
+      label: '$visibleName, ${member.email}, ${_roleLabel(member.role)}',
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 18, 12, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: member.isCurrentUser
+                      ? AppColors.secondaryContainer
+                      : const Color(0xFFE2DFFF),
+                  child: Text(visibleName.characters.first.toUpperCase()),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        visibleName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      if (member.isCurrentUser)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 2),
+                          child: Text(
+                            'Você',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 3),
+                      Text(
+                        member.email,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ],
-      ),
-      subtitle: Text(member.email),
-      trailing: busy
-          ? const SizedBox.square(
-              dimension: 22,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
+            const SizedBox(height: 14),
+            Row(
               children: [
                 _RolePill(role: member.role),
-                if (canManage)
+                const Spacer(),
+                if (busy)
+                  const SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else if (canManage)
                   PopupMenuButton<String>(
                     tooltip: 'Gerenciar membro',
                     onSelected: (value) {
@@ -273,9 +306,18 @@ class _MemberTile extends StatelessWidget {
                   ),
               ],
             ),
+          ],
+        ),
+      ),
     );
   }
 }
+
+String _roleLabel(MembershipRole role) => switch (role) {
+  MembershipRole.owner => 'Proprietário',
+  MembershipRole.editor => 'Editor',
+  MembershipRole.viewer => 'Visualizador',
+};
 
 class _RolePill extends StatelessWidget {
   const _RolePill({required this.role});

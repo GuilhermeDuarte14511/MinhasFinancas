@@ -37,73 +37,85 @@ class AppShell extends ConsumerWidget {
   ) {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       showDragHandle: true,
-      builder: (sheetContext) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Espaço financeiro',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            for (final space in finance.availableSpaces)
-              Card(
-                color: space.id == finance.spaceId
-                    ? AppColors.surfaceLow
-                    : Colors.white,
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Color(
-                      space.colorValue,
-                    ).withValues(alpha: .14),
-                    child: Icon(
-                      Icons.home_work_rounded,
-                      color: Color(space.colorValue),
+      builder: (sheetContext) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * .82,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Espaço financeiro',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                for (final space in finance.availableSpaces)
+                  Card(
+                    color: space.id == finance.spaceId
+                        ? AppColors.surfaceLow
+                        : Colors.white,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Color(
+                          space.colorValue,
+                        ).withValues(alpha: .14),
+                        child: Icon(
+                          Icons.home_work_rounded,
+                          color: Color(space.colorValue),
+                        ),
+                      ),
+                      title: Text(
+                        space.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        space.id == finance.spaceId
+                            ? 'Espaço ativo'
+                            : 'Tocar para selecionar',
+                      ),
+                      trailing: space.id == finance.spaceId
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppColors.secondary,
+                            )
+                          : null,
+                      onTap: space.id == finance.spaceId
+                          ? null
+                          : () async {
+                              Navigator.pop(sheetContext);
+                              await ref
+                                  .read(financeControllerProvider.notifier)
+                                  .selectWorkspace(space.id);
+                            },
                     ),
                   ),
-                  title: Text(space.name),
-                  subtitle: Text(
-                    space.id == finance.spaceId
-                        ? 'Espaço ativo'
-                        : 'Tocar para selecionar',
-                  ),
-                  trailing: space.id == finance.spaceId
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: AppColors.secondary,
-                        )
-                      : null,
-                  onTap: space.id == finance.spaceId
-                      ? null
-                      : () async {
-                          Navigator.pop(sheetContext);
-                          await ref
-                              .read(financeControllerProvider.notifier)
-                              .selectWorkspace(space.id);
-                        },
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/members');
+                  },
+                  icon: const Icon(Icons.group_outlined),
+                  label: const Text('Gerenciar membros'),
                 ),
-              ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.pop(sheetContext);
-                context.push('/members');
-              },
-              icon: const Icon(Icons.group_outlined),
-              label: const Text('Gerenciar membros'),
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.pop(sheetContext);
+                    context.go('/welcome');
+                  },
+                  icon: const Icon(Icons.add_home_outlined),
+                  label: const Text('Criar ou entrar em outro espaço'),
+                ),
+              ],
             ),
-            TextButton.icon(
-              onPressed: () {
-                Navigator.pop(sheetContext);
-                context.go('/welcome');
-              },
-              icon: const Icon(Icons.add_home_outlined),
-              label: const Text('Criar ou entrar em outro espaço'),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -114,63 +126,96 @@ class AppShell extends ConsumerWidget {
     final canCreatePurchase = canEdit && finance.cards.isNotEmpty;
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       showDragHandle: true,
       builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'O que você quer adicionar?',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Escolha uma opção para manter as finanças em dia.',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 16),
-              _CreateOption(
-                icon: Icons.shopping_bag_outlined,
-                title: 'Nova compra',
-                subtitle: canCreatePurchase
-                    ? 'Registre uma compra à vista ou parcelada'
-                    : !canEdit
-                    ? 'Seu acesso é somente leitura'
-                    : 'Cadastre um cartão antes de registrar compras',
-                enabled: canCreatePurchase,
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  context.push('/new-purchase');
-                },
-              ),
-              _CreateOption(
-                icon: Icons.add_card_rounded,
-                title: 'Novo cartão',
-                subtitle: canEdit
-                    ? 'Adicione limite, fechamento e vencimento'
-                    : 'Seu acesso é somente leitura',
-                enabled: canEdit,
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  context.push('/new-card');
-                },
-              ),
-              _CreateOption(
-                icon: Icons.account_balance_outlined,
-                title: 'Novo empréstimo',
-                subtitle: canEdit
-                    ? 'Cadastre um contrato e suas parcelas'
-                    : 'Seu acesso é somente leitura',
-                enabled: canEdit,
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  context.push('/new-loan');
-                },
-              ),
-            ],
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * .82,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'O que você quer adicionar?',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Registre o que entrou, o que saiu ou um compromisso financeiro.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 20),
+                _CreateOption(
+                  icon: Icons.south_west_rounded,
+                  title: 'Entrada de dinheiro',
+                  subtitle: canEdit
+                      ? 'Salário, 13º, férias, bônus ou reembolso'
+                      : 'Seu acesso é somente leitura',
+                  enabled: canEdit,
+                  color: AppColors.secondary,
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/new-income');
+                  },
+                ),
+                _CreateOption(
+                  icon: Icons.north_east_rounded,
+                  title: 'Saída de dinheiro',
+                  subtitle: !canEdit
+                      ? 'Seu acesso é somente leitura'
+                      : finance.categories.isEmpty
+                      ? 'Cadastre uma categoria para continuar'
+                      : 'Conta, boleto, Pix, dinheiro ou débito',
+                  enabled: canEdit && finance.categories.isNotEmpty,
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/new-expense');
+                  },
+                ),
+                _CreateOption(
+                  icon: Icons.credit_card_outlined,
+                  title: 'Compra no cartão',
+                  subtitle: canCreatePurchase
+                      ? 'Registre uma compra à vista ou parcelada'
+                      : !canEdit
+                      ? 'Seu acesso é somente leitura'
+                      : 'Cadastre um cartão antes de registrar compras',
+                  enabled: canCreatePurchase,
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/new-purchase');
+                  },
+                ),
+                _CreateOption(
+                  icon: Icons.add_card_rounded,
+                  title: 'Novo cartão',
+                  subtitle: canEdit
+                      ? 'Adicione limite, fechamento e vencimento'
+                      : 'Seu acesso é somente leitura',
+                  enabled: canEdit,
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/new-card');
+                  },
+                ),
+                _CreateOption(
+                  icon: Icons.account_balance_outlined,
+                  title: 'Novo empréstimo',
+                  subtitle: canEdit
+                      ? 'Cadastre um contrato e suas parcelas'
+                      : 'Seu acesso é somente leitura',
+                  enabled: canEdit,
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    context.push('/new-loan');
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -181,6 +226,9 @@ class AppShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final finance = ref.watch(financeControllerProvider);
     if (!finance.hasFinancialSpace) return const EntryGatePage();
+    final displayName = finance.userName.trim().isEmpty
+        ? 'usuário'
+        : finance.userName.trim();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
@@ -191,7 +239,7 @@ class AppShell extends ConsumerWidget {
               radius: 20,
               backgroundColor: AppColors.surfaceContainer,
               child: Text(
-                finance.userName.characters.first.toUpperCase(),
+                displayName.characters.first.toUpperCase(),
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w700,
@@ -205,7 +253,9 @@ class AppShell extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Olá, ${finance.userName}',
+                    'Olá, $displayName',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   InkWell(
@@ -218,6 +268,7 @@ class AppShell extends ConsumerWidget {
                           Flexible(
                             child: Text(
                               finance.spaceName,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: AppColors.primary,
@@ -313,6 +364,7 @@ class _CreateOption extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.enabled = true,
+    this.color = AppColors.primary,
   });
 
   final IconData icon;
@@ -320,24 +372,33 @@ class _CreateOption extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
   final bool enabled;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final color = enabled ? AppColors.primary : AppColors.textMuted;
-    return Card(
-      color: enabled ? null : AppColors.surfaceLow,
-      child: ListTile(
-        enabled: enabled,
-        onTap: enabled ? onTap : null,
-        leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: .12),
-          child: Icon(icon, color: color),
+    final foreground = enabled ? color : AppColors.textMuted;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: enabled ? Colors.transparent : AppColors.surfaceLow,
+        borderRadius: BorderRadius.circular(16),
+        child: ListTile(
+          minTileHeight: 72,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          enabled: enabled,
+          onTap: enabled ? onTap : null,
+          leading: CircleAvatar(
+            backgroundColor: foreground.withValues(alpha: .12),
+            child: Icon(icon, color: foreground),
+          ),
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: enabled
+              ? const Icon(Icons.chevron_right_rounded)
+              : const Icon(Icons.lock_outline_rounded, size: 20),
         ),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: enabled
-            ? const Icon(Icons.chevron_right_rounded)
-            : const Icon(Icons.lock_outline_rounded, size: 20),
       ),
     );
   }
