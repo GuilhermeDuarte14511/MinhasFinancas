@@ -47,8 +47,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: dataconnect/package-lock.json
 
       - name: Instalar Firebase CLI
         if: steps.firebase_credentials.outputs.configured == 'true'
