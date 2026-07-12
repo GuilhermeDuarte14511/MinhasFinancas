@@ -15,10 +15,7 @@ void main() {
     expect(schedule.map((item) => item.amount.cents), [334, 333, 333]);
     expect(schedule.first.dueDate, DateTime(2026, 7, 30));
     expect(schedule.last.dueDate, DateTime(2026, 9, 30));
-    expect(
-      schedule.fold(0, (total, item) => total + item.amount.cents),
-      1000,
-    );
+    expect(schedule.fold(0, (total, item) => total + item.amount.cents), 1000);
   });
 
   test('clamps day 31 in shorter months and restores it when possible', () {
