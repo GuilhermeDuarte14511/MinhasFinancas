@@ -1,0 +1,82 @@
+query ListWorkspaceCashFlowHistory(
+  $spaceId: UUID!
+  $limit: Int!
+  $offset: Int!
+) @auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(
+    first: {
+      where: {
+        financialSpaceId: {eq: $spaceId}
+        memberFirebaseUid: {eq_expr: "auth.uid"}
+        status: {eq: ACTIVE}
+        removedAt: {isNull: true}
+      }
+    }
+  ) @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    id
+  }
+
+  cashFlowEntries(
+    where: {
+      financialSpaceId: {eq: $spaceId}
+      status: {ne: CANCELLED}
+    }
+    orderBy: [{occurredAt: DESC}, {id: DESC}]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    direction
+    kind
+    paymentMethod
+    description
+    amountCents
+    occurredAt
+    competenceMonth
+    notes
+    status
+    occurrenceIndex
+    isRecurrenceException
+    receivedAt
+    paidAt
+    sourceType
+    sourceEntityId
+    category { id name }
+    recurrenceSeries { id }
+    createdByUser { displayName }
+  }
+}
+
+query ListWorkspaceActivityHistory(
+  $spaceId: UUID!
+  $limit: Int!
+  $offset: Int!
+) @auth(level: USER_EMAIL_VERIFIED) {
+  access: spaceMember(
+    first: {
+      where: {
+        financialSpaceId: {eq: $spaceId}
+        memberFirebaseUid: {eq_expr: "auth.uid"}
+        status: {eq: ACTIVE}
+        removedAt: {isNull: true}
+      }
+    }
+  ) @redact @check(expr: "this != null", message: "Você não participa deste espaço.") {
+    id
+  }
+
+  auditEvents(
+    where: {financialSpaceId: {eq: $spaceId}}
+    orderBy: [{occurredAt: DESC}, {id: DESC}]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    entityType
+    entityId
+    action
+    summary
+    occurredAt
+    actorUser { displayName }
+  }
+}
