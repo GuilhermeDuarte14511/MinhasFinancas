@@ -4,7 +4,7 @@ import 'package:nossa_grana/features/finance/domain/finance_models.dart';
 import 'package:nossa_grana/features/finance/domain/loan_agenda_entry.dart';
 
 void main() {
-  const loan = LoanContract(
+  final loan = LoanContract(
     id: 'loan-1',
     lender: 'Banco Teste',
     description: 'Empréstimo de três parcelas',
@@ -48,22 +48,22 @@ void main() {
 
   test('shows a three-installment loan only from July through September', () {
     final july = loanAgendaEntriesForMonth(
-      loans: const [loan],
+      loans: [loan],
       installments: installments,
       month: DateTime(2026, 7),
     );
     final august = loanAgendaEntriesForMonth(
-      loans: const [loan],
+      loans: [loan],
       installments: installments,
       month: DateTime(2026, 8),
     );
     final september = loanAgendaEntriesForMonth(
-      loans: const [loan],
+      loans: [loan],
       installments: installments,
       month: DateTime(2026, 9),
     );
     final october = loanAgendaEntriesForMonth(
-      loans: const [loan],
+      loans: [loan],
       installments: installments,
       month: DateTime(2026, 10),
     );
@@ -86,7 +86,7 @@ void main() {
     );
 
     final october = loanAgendaEntriesForMonth(
-      loans: const [loan],
+      loans: [loan],
       installments: [...installments, cancelled],
       month: DateTime(2026, 10),
     );
