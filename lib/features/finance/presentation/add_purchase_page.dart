@@ -230,7 +230,7 @@ class _AddPurchasePageState extends ConsumerState<AddPurchasePage> {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        for (final category in finance.categories.take(6))
+                        for (final category in finance.categories)
                           ChoiceChip(
                             label: Text(category),
                             selected: _category == category,
