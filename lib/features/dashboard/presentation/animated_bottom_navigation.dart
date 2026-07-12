@@ -22,7 +22,9 @@ class AnimatedBottomNavigationBar extends StatelessWidget {
     required this.destinations,
     required this.onDestinationSelected,
     super.key,
-  });
+  }) : assert(destinations.length > 1),
+       assert(selectedIndex >= 0),
+       assert(selectedIndex < destinations.length);
 
   static const _duration = Duration(milliseconds: 340);
   static const _curve = Curves.easeOutCubic;
