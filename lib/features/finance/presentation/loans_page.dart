@@ -9,7 +9,14 @@ import '../application/finance_controller.dart';
 import '../domain/finance_models.dart';
 
 class LoansPage extends ConsumerWidget {
-  const LoansPage({super.key});
+  const LoansPage({this.embedded = false, super.key});
+
+  final bool embedded;
+
+  Future<void> _goBack(BuildContext context) async {
+    final popped = await Navigator.of(context).maybePop();
+    if (!popped && context.mounted) context.go('/app/home');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,67 +25,104 @@ class LoansPage extends ConsumerWidget {
       0,
       (total, loan) => total + loan.outstandingBalance.cents,
     );
-    return Scaffold(
-      appBar: const BrandAppBar(title: 'Empréstimos', showBack: true),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: AppContent(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Seus contratos em um só lugar',
-                  style: Theme.of(context).textTheme.headlineMedium,
+    final content = SafeArea(
+      child: SingleChildScrollView(
+        child: AppContent(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Seus contratos em um só lugar',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 6),
+              const Text('Acompanhe parcelas, saldos e vencimentos.'),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primaryContainer, Color(0xFF3D37A9)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 6),
-                const Text('Acompanhe parcelas, saldos e vencimentos.'),
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primaryContainer, Color(0xFF3D37A9)],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'SALDO DEVEDOR TOTAL',
+                      style: TextStyle(color: Color(0xFFDAD7FF)),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'SALDO DEVEDOR TOTAL',
-                        style: TextStyle(color: Color(0xFFDAD7FF)),
+                    const SizedBox(height: 8),
+                    Text(
+                      Money.fromCents(totalDebt).format(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 31,
+                        fontWeight: FontWeight.w700,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        Money.fromCents(totalDebt).format(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 31,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 28),
-                const SectionHeading(title: 'Contratos ativos'),
-                const SizedBox(height: 12),
+              ),
+              const SizedBox(height: 28),
+              const SectionHeading(title: 'Contratos ativos'),
+              const SizedBox(height: 12),
+              if (finance.loans.isEmpty)
+                Card(
+                  color: AppColors.surfaceLow,
+                  child: const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text(
+                      'Nenhum empréstimo cadastrado neste espaço.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              else
                 for (final loan in finance.loans) ...[
                   _LoanCard(loan: loan),
                   const SizedBox(height: 14),
                 ],
-                OutlinedButton.icon(
-                  onPressed: finance.canEdit
-                      ? () => context.push('/new-loan')
-                      : null,
-                  icon: const Icon(Icons.add_rounded),
-                  label: const Text('Adicionar empréstimo'),
-                ),
-              ],
-            ),
+              OutlinedButton.icon(
+                onPressed: finance.canEdit
+                    ? () => context.push('/new-loan')
+                    : null,
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Adicionar empréstimo'),
+              ),
+            ],
           ),
         ),
       ),
+    );
+
+    if (embedded) return content;
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 64,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          tooltip: 'Voltar',
+          onPressed: () => _goBack(context),
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
+        title: const Text(
+          'Empréstimos',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1),
+        ),
+      ),
+      body: content,
     );
   }
 }
@@ -90,7 +134,9 @@ class _LoanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = loan.paidInstallments / loan.installmentCount;
+    final progress = loan.installmentCount == 0
+        ? 0.0
+        : loan.paidInstallments / loan.installmentCount;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(

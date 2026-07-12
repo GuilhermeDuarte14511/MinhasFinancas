@@ -7,6 +7,7 @@ import '../../../app/widgets/app_widgets.dart';
 import '../../finance/application/finance_controller.dart';
 import '../../finance/presentation/agenda_page.dart';
 import '../../finance/presentation/cards_page.dart';
+import '../../finance/presentation/loans_page.dart';
 import '../../finance/presentation/more_page.dart';
 import '../../onboarding/presentation/entry_gate_page.dart';
 import 'dashboard_page.dart';
@@ -18,13 +19,15 @@ class AppShell extends ConsumerWidget {
 
   int get _currentIndex => switch (section) {
     'cards' => 1,
-    'agenda' => 3,
-    'more' => 4,
+    'loans' => 3,
+    'agenda' => 4,
+    'more' => 5,
     _ => 0,
   };
 
   Widget get _page => switch (section) {
     'cards' => const CardsPage(),
+    'loans' => const LoansPage(embedded: true),
     'agenda' => const AgendaPage(),
     'more' => const MorePage(),
     _ => const DashboardPage(),
@@ -229,6 +232,7 @@ class AppShell extends ConsumerWidget {
     final displayName = finance.userName.trim().isEmpty
         ? 'usuário'
         : finance.userName.trim();
+    final compactNavigation = MediaQuery.sizeOf(context).width < 420;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
@@ -312,7 +316,9 @@ class AppShell extends ConsumerWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         height: 76,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        labelBehavior: compactNavigation
+            ? NavigationDestinationLabelBehavior.onlyShowSelected
+            : NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {
           if (index == 2) {
             _showCreateMenu(context, finance);
@@ -320,8 +326,9 @@ class AppShell extends ConsumerWidget {
           }
           context.go(switch (index) {
             1 => '/app/cards',
-            3 => '/app/agenda',
-            4 => '/app/more',
+            3 => '/app/loans',
+            4 => '/app/agenda',
+            5 => '/app/more',
             _ => '/app/home',
           });
         },
@@ -340,6 +347,11 @@ class AppShell extends ConsumerWidget {
             icon: Icon(Icons.add_circle_outline_rounded, size: 32),
             selectedIcon: Icon(Icons.add_circle_rounded, size: 32),
             label: 'Novo',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_balance_outlined),
+            selectedIcon: Icon(Icons.account_balance_rounded),
+            label: 'Empréstimos',
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_today_outlined),
