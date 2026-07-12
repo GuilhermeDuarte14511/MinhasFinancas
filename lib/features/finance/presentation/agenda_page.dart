@@ -650,8 +650,8 @@ String _loanInstallmentStatusLabel(LoanInstallmentStatus status) =>
 Color _loanInstallmentStatusColor(LoanInstallmentStatus status) =>
     switch (status) {
       LoanInstallmentStatus.paid => AppColors.secondary,
-      LoanInstallmentStatus.overdue || LoanInstallmentStatus.cancelled =>
-        AppColors.error,
+      LoanInstallmentStatus.overdue ||
+      LoanInstallmentStatus.cancelled => AppColors.error,
       _ => AppColors.primary,
     };
 
