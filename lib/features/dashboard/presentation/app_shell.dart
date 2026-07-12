@@ -232,7 +232,6 @@ class AppShell extends ConsumerWidget {
     final displayName = finance.userName.trim().isEmpty
         ? 'usuário'
         : finance.userName.trim();
-    final compactNavigation = MediaQuery.sizeOf(context).width < 420;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
@@ -313,12 +312,8 @@ class AppShell extends ConsumerWidget {
         ),
       ),
       body: AnimatedPageSwitcher(child: _page),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: _ExpandableBottomNavigationBar(
         selectedIndex: _currentIndex,
-        height: 76,
-        labelBehavior: compactNavigation
-            ? NavigationDestinationLabelBehavior.onlyShowSelected
-            : NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {
           if (index == 2) {
             _showCreateMenu(context, finance);
@@ -332,41 +327,185 @@ class AppShell extends ConsumerWidget {
             _ => '/app/home',
           });
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Início',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.credit_card_outlined),
-            selectedIcon: Icon(Icons.credit_card_rounded),
-            label: 'Cartões',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.add_circle_outline_rounded, size: 32),
-            selectedIcon: Icon(Icons.add_circle_rounded, size: 32),
-            label: 'Novo',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.account_balance_outlined),
-            selectedIcon: Icon(Icons.account_balance_rounded),
-            label: 'Empréstimos',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Agenda',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.more_horiz_rounded),
-            selectedIcon: Icon(Icons.more_horiz_rounded),
-            label: 'Mais',
-          ),
-        ],
       ),
     );
   }
+}
+
+class _ExpandableBottomNavigationBar extends StatelessWidget {
+  const _ExpandableBottomNavigationBar({
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
+
+  static const _destinations = <_BottomNavigationDestination>[
+    _BottomNavigationDestination(
+      icon: Icons.home_outlined,
+      selectedIcon: Icons.home_rounded,
+      label: 'Início',
+    ),
+    _BottomNavigationDestination(
+      icon: Icons.credit_card_outlined,
+      selectedIcon: Icons.credit_card_rounded,
+      label: 'Cartões',
+    ),
+    _BottomNavigationDestination(
+      icon: Icons.add_circle_outline_rounded,
+      selectedIcon: Icons.add_circle_rounded,
+      label: 'Novo',
+      iconSize: 32,
+    ),
+    _BottomNavigationDestination(
+      icon: Icons.account_balance_outlined,
+      selectedIcon: Icons.account_balance_rounded,
+      label: 'Empréstimos',
+    ),
+    _BottomNavigationDestination(
+      icon: Icons.calendar_today_outlined,
+      selectedIcon: Icons.calendar_month_rounded,
+      label: 'Agenda',
+    ),
+    _BottomNavigationDestination(
+      icon: Icons.more_horiz_rounded,
+      selectedIcon: Icons.more_horiz_rounded,
+      label: 'Mais',
+    ),
+  ];
+
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final backgroundColor =
+        theme.navigationBarTheme.backgroundColor ??
+        theme.colorScheme.surfaceContainer;
+    final indicatorColor =
+        theme.navigationBarTheme.indicatorColor ??
+        AppColors.primary.withValues(alpha: .12);
+
+    return Material(
+      color: backgroundColor,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          height: 76,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: AppColors.outline.withValues(alpha: .55),
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              for (var index = 0; index < _destinations.length; index++)
+                Expanded(
+                  flex: index == selectedIndex ? 3 : 1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: _ExpandableBottomNavigationItem(
+                      destination: _destinations[index],
+                      selected: index == selectedIndex,
+                      indicatorColor: indicatorColor,
+                      onTap: () => onDestinationSelected(index),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpandableBottomNavigationItem extends StatelessWidget {
+  const _ExpandableBottomNavigationItem({
+    required this.destination,
+    required this.selected,
+    required this.indicatorColor,
+    required this.onTap,
+  });
+
+  final _BottomNavigationDestination destination;
+  final bool selected;
+  final Color indicatorColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final foregroundColor = selected
+        ? AppColors.primary
+        : AppColors.textMuted;
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: destination.label,
+      child: Tooltip(
+        message: destination.label,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            padding: EdgeInsets.symmetric(horizontal: selected ? 10 : 0),
+            decoration: BoxDecoration(
+              color: selected ? indicatorColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  selected ? destination.selectedIcon : destination.icon,
+                  size: destination.iconSize,
+                  color: foregroundColor,
+                ),
+                if (selected) ...[
+                  const SizedBox(width: 7),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        destination.label,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomNavigationDestination {
+  const _BottomNavigationDestination({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    this.iconSize = 25,
+  });
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+  final double iconSize;
 }
 
 class _CreateOption extends StatelessWidget {
