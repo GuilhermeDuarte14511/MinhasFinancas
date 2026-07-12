@@ -1,0 +1,59 @@
+name: Publicar Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-production
+  cancel-in-progress: true
+
+jobs:
+  build_and_deploy:
+    name: Build Flutter Web e publicar
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar credencial do Firebase
+        id: firebase_credentials
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC }}
+        run: |
+          if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::O secret FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC ainda não foi configurado. O deploy foi ignorado sem falhar o workflow."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configurar Flutter
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Instalar dependências
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: flutter pub get
+
+      - name: Gerar Flutter Web
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: flutter build web --release
+
+      - name: Publicar no canal live
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC }}
+          projectId: minhasfinancasofc
+          channelId: live
