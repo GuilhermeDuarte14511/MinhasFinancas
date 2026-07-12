@@ -1,8 +1,7 @@
 name: Format agent files
 
 on:
-  push:
-    branches: [agent/loan-footer-agenda-navigation]
+  pull_request:
 
 permissions:
   contents: read
