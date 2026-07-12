@@ -1,0 +1,90 @@
+name: Aplicar feature de compromissos
+
+on:
+  push:
+    branches: [agent/commitments-and-dataconnect-deploy]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/commitments-and-dataconnect-deploy
+          fetch-depth: 0
+
+      - name: Atualizar dashboard, rota e limpeza do modelo
+        shell: python
+        run: |
+          from pathlib import Path
+
+          dashboard = Path('lib/features/dashboard/presentation/dashboard_page.dart')
+          text = dashboard.read_text()
+          old = "        const SectionHeading(title: 'Próximos compromissos'),"
+          new = """        SectionHeading(
+            title: 'Próximos compromissos',
+            actionLabel: hasItems ? 'Ver mais' : null,
+            onAction: hasItems ? () => context.push('/commitments') : null,
+          ),"""
+          if old not in text:
+              raise SystemExit('Cabeçalho de compromissos não encontrado.')
+          dashboard.write_text(text.replace(old, new, 1))
+
+          router = Path('lib/app/routing/app_router.dart')
+          text = router.read_text()
+          import_anchor = "import '../../features/finance/presentation/categories_page.dart';"
+          import_line = "import '../../features/finance/presentation/commitments_page.dart';"
+          if import_line not in text:
+              if import_anchor not in text:
+                  raise SystemExit('Ponto de importação não encontrado.')
+              text = text.replace(import_anchor, f'{import_anchor}\n{import_line}', 1)
+
+          route_anchor = """    GoRoute(
+      path: '/categories',"""
+          route = """    GoRoute(
+      path: '/commitments',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const CommitmentsPage()),
+    ),
+"""
+          if "path: '/commitments'" not in text:
+              if route_anchor not in text:
+                  raise SystemExit('Ponto de rota não encontrado.')
+              text = text.replace(route_anchor, route + route_anchor, 1)
+          router.write_text(text)
+
+          commitments = Path('lib/features/finance/presentation/commitments_page.dart')
+          text = commitments.read_text()
+          text = text.replace('        id: invoice.id,\n', '')
+          text = text.replace('        id: installment.id,\n', '')
+          text = text.replace('    required this.id,\n', '')
+          text = text.replace('  final String id;\n', '')
+          commitments.write_text(text)
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Formatar arquivos Dart
+        run: dart format lib/features/dashboard/presentation/dashboard_page.dart lib/app/routing/app_router.dart lib/features/finance/presentation/commitments_page.dart
+
+      - name: Remover workflow temporário
+        run: rm .github/workflows/apply-commitments-feature.yml
+
+      - name: Criar commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/features/dashboard/presentation/dashboard_page.dart \
+                  lib/app/routing/app_router.dart \
+                  lib/features/finance/presentation/commitments_page.dart \
+                  .github/workflows/apply-commitments-feature.yml
+          git commit -m "feat: integra tela completa de compromissos"
+          git push origin HEAD:agent/commitments-and-dataconnect-deploy
