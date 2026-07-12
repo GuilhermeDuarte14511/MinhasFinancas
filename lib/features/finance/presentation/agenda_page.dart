@@ -9,6 +9,7 @@ import '../../../core/money/money.dart';
 import '../application/finance_controller.dart';
 import '../domain/cash_flow.dart';
 import '../domain/finance_models.dart';
+import '../domain/loan_agenda_entry.dart';
 import 'cash_flow_action_dialogs.dart';
 import 'cash_flow_labels.dart';
 
@@ -124,15 +125,18 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
   @override
   Widget build(BuildContext context) {
     final finance = ref.watch(financeControllerProvider);
+    final loanEntries = loanAgendaEntriesForMonth(
+      loans: finance.loans,
+      installments: finance.loanInstallments,
+      month: _selectedMonth,
+    );
     final items = <_AgendaItem>[
       if (_filter == _AgendaFilter.all || _filter == _AgendaFilter.invoices)
         for (final invoice in finance.invoices)
           if (_isSameMonth(invoice.dueDate, _selectedMonth))
             _AgendaItem.invoice(invoice),
       if (_filter == _AgendaFilter.all || _filter == _AgendaFilter.loans)
-        for (final loan in finance.loans)
-          if (!loan.outstandingBalance.isZero)
-            _AgendaItem.loan(loan, _dateForDay(_selectedMonth, loan.dueDay)),
+        for (final entry in loanEntries) _AgendaItem.loan(entry),
       if (_filter == _AgendaFilter.all ||
           _filter == _AgendaFilter.income ||
           _filter == _AgendaFilter.expenses)
@@ -539,15 +543,16 @@ class _AgendaItem {
     isIncome: false,
   );
 
-  factory _AgendaItem.loan(LoanContract loan, DateTime date) => _AgendaItem(
-    date: date,
-    title: loan.description,
-    subtitle: loan.lender,
+  factory _AgendaItem.loan(LoanAgendaEntry entry) => _AgendaItem(
+    date: entry.installment.dueDate,
+    title: entry.loan.description,
+    subtitle:
+        '${entry.loan.lender} • Parcela ${entry.installment.number}/${entry.loan.installmentCount}',
     type: 'Empréstimo',
-    amount: loan.installmentAmount,
-    status: 'Pendente',
-    statusColor: AppColors.primary,
-    route: '/loans',
+    amount: entry.installment.total,
+    status: _loanInstallmentStatusLabel(entry.installment.status),
+    statusColor: _loanInstallmentStatusColor(entry.installment.status),
+    route: '/loans/${entry.loan.id}',
     backgroundColor: AppColors.secondaryContainer,
     foregroundColor: AppColors.secondary,
     isIncome: false,
@@ -611,11 +616,6 @@ String? _findRelatedCard(CashFlowEntry entry, FinanceState finance) {
 bool _isSameMonth(DateTime first, DateTime second) =>
     first.year == second.year && first.month == second.month;
 
-DateTime _dateForDay(DateTime month, int day) {
-  final lastDay = DateUtils.getDaysInMonth(month.year, month.month);
-  return DateTime(month.year, month.month, day.clamp(1, lastDay));
-}
-
 String _filterLabel(_AgendaFilter filter) => switch (filter) {
   _AgendaFilter.all => 'Todos',
   _AgendaFilter.income => 'Entradas',
@@ -637,6 +637,23 @@ Color _invoiceStatusColor(InvoiceStatus status) => switch (status) {
   InvoiceStatus.overdue || InvoiceStatus.cancelled => AppColors.error,
   _ => AppColors.primary,
 };
+
+String _loanInstallmentStatusLabel(LoanInstallmentStatus status) =>
+    switch (status) {
+      LoanInstallmentStatus.planned || LoanInstallmentStatus.open => 'Pendente',
+      LoanInstallmentStatus.partiallyPaid => 'Parcialmente paga',
+      LoanInstallmentStatus.paid => 'Paga',
+      LoanInstallmentStatus.overdue => 'Vencida',
+      LoanInstallmentStatus.cancelled => 'Cancelada',
+    };
+
+Color _loanInstallmentStatusColor(LoanInstallmentStatus status) =>
+    switch (status) {
+      LoanInstallmentStatus.paid => AppColors.secondary,
+      LoanInstallmentStatus.overdue || LoanInstallmentStatus.cancelled =>
+        AppColors.error,
+      _ => AppColors.primary,
+    };
 
 String _cashFlowStatusLabel(CashFlowEntry entry) => switch (entry.status) {
   CashFlowStatus.scheduled => entry.isIncome ? 'Prevista' : 'Pendente',
