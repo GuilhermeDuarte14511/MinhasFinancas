@@ -3,6 +3,8 @@ name: Aplicar feature de compromissos
 on:
   push:
     branches: [agent/commitments-and-dataconnect-deploy]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
