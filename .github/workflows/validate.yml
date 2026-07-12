@@ -47,7 +47,14 @@ jobs:
 
           printf 'Checking formatting for:\n%s\n' "${dart_files[*]}"
           dart format --output=none --set-exit-if-changed "${dart_files[@]}"
-      - run: flutter analyze
+      - name: Run flutter analyze
+        run: flutter analyze 2>&1 | tee flutter-analyze.log
+      - name: Upload analyzer log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-analyze-log
+          path: flutter-analyze.log
       - run: flutter test
       - run: flutter build apk --debug
       - run: flutter build web --release
