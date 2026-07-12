@@ -17,10 +17,7 @@ query ListWorkspaceCashFlowHistory(
   }
 
   cashFlowEntries(
-    where: {
-      financialSpaceId: {eq: $spaceId}
-      status: {ne: CANCELLED}
-    }
+    where: {financialSpaceId: {eq: $spaceId}}
     orderBy: [{occurredAt: DESC}, {id: DESC}]
     limit: $limit
     offset: $offset
