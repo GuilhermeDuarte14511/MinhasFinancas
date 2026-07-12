@@ -86,11 +86,10 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
       context.go('/loans');
     } catch (error) {
       if (mounted) {
-        final message = switch (error) {
-          StateError() => error.message,
-          _ => ref.read(financeControllerProvider).errorMessage ??
-              'Não foi possível salvar o empréstimo.',
-        };
+        final message = error is StateError
+            ? error.message.toString()
+            : ref.read(financeControllerProvider).errorMessage ??
+                  'Não foi possível salvar o empréstimo.';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
@@ -177,7 +176,7 @@ class _AddLoanPageState extends ConsumerState<AddLoanPage> {
                     TextFormField(
                       controller: _installmentCountController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: const [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         labelText: 'Número de parcelas',
                         hintText: 'Ex: 12',
