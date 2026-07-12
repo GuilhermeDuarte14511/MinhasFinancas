@@ -70,8 +70,17 @@ final class FirebaseAuthService {
   Future<bool> reloadAndCheckEmailVerification() async {
     final user = _auth.currentUser;
     if (user == null) return false;
+
     await user.reload();
-    return _auth.currentUser?.emailVerified ?? false;
+
+    final refreshedUser = _auth.currentUser;
+    if (refreshedUser == null || !refreshedUser.emailVerified) {
+      return false;
+    }
+
+    // Renova o token para que o Data Connect receba email_verified = true.
+    await refreshedUser.getIdToken(true);
+    return true;
   }
 
   Future<void> signOut() => _auth.signOut();
