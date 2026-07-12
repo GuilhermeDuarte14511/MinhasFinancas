@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nossa_grana/core/money/money.dart';
 import 'package:nossa_grana/features/finance/domain/finance_models.dart';
 import 'package:nossa_grana/features/finance/domain/loan_agenda_entry.dart';
+import 'package:nossa_grana/features/finance/domain/loan_installment_schedule.dart';
 
 void main() {
   final loan = LoanContract(
@@ -15,36 +16,26 @@ void main() {
     installmentCount: 3,
     dueDay: 31,
   );
-
-  final installments = <LoanInstallmentRecord>[
-    LoanInstallmentRecord(
-      id: 'installment-1',
-      loanId: loan.id,
-      number: 1,
-      dueDate: DateTime(2026, 7, 31),
-      total: Money.fromCents(10000),
-      paid: const Money.zero(),
-      status: LoanInstallmentStatus.open,
-    ),
-    LoanInstallmentRecord(
-      id: 'installment-2',
-      loanId: loan.id,
-      number: 2,
-      dueDate: DateTime(2026, 8, 31),
-      total: Money.fromCents(10000),
-      paid: const Money.zero(),
-      status: LoanInstallmentStatus.planned,
-    ),
-    LoanInstallmentRecord(
-      id: 'installment-3',
-      loanId: loan.id,
-      number: 3,
-      dueDate: DateTime(2026, 9, 30),
-      total: Money.fromCents(10000),
-      paid: const Money.zero(),
-      status: LoanInstallmentStatus.planned,
-    ),
-  ];
+  final schedule = const LoanInstallmentScheduleGenerator().generate(
+    total: Money.fromCents(30000),
+    count: 3,
+    firstDueDate: DateTime(2026, 7, 31),
+  );
+  final installments = schedule
+      .map(
+        (item) => LoanInstallmentRecord(
+          id: 'installment-${item.number}',
+          loanId: loan.id,
+          number: item.number,
+          dueDate: item.dueDate,
+          total: item.amount,
+          paid: const Money.zero(),
+          status: item.number == 1
+              ? LoanInstallmentStatus.open
+              : LoanInstallmentStatus.planned,
+        ),
+      )
+      .toList();
 
   test('shows a three-installment loan only from July through September', () {
     final july = loanAgendaEntriesForMonth(
