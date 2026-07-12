@@ -327,6 +327,12 @@ class _AddPurchasePageState extends ConsumerState<AddPurchasePage> {
                                     Text(
                                       'Primeira parcela em ${DateFormat('MMMM \'de\' yyyy', 'pt_BR').format(preview.first.referenceMonth)}',
                                     ),
+                                    if (preview.length > 1) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Última parcela em ${DateFormat('MMMM \'de\' yyyy', 'pt_BR').format(preview.last.referenceMonth)}',
+                                      ),
+                                    ],
                                     const SizedBox(height: 8),
                                     Text(
                                       'Limite após a compra: ${(selectedCard.available - _amount).format()}',
