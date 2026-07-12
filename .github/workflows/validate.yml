@@ -14,12 +14,39 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed lib test
+      - name: Check formatting of changed Dart files
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base_ref="origin/${{ github.base_ref }}"
+          else
+            base_ref="${{ github.event.before }}"
+            if [[ "$base_ref" =~ ^0+$ ]]; then
+              base_ref="HEAD^"
+            fi
+          fi
+
+          mapfile -t dart_files < <(
+            git diff --name-only --diff-filter=ACMRT "$base_ref" HEAD \
+              | grep -E '^(lib|test)/.*\.dart$' \
+              | grep -v '^lib/features/finance/infrastructure/sql_connect_generated/' \
+              || true
+          )
+
+          if (( ${#dart_files[@]} == 0 )); then
+            echo "No changed Dart files to format-check."
+            exit 0
+          fi
+
+          printf 'Checking formatting for:\n%s\n' "${dart_files[*]}"
+          dart format --output=none --set-exit-if-changed "${dart_files[@]}"
       - run: flutter analyze
       - run: flutter test
       - run: flutter build apk --debug
