@@ -1,4 +1,4 @@
-name: Publicar Firebase Hosting
+name: Publicar Firebase
 
 on:
   push:
@@ -9,14 +9,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: firebase-hosting-production
+  group: firebase-production
   cancel-in-progress: true
 
 jobs:
-  build_and_deploy:
-    name: Build Flutter Web e publicar
+  deploy:
+    name: Publicar Data Connect e Flutter Web
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -30,10 +30,37 @@ jobs:
         run: |
           if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::O secret FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC ainda não foi configurado. O deploy foi ignorado sem falhar o workflow."
+            echo "::warning::O secret FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC ainda não foi configurado. A publicação foi ignorada sem falhar o workflow."
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Autenticar no Google Cloud
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINHASFINANCASOFC }}
+          project_id: minhasfinancasofc
+
+      - name: Configurar Node.js
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: dataconnect/package-lock.json
+
+      - name: Instalar Firebase CLI
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: npm install --global firebase-tools
+
+      - name: Publicar Data Connect
+        if: steps.firebase_credentials.outputs.configured == 'true'
+        run: >-
+          firebase deploy
+          --only dataconnect
+          --project minhasfinancasofc
+          --non-interactive
 
       - name: Configurar Flutter
         if: steps.firebase_credentials.outputs.configured == 'true'
@@ -42,7 +69,7 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Instalar dependências
+      - name: Instalar dependências Flutter
         if: steps.firebase_credentials.outputs.configured == 'true'
         run: flutter pub get
 
@@ -50,7 +77,7 @@ jobs:
         if: steps.firebase_credentials.outputs.configured == 'true'
         run: flutter build web --release
 
-      - name: Publicar no canal live
+      - name: Publicar Firebase Hosting
         if: steps.firebase_credentials.outputs.configured == 'true'
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
