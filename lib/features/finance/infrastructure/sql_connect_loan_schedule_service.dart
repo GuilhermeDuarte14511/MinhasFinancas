@@ -60,4 +60,17 @@ final class SqlConnectLoanScheduleService {
       rethrow;
     }
   }
+
+  Future<void> cancelLoan({
+    required String spaceId,
+    required String loanId,
+  }) async {
+    final result = await sql.ClientConnector.instance
+        .cancelLoan(spaceId: spaceId, loanId: loanId)
+        .execute();
+
+    if (result.data.loan == null) {
+      throw StateError('Empréstimo não encontrado ou já excluído.');
+    }
+  }
 }

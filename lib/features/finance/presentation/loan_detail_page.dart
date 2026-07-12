@@ -6,16 +6,76 @@ import '../../../app/theme/app_theme.dart';
 import '../../../app/widgets/app_widgets.dart';
 import '../application/finance_controller.dart';
 import '../domain/finance_models.dart';
+import '../infrastructure/sql_connect_loan_schedule_service.dart';
 
 class LoanDetailPage extends ConsumerWidget {
   const LoanDetailPage({required this.loanId, super.key});
 
+  static const _loanService = SqlConnectLoanScheduleService();
+
   final String loanId;
+
+  Future<void> _deleteLoan(
+    BuildContext context,
+    WidgetRef ref,
+    LoanContract loan,
+  ) async {
+    final paymentWarning = loan.paidInstallments > 0
+        ? '\n\nOs pagamentos já registrados permanecerão no histórico.'
+        : '';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Excluir empréstimo?'),
+        content: Text(
+          'O empréstimo “${loan.description}” e todas as suas parcelas serão cancelados. '
+          'Ele deixará de aparecer no cronograma do espaço.$paymentWarning',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final finance = ref.read(financeControllerProvider);
+    final spaceId = finance.spaceId;
+    if (spaceId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhum espaço financeiro selecionado.')),
+      );
+      return;
+    }
+
+    try {
+      await _loanService.cancelLoan(spaceId: spaceId, loanId: loan.id);
+      await ref.read(financeControllerProvider.notifier).refresh();
+      if (!context.mounted) return;
+      showSuccessMessage(context, 'Empréstimo excluído.');
+      context.go('/loans');
+    } catch (error) {
+      if (!context.mounted) return;
+      final message = error is StateError
+          ? error.message
+          : 'Não foi possível excluir o empréstimo.';
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loans = ref.watch(financeControllerProvider).loans;
-    final loan = loans.cast<LoanContract?>().firstWhere(
+    final finance = ref.watch(financeControllerProvider);
+    final loan = finance.loans.cast<LoanContract?>().firstWhere(
       (item) => item?.id == loanId,
       orElse: () => null,
     );
@@ -108,6 +168,18 @@ class LoanDetailPage extends ConsumerWidget {
                   'Pagamentos registrados ficam disponíveis para todos os membros do espaço.',
                   textAlign: TextAlign.center,
                 ),
+                if (finance.canEdit) ...[
+                  const SizedBox(height: 30),
+                  FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFDAD6),
+                      foregroundColor: const Color(0xFF93000A),
+                    ),
+                    onPressed: () => _deleteLoan(context, ref, loan),
+                    icon: const Icon(Icons.delete_outline_rounded),
+                    label: const Text('Excluir empréstimo'),
+                  ),
+                ],
               ],
             ),
           ),
