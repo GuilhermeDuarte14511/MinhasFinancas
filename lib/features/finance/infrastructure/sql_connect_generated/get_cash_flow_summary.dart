@@ -11,43 +11,16 @@ class GetCashFlowSummaryVariablesBuilder {
   Timestamp nextYearStartedAt;
 
   final FirebaseDataConnect _dataConnect;
-  GetCashFlowSummaryVariablesBuilder(
-    this._dataConnect, {
-    required this.spaceId,
-    required this.monthStart,
-    required this.yearStart,
-    required this.nextYearStart,
-    required this.monthStartedAt,
-    required this.nextMonthStartedAt,
-    required this.yearStartedAt,
-    required this.nextYearStartedAt,
-  });
-  Deserializer<GetCashFlowSummaryData> dataDeserializer = (dynamic json) =>
-      GetCashFlowSummaryData.fromJson(jsonDecode(json));
-  Serializer<GetCashFlowSummaryVariables> varsSerializer =
-      (GetCashFlowSummaryVariables vars) => jsonEncode(vars.toJson());
-  Future<QueryResult<GetCashFlowSummaryData, GetCashFlowSummaryVariables>>
-  execute({QueryFetchPolicy fetchPolicy = QueryFetchPolicy.preferCache}) {
+  GetCashFlowSummaryVariablesBuilder(this._dataConnect, {required  this.spaceId,required  this.monthStart,required  this.yearStart,required  this.nextYearStart,required  this.monthStartedAt,required  this.nextMonthStartedAt,required  this.yearStartedAt,required  this.nextYearStartedAt,});
+  Deserializer<GetCashFlowSummaryData> dataDeserializer = (dynamic json)  => GetCashFlowSummaryData.fromJson(jsonDecode(json));
+  Serializer<GetCashFlowSummaryVariables> varsSerializer = (GetCashFlowSummaryVariables vars) => jsonEncode(vars.toJson());
+  Future<QueryResult<GetCashFlowSummaryData, GetCashFlowSummaryVariables>> execute({QueryFetchPolicy fetchPolicy = QueryFetchPolicy.preferCache}) {
     return ref().execute(fetchPolicy: fetchPolicy);
   }
 
   QueryRef<GetCashFlowSummaryData, GetCashFlowSummaryVariables> ref() {
-    GetCashFlowSummaryVariables vars = GetCashFlowSummaryVariables(
-      spaceId: spaceId,
-      monthStart: monthStart,
-      yearStart: yearStart,
-      nextYearStart: nextYearStart,
-      monthStartedAt: monthStartedAt,
-      nextMonthStartedAt: nextMonthStartedAt,
-      yearStartedAt: yearStartedAt,
-      nextYearStartedAt: nextYearStartedAt,
-    );
-    return _dataConnect.query(
-      "GetCashFlowSummary",
-      dataDeserializer,
-      varsSerializer,
-      vars,
-    );
+    GetCashFlowSummaryVariables vars= GetCashFlowSummaryVariables(spaceId: spaceId,monthStart: monthStart,yearStart: yearStart,nextYearStart: nextYearStart,monthStartedAt: monthStartedAt,nextMonthStartedAt: nextMonthStartedAt,yearStartedAt: yearStartedAt,nextYearStartedAt: nextYearStartedAt,);
+    return _dataConnect.query("GetCashFlowSummary", dataDeserializer, varsSerializer, vars);
   }
 }
 
@@ -55,78 +28,86 @@ class GetCashFlowSummaryVariablesBuilder {
 class GetCashFlowSummaryMonth {
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryMonth.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryMonth.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
     final GetCashFlowSummaryMonth otherTyped = other as GetCashFlowSummaryMonth;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
     return json;
   }
 
-  GetCashFlowSummaryMonth({required this.direction, this.amountCents_sum});
+  GetCashFlowSummaryMonth({
+    required this.direction,
+    this.amountCents_sum,
+  });
 }
 
 @immutable
 class GetCashFlowSummaryYear {
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryYear.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryYear.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
     final GetCashFlowSummaryYear otherTyped = other as GetCashFlowSummaryYear;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
     return json;
   }
 
-  GetCashFlowSummaryYear({required this.direction, this.amountCents_sum});
+  GetCashFlowSummaryYear({
+    required this.direction,
+    this.amountCents_sum,
+  });
 }
 
 @immutable
@@ -135,57 +116,45 @@ class GetCashFlowSummaryLifetime {
   final BigInt? amountCents_sum;
   final DateTime? competenceMonth_min;
   final DateTime? competenceMonth_max;
-  GetCashFlowSummaryLifetime.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']),
-      competenceMonth_min = json['competenceMonth_min'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['competenceMonth_min']),
-      competenceMonth_max = json['competenceMonth_max'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['competenceMonth_max']);
+  GetCashFlowSummaryLifetime.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']),
+  competenceMonth_min = json['competenceMonth_min'] == null ? null : nativeFromJson<DateTime>(json['competenceMonth_min']),
+  competenceMonth_max = json['competenceMonth_max'] == null ? null : nativeFromJson<DateTime>(json['competenceMonth_max']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLifetime otherTyped =
-        other as GetCashFlowSummaryLifetime;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum &&
-        competenceMonth_min == otherTyped.competenceMonth_min &&
-        competenceMonth_max == otherTyped.competenceMonth_max;
+    final GetCashFlowSummaryLifetime otherTyped = other as GetCashFlowSummaryLifetime;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum && 
+    competenceMonth_min == otherTyped.competenceMonth_min && 
+    competenceMonth_max == otherTyped.competenceMonth_max;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    direction.hashCode,
-    amountCents_sum.hashCode,
-    competenceMonth_min.hashCode,
-    competenceMonth_max.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode, competenceMonth_min.hashCode, competenceMonth_max.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
     if (competenceMonth_min != null) {
-      json['competenceMonth_min'] = nativeToJson<DateTime?>(
-        competenceMonth_min,
-      );
+      json['competenceMonth_min'] = nativeToJson<DateTime?>(competenceMonth_min);
     }
     if (competenceMonth_max != null) {
-      json['competenceMonth_max'] = nativeToJson<DateTime?>(
-        competenceMonth_max,
-      );
+      json['competenceMonth_max'] = nativeToJson<DateTime?>(competenceMonth_max);
     }
     return json;
   }
@@ -203,39 +172,36 @@ class GetCashFlowSummaryYearSeries {
   final DateTime competenceMonth;
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryYearSeries.fromJson(dynamic json)
-    : competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
-      direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryYearSeries.fromJson(dynamic json):
+  
+  competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryYearSeries otherTyped =
-        other as GetCashFlowSummaryYearSeries;
-    return competenceMonth == otherTyped.competenceMonth &&
-        direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    final GetCashFlowSummaryYearSeries otherTyped = other as GetCashFlowSummaryYearSeries;
+    return competenceMonth == otherTyped.competenceMonth && 
+    direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    competenceMonth.hashCode,
-    direction.hashCode,
-    amountCents_sum.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([competenceMonth.hashCode, direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['competenceMonth'] = nativeToJson<DateTime>(competenceMonth);
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
@@ -253,33 +219,33 @@ class GetCashFlowSummaryYearSeries {
 class GetCashFlowSummaryMonthPlanned {
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryMonthPlanned.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryMonthPlanned.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryMonthPlanned otherTyped =
-        other as GetCashFlowSummaryMonthPlanned;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    final GetCashFlowSummaryMonthPlanned otherTyped = other as GetCashFlowSummaryMonthPlanned;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
@@ -296,33 +262,33 @@ class GetCashFlowSummaryMonthPlanned {
 class GetCashFlowSummaryYearPlanned {
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryYearPlanned.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryYearPlanned.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryYearPlanned otherTyped =
-        other as GetCashFlowSummaryYearPlanned;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    final GetCashFlowSummaryYearPlanned otherTyped = other as GetCashFlowSummaryYearPlanned;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
@@ -341,57 +307,45 @@ class GetCashFlowSummaryLifetimePlanned {
   final BigInt? amountCents_sum;
   final DateTime? competenceMonth_min;
   final DateTime? competenceMonth_max;
-  GetCashFlowSummaryLifetimePlanned.fromJson(dynamic json)
-    : direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']),
-      competenceMonth_min = json['competenceMonth_min'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['competenceMonth_min']),
-      competenceMonth_max = json['competenceMonth_max'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['competenceMonth_max']);
+  GetCashFlowSummaryLifetimePlanned.fromJson(dynamic json):
+  
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']),
+  competenceMonth_min = json['competenceMonth_min'] == null ? null : nativeFromJson<DateTime>(json['competenceMonth_min']),
+  competenceMonth_max = json['competenceMonth_max'] == null ? null : nativeFromJson<DateTime>(json['competenceMonth_max']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLifetimePlanned otherTyped =
-        other as GetCashFlowSummaryLifetimePlanned;
-    return direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum &&
-        competenceMonth_min == otherTyped.competenceMonth_min &&
-        competenceMonth_max == otherTyped.competenceMonth_max;
+    final GetCashFlowSummaryLifetimePlanned otherTyped = other as GetCashFlowSummaryLifetimePlanned;
+    return direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum && 
+    competenceMonth_min == otherTyped.competenceMonth_min && 
+    competenceMonth_max == otherTyped.competenceMonth_max;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    direction.hashCode,
-    amountCents_sum.hashCode,
-    competenceMonth_min.hashCode,
-    competenceMonth_max.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([direction.hashCode, amountCents_sum.hashCode, competenceMonth_min.hashCode, competenceMonth_max.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
     if (competenceMonth_min != null) {
-      json['competenceMonth_min'] = nativeToJson<DateTime?>(
-        competenceMonth_min,
-      );
+      json['competenceMonth_min'] = nativeToJson<DateTime?>(competenceMonth_min);
     }
     if (competenceMonth_max != null) {
-      json['competenceMonth_max'] = nativeToJson<DateTime?>(
-        competenceMonth_max,
-      );
+      json['competenceMonth_max'] = nativeToJson<DateTime?>(competenceMonth_max);
     }
     return json;
   }
@@ -409,39 +363,36 @@ class GetCashFlowSummaryYearPlannedSeries {
   final DateTime competenceMonth;
   final EnumValue<CashFlowDirection> direction;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryYearPlannedSeries.fromJson(dynamic json)
-    : competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
-      direction = cashFlowDirectionDeserializer(json['direction']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryYearPlannedSeries.fromJson(dynamic json):
+  
+  competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryYearPlannedSeries otherTyped =
-        other as GetCashFlowSummaryYearPlannedSeries;
-    return competenceMonth == otherTyped.competenceMonth &&
-        direction == otherTyped.direction &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    final GetCashFlowSummaryYearPlannedSeries otherTyped = other as GetCashFlowSummaryYearPlannedSeries;
+    return competenceMonth == otherTyped.competenceMonth && 
+    direction == otherTyped.direction && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    competenceMonth.hashCode,
-    direction.hashCode,
-    amountCents_sum.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([competenceMonth.hashCode, direction.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['competenceMonth'] = nativeToJson<DateTime>(competenceMonth);
-    json['direction'] = cashFlowDirectionSerializer(direction);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
     if (amountCents_sum != null) {
       json['amountCents_sum'] = bigIntToJson(amountCents_sum);
     }
@@ -458,26 +409,25 @@ class GetCashFlowSummaryYearPlannedSeries {
 @immutable
 class GetCashFlowSummaryCardMonth {
   final BigInt? totalAmountCents_sum;
-  GetCashFlowSummaryCardMonth.fromJson(dynamic json)
-    : totalAmountCents_sum = json['totalAmountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['totalAmountCents_sum']);
+  GetCashFlowSummaryCardMonth.fromJson(dynamic json):
+  
+  totalAmountCents_sum = json['totalAmountCents_sum'] == null ? null : bigIntFromJson(json['totalAmountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryCardMonth otherTyped =
-        other as GetCashFlowSummaryCardMonth;
+    final GetCashFlowSummaryCardMonth otherTyped = other as GetCashFlowSummaryCardMonth;
     return totalAmountCents_sum == otherTyped.totalAmountCents_sum;
+    
   }
-
   @override
   int get hashCode => totalAmountCents_sum.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -487,32 +437,33 @@ class GetCashFlowSummaryCardMonth {
     return json;
   }
 
-  GetCashFlowSummaryCardMonth({this.totalAmountCents_sum});
+  GetCashFlowSummaryCardMonth({
+    this.totalAmountCents_sum,
+  });
 }
 
 @immutable
 class GetCashFlowSummaryCardYear {
   final BigInt? totalAmountCents_sum;
-  GetCashFlowSummaryCardYear.fromJson(dynamic json)
-    : totalAmountCents_sum = json['totalAmountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['totalAmountCents_sum']);
+  GetCashFlowSummaryCardYear.fromJson(dynamic json):
+  
+  totalAmountCents_sum = json['totalAmountCents_sum'] == null ? null : bigIntFromJson(json['totalAmountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryCardYear otherTyped =
-        other as GetCashFlowSummaryCardYear;
+    final GetCashFlowSummaryCardYear otherTyped = other as GetCashFlowSummaryCardYear;
     return totalAmountCents_sum == otherTyped.totalAmountCents_sum;
+    
   }
-
   @override
   int get hashCode => totalAmountCents_sum.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -522,7 +473,9 @@ class GetCashFlowSummaryCardYear {
     return json;
   }
 
-  GetCashFlowSummaryCardYear({this.totalAmountCents_sum});
+  GetCashFlowSummaryCardYear({
+    this.totalAmountCents_sum,
+  });
 }
 
 @immutable
@@ -530,38 +483,29 @@ class GetCashFlowSummaryCardLifetime {
   final BigInt? totalAmountCents_sum;
   final DateTime? referenceMonth_min;
   final DateTime? referenceMonth_max;
-  GetCashFlowSummaryCardLifetime.fromJson(dynamic json)
-    : totalAmountCents_sum = json['totalAmountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['totalAmountCents_sum']),
-      referenceMonth_min = json['referenceMonth_min'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['referenceMonth_min']),
-      referenceMonth_max = json['referenceMonth_max'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['referenceMonth_max']);
+  GetCashFlowSummaryCardLifetime.fromJson(dynamic json):
+  
+  totalAmountCents_sum = json['totalAmountCents_sum'] == null ? null : bigIntFromJson(json['totalAmountCents_sum']),
+  referenceMonth_min = json['referenceMonth_min'] == null ? null : nativeFromJson<DateTime>(json['referenceMonth_min']),
+  referenceMonth_max = json['referenceMonth_max'] == null ? null : nativeFromJson<DateTime>(json['referenceMonth_max']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryCardLifetime otherTyped =
-        other as GetCashFlowSummaryCardLifetime;
-    return totalAmountCents_sum == otherTyped.totalAmountCents_sum &&
-        referenceMonth_min == otherTyped.referenceMonth_min &&
-        referenceMonth_max == otherTyped.referenceMonth_max;
+    final GetCashFlowSummaryCardLifetime otherTyped = other as GetCashFlowSummaryCardLifetime;
+    return totalAmountCents_sum == otherTyped.totalAmountCents_sum && 
+    referenceMonth_min == otherTyped.referenceMonth_min && 
+    referenceMonth_max == otherTyped.referenceMonth_max;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    totalAmountCents_sum.hashCode,
-    referenceMonth_min.hashCode,
-    referenceMonth_max.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([totalAmountCents_sum.hashCode, referenceMonth_min.hashCode, referenceMonth_max.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -588,29 +532,27 @@ class GetCashFlowSummaryCardLifetime {
 class GetCashFlowSummaryCardYearSeries {
   final DateTime referenceMonth;
   final BigInt? totalAmountCents_sum;
-  GetCashFlowSummaryCardYearSeries.fromJson(dynamic json)
-    : referenceMonth = nativeFromJson<DateTime>(json['referenceMonth']),
-      totalAmountCents_sum = json['totalAmountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['totalAmountCents_sum']);
+  GetCashFlowSummaryCardYearSeries.fromJson(dynamic json):
+  
+  referenceMonth = nativeFromJson<DateTime>(json['referenceMonth']),
+  totalAmountCents_sum = json['totalAmountCents_sum'] == null ? null : bigIntFromJson(json['totalAmountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryCardYearSeries otherTyped =
-        other as GetCashFlowSummaryCardYearSeries;
-    return referenceMonth == otherTyped.referenceMonth &&
-        totalAmountCents_sum == otherTyped.totalAmountCents_sum;
+    final GetCashFlowSummaryCardYearSeries otherTyped = other as GetCashFlowSummaryCardYearSeries;
+    return referenceMonth == otherTyped.referenceMonth && 
+    totalAmountCents_sum == otherTyped.totalAmountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([referenceMonth.hashCode, totalAmountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([referenceMonth.hashCode, totalAmountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -630,26 +572,25 @@ class GetCashFlowSummaryCardYearSeries {
 @immutable
 class GetCashFlowSummaryLoanMonth {
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryLoanMonth.fromJson(dynamic json)
-    : amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryLoanMonth.fromJson(dynamic json):
+  
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLoanMonth otherTyped =
-        other as GetCashFlowSummaryLoanMonth;
+    final GetCashFlowSummaryLoanMonth otherTyped = other as GetCashFlowSummaryLoanMonth;
     return amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
   int get hashCode => amountCents_sum.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -659,32 +600,33 @@ class GetCashFlowSummaryLoanMonth {
     return json;
   }
 
-  GetCashFlowSummaryLoanMonth({this.amountCents_sum});
+  GetCashFlowSummaryLoanMonth({
+    this.amountCents_sum,
+  });
 }
 
 @immutable
 class GetCashFlowSummaryLoanYear {
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryLoanYear.fromJson(dynamic json)
-    : amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryLoanYear.fromJson(dynamic json):
+  
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLoanYear otherTyped =
-        other as GetCashFlowSummaryLoanYear;
+    final GetCashFlowSummaryLoanYear otherTyped = other as GetCashFlowSummaryLoanYear;
     return amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
   int get hashCode => amountCents_sum.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -694,7 +636,9 @@ class GetCashFlowSummaryLoanYear {
     return json;
   }
 
-  GetCashFlowSummaryLoanYear({this.amountCents_sum});
+  GetCashFlowSummaryLoanYear({
+    this.amountCents_sum,
+  });
 }
 
 @immutable
@@ -702,38 +646,29 @@ class GetCashFlowSummaryLoanLifetime {
   final BigInt? amountCents_sum;
   final Timestamp? paidAt_min;
   final Timestamp? paidAt_max;
-  GetCashFlowSummaryLoanLifetime.fromJson(dynamic json)
-    : amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']),
-      paidAt_min = json['paidAt_min'] == null
-          ? null
-          : Timestamp.fromJson(json['paidAt_min']),
-      paidAt_max = json['paidAt_max'] == null
-          ? null
-          : Timestamp.fromJson(json['paidAt_max']);
+  GetCashFlowSummaryLoanLifetime.fromJson(dynamic json):
+  
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']),
+  paidAt_min = json['paidAt_min'] == null ? null : Timestamp.fromJson(json['paidAt_min']),
+  paidAt_max = json['paidAt_max'] == null ? null : Timestamp.fromJson(json['paidAt_max']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLoanLifetime otherTyped =
-        other as GetCashFlowSummaryLoanLifetime;
-    return amountCents_sum == otherTyped.amountCents_sum &&
-        paidAt_min == otherTyped.paidAt_min &&
-        paidAt_max == otherTyped.paidAt_max;
+    final GetCashFlowSummaryLoanLifetime otherTyped = other as GetCashFlowSummaryLoanLifetime;
+    return amountCents_sum == otherTyped.amountCents_sum && 
+    paidAt_min == otherTyped.paidAt_min && 
+    paidAt_max == otherTyped.paidAt_max;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    amountCents_sum.hashCode,
-    paidAt_min.hashCode,
-    paidAt_max.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([amountCents_sum.hashCode, paidAt_min.hashCode, paidAt_max.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -760,29 +695,27 @@ class GetCashFlowSummaryLoanLifetime {
 class GetCashFlowSummaryLoanYearSeries {
   final Timestamp paidAt;
   final BigInt? amountCents_sum;
-  GetCashFlowSummaryLoanYearSeries.fromJson(dynamic json)
-    : paidAt = Timestamp.fromJson(json['paidAt']),
-      amountCents_sum = json['amountCents_sum'] == null
-          ? null
-          : bigIntFromJson(json['amountCents_sum']);
+  GetCashFlowSummaryLoanYearSeries.fromJson(dynamic json):
+  
+  paidAt = Timestamp.fromJson(json['paidAt']),
+  amountCents_sum = json['amountCents_sum'] == null ? null : bigIntFromJson(json['amountCents_sum']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryLoanYearSeries otherTyped =
-        other as GetCashFlowSummaryLoanYearSeries;
-    return paidAt == otherTyped.paidAt &&
-        amountCents_sum == otherTyped.amountCents_sum;
+    final GetCashFlowSummaryLoanYearSeries otherTyped = other as GetCashFlowSummaryLoanYearSeries;
+    return paidAt == otherTyped.paidAt && 
+    amountCents_sum == otherTyped.amountCents_sum;
+    
   }
-
   @override
-  int get hashCode =>
-      Object.hashAll([paidAt.hashCode, amountCents_sum.hashCode]);
+  int get hashCode => Object.hashAll([paidAt.hashCode, amountCents_sum.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -817,102 +750,87 @@ class GetCashFlowSummaryData {
   final List<GetCashFlowSummaryLoanYear> loanYear;
   final List<GetCashFlowSummaryLoanLifetime> loanLifetime;
   final List<GetCashFlowSummaryLoanYearSeries> loanYearSeries;
-  GetCashFlowSummaryData.fromJson(dynamic json)
-    : month = (json['month'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryMonth.fromJson(e))
-          .toList(),
-      year = (json['year'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryYear.fromJson(e))
-          .toList(),
-      lifetime = (json['lifetime'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLifetime.fromJson(e))
-          .toList(),
-      yearSeries = (json['yearSeries'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryYearSeries.fromJson(e))
-          .toList(),
-      monthPlanned = (json['monthPlanned'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryMonthPlanned.fromJson(e))
-          .toList(),
-      yearPlanned = (json['yearPlanned'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryYearPlanned.fromJson(e))
-          .toList(),
-      lifetimePlanned = (json['lifetimePlanned'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLifetimePlanned.fromJson(e))
-          .toList(),
-      yearPlannedSeries = (json['yearPlannedSeries'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryYearPlannedSeries.fromJson(e))
-          .toList(),
-      cardMonth = (json['cardMonth'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryCardMonth.fromJson(e))
-          .toList(),
-      cardYear = (json['cardYear'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryCardYear.fromJson(e))
-          .toList(),
-      cardLifetime = (json['cardLifetime'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryCardLifetime.fromJson(e))
-          .toList(),
-      cardYearSeries = (json['cardYearSeries'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryCardYearSeries.fromJson(e))
-          .toList(),
-      loanMonth = (json['loanMonth'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLoanMonth.fromJson(e))
-          .toList(),
-      loanYear = (json['loanYear'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLoanYear.fromJson(e))
-          .toList(),
-      loanLifetime = (json['loanLifetime'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLoanLifetime.fromJson(e))
-          .toList(),
-      loanYearSeries = (json['loanYearSeries'] as List<dynamic>)
-          .map((e) => GetCashFlowSummaryLoanYearSeries.fromJson(e))
-          .toList();
+  GetCashFlowSummaryData.fromJson(dynamic json):
+  
+  month = (json['month'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryMonth.fromJson(e))
+        .toList(),
+  year = (json['year'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryYear.fromJson(e))
+        .toList(),
+  lifetime = (json['lifetime'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLifetime.fromJson(e))
+        .toList(),
+  yearSeries = (json['yearSeries'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryYearSeries.fromJson(e))
+        .toList(),
+  monthPlanned = (json['monthPlanned'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryMonthPlanned.fromJson(e))
+        .toList(),
+  yearPlanned = (json['yearPlanned'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryYearPlanned.fromJson(e))
+        .toList(),
+  lifetimePlanned = (json['lifetimePlanned'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLifetimePlanned.fromJson(e))
+        .toList(),
+  yearPlannedSeries = (json['yearPlannedSeries'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryYearPlannedSeries.fromJson(e))
+        .toList(),
+  cardMonth = (json['cardMonth'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryCardMonth.fromJson(e))
+        .toList(),
+  cardYear = (json['cardYear'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryCardYear.fromJson(e))
+        .toList(),
+  cardLifetime = (json['cardLifetime'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryCardLifetime.fromJson(e))
+        .toList(),
+  cardYearSeries = (json['cardYearSeries'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryCardYearSeries.fromJson(e))
+        .toList(),
+  loanMonth = (json['loanMonth'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLoanMonth.fromJson(e))
+        .toList(),
+  loanYear = (json['loanYear'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLoanYear.fromJson(e))
+        .toList(),
+  loanLifetime = (json['loanLifetime'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLoanLifetime.fromJson(e))
+        .toList(),
+  loanYearSeries = (json['loanYearSeries'] as List<dynamic>)
+        .map((e) => GetCashFlowSummaryLoanYearSeries.fromJson(e))
+        .toList();
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
     final GetCashFlowSummaryData otherTyped = other as GetCashFlowSummaryData;
-    return month == otherTyped.month &&
-        year == otherTyped.year &&
-        lifetime == otherTyped.lifetime &&
-        yearSeries == otherTyped.yearSeries &&
-        monthPlanned == otherTyped.monthPlanned &&
-        yearPlanned == otherTyped.yearPlanned &&
-        lifetimePlanned == otherTyped.lifetimePlanned &&
-        yearPlannedSeries == otherTyped.yearPlannedSeries &&
-        cardMonth == otherTyped.cardMonth &&
-        cardYear == otherTyped.cardYear &&
-        cardLifetime == otherTyped.cardLifetime &&
-        cardYearSeries == otherTyped.cardYearSeries &&
-        loanMonth == otherTyped.loanMonth &&
-        loanYear == otherTyped.loanYear &&
-        loanLifetime == otherTyped.loanLifetime &&
-        loanYearSeries == otherTyped.loanYearSeries;
+    return month == otherTyped.month && 
+    year == otherTyped.year && 
+    lifetime == otherTyped.lifetime && 
+    yearSeries == otherTyped.yearSeries && 
+    monthPlanned == otherTyped.monthPlanned && 
+    yearPlanned == otherTyped.yearPlanned && 
+    lifetimePlanned == otherTyped.lifetimePlanned && 
+    yearPlannedSeries == otherTyped.yearPlannedSeries && 
+    cardMonth == otherTyped.cardMonth && 
+    cardYear == otherTyped.cardYear && 
+    cardLifetime == otherTyped.cardLifetime && 
+    cardYearSeries == otherTyped.cardYearSeries && 
+    loanMonth == otherTyped.loanMonth && 
+    loanYear == otherTyped.loanYear && 
+    loanLifetime == otherTyped.loanLifetime && 
+    loanYearSeries == otherTyped.loanYearSeries;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    month.hashCode,
-    year.hashCode,
-    lifetime.hashCode,
-    yearSeries.hashCode,
-    monthPlanned.hashCode,
-    yearPlanned.hashCode,
-    lifetimePlanned.hashCode,
-    yearPlannedSeries.hashCode,
-    cardMonth.hashCode,
-    cardYear.hashCode,
-    cardLifetime.hashCode,
-    cardYearSeries.hashCode,
-    loanMonth.hashCode,
-    loanYear.hashCode,
-    loanLifetime.hashCode,
-    loanYearSeries.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([month.hashCode, year.hashCode, lifetime.hashCode, yearSeries.hashCode, monthPlanned.hashCode, yearPlanned.hashCode, lifetimePlanned.hashCode, yearPlannedSeries.hashCode, cardMonth.hashCode, cardYear.hashCode, cardLifetime.hashCode, cardYearSeries.hashCode, loanMonth.hashCode, loanYear.hashCode, loanLifetime.hashCode, loanYearSeries.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -923,9 +841,7 @@ class GetCashFlowSummaryData {
     json['monthPlanned'] = monthPlanned.map((e) => e.toJson()).toList();
     json['yearPlanned'] = yearPlanned.map((e) => e.toJson()).toList();
     json['lifetimePlanned'] = lifetimePlanned.map((e) => e.toJson()).toList();
-    json['yearPlannedSeries'] = yearPlannedSeries
-        .map((e) => e.toJson())
-        .toList();
+    json['yearPlannedSeries'] = yearPlannedSeries.map((e) => e.toJson()).toList();
     json['cardMonth'] = cardMonth.map((e) => e.toJson()).toList();
     json['cardYear'] = cardYear.map((e) => e.toJson()).toList();
     json['cardLifetime'] = cardLifetime.map((e) => e.toJson()).toList();
@@ -967,50 +883,40 @@ class GetCashFlowSummaryVariables {
   final Timestamp nextMonthStartedAt;
   final Timestamp yearStartedAt;
   final Timestamp nextYearStartedAt;
-  @Deprecated(
-    'fromJson is deprecated for Variable classes as they are no longer required for deserialization.',
-  )
-  GetCashFlowSummaryVariables.fromJson(Map<String, dynamic> json)
-    : spaceId = nativeFromJson<String>(json['spaceId']),
-      monthStart = nativeFromJson<DateTime>(json['monthStart']),
-      yearStart = nativeFromJson<DateTime>(json['yearStart']),
-      nextYearStart = nativeFromJson<DateTime>(json['nextYearStart']),
-      monthStartedAt = Timestamp.fromJson(json['monthStartedAt']),
-      nextMonthStartedAt = Timestamp.fromJson(json['nextMonthStartedAt']),
-      yearStartedAt = Timestamp.fromJson(json['yearStartedAt']),
-      nextYearStartedAt = Timestamp.fromJson(json['nextYearStartedAt']);
+  @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
+  GetCashFlowSummaryVariables.fromJson(Map<String, dynamic> json):
+  
+  spaceId = nativeFromJson<String>(json['spaceId']),
+  monthStart = nativeFromJson<DateTime>(json['monthStart']),
+  yearStart = nativeFromJson<DateTime>(json['yearStart']),
+  nextYearStart = nativeFromJson<DateTime>(json['nextYearStart']),
+  monthStartedAt = Timestamp.fromJson(json['monthStartedAt']),
+  nextMonthStartedAt = Timestamp.fromJson(json['nextMonthStartedAt']),
+  yearStartedAt = Timestamp.fromJson(json['yearStartedAt']),
+  nextYearStartedAt = Timestamp.fromJson(json['nextYearStartedAt']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetCashFlowSummaryVariables otherTyped =
-        other as GetCashFlowSummaryVariables;
-    return spaceId == otherTyped.spaceId &&
-        monthStart == otherTyped.monthStart &&
-        yearStart == otherTyped.yearStart &&
-        nextYearStart == otherTyped.nextYearStart &&
-        monthStartedAt == otherTyped.monthStartedAt &&
-        nextMonthStartedAt == otherTyped.nextMonthStartedAt &&
-        yearStartedAt == otherTyped.yearStartedAt &&
-        nextYearStartedAt == otherTyped.nextYearStartedAt;
+    final GetCashFlowSummaryVariables otherTyped = other as GetCashFlowSummaryVariables;
+    return spaceId == otherTyped.spaceId && 
+    monthStart == otherTyped.monthStart && 
+    yearStart == otherTyped.yearStart && 
+    nextYearStart == otherTyped.nextYearStart && 
+    monthStartedAt == otherTyped.monthStartedAt && 
+    nextMonthStartedAt == otherTyped.nextMonthStartedAt && 
+    yearStartedAt == otherTyped.yearStartedAt && 
+    nextYearStartedAt == otherTyped.nextYearStartedAt;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    spaceId.hashCode,
-    monthStart.hashCode,
-    yearStart.hashCode,
-    nextYearStart.hashCode,
-    monthStartedAt.hashCode,
-    nextMonthStartedAt.hashCode,
-    yearStartedAt.hashCode,
-    nextYearStartedAt.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, monthStart.hashCode, yearStart.hashCode, nextYearStart.hashCode, monthStartedAt.hashCode, nextMonthStartedAt.hashCode, yearStartedAt.hashCode, nextYearStartedAt.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1036,3 +942,4 @@ class GetCashFlowSummaryVariables {
     required this.nextYearStartedAt,
   });
 }
+

@@ -4,29 +4,16 @@ class GetWorkspaceSnapshotVariablesBuilder {
   String spaceId;
 
   final FirebaseDataConnect _dataConnect;
-  GetWorkspaceSnapshotVariablesBuilder(
-    this._dataConnect, {
-    required this.spaceId,
-  });
-  Deserializer<GetWorkspaceSnapshotData> dataDeserializer = (dynamic json) =>
-      GetWorkspaceSnapshotData.fromJson(jsonDecode(json));
-  Serializer<GetWorkspaceSnapshotVariables> varsSerializer =
-      (GetWorkspaceSnapshotVariables vars) => jsonEncode(vars.toJson());
-  Future<QueryResult<GetWorkspaceSnapshotData, GetWorkspaceSnapshotVariables>>
-  execute({QueryFetchPolicy fetchPolicy = QueryFetchPolicy.preferCache}) {
+  GetWorkspaceSnapshotVariablesBuilder(this._dataConnect, {required  this.spaceId,});
+  Deserializer<GetWorkspaceSnapshotData> dataDeserializer = (dynamic json)  => GetWorkspaceSnapshotData.fromJson(jsonDecode(json));
+  Serializer<GetWorkspaceSnapshotVariables> varsSerializer = (GetWorkspaceSnapshotVariables vars) => jsonEncode(vars.toJson());
+  Future<QueryResult<GetWorkspaceSnapshotData, GetWorkspaceSnapshotVariables>> execute({QueryFetchPolicy fetchPolicy = QueryFetchPolicy.preferCache}) {
     return ref().execute(fetchPolicy: fetchPolicy);
   }
 
   QueryRef<GetWorkspaceSnapshotData, GetWorkspaceSnapshotVariables> ref() {
-    GetWorkspaceSnapshotVariables vars = GetWorkspaceSnapshotVariables(
-      spaceId: spaceId,
-    );
-    return _dataConnect.query(
-      "GetWorkspaceSnapshot",
-      dataDeserializer,
-      varsSerializer,
-      vars,
-    );
+    GetWorkspaceSnapshotVariables vars= GetWorkspaceSnapshotVariables(spaceId: spaceId,);
+    return _dataConnect.query("GetWorkspaceSnapshot", dataDeserializer, varsSerializer, vars);
   }
 }
 
@@ -38,41 +25,35 @@ class GetWorkspaceSnapshotFinancialSpace {
   final String currencyCode;
   final String timezone;
   final Timestamp updatedAt;
-  GetWorkspaceSnapshotFinancialSpace.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']),
-      colorHex = nativeFromJson<String>(json['colorHex']),
-      currencyCode = nativeFromJson<String>(json['currencyCode']),
-      timezone = nativeFromJson<String>(json['timezone']),
-      updatedAt = Timestamp.fromJson(json['updatedAt']);
+  GetWorkspaceSnapshotFinancialSpace.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']),
+  colorHex = nativeFromJson<String>(json['colorHex']),
+  currencyCode = nativeFromJson<String>(json['currencyCode']),
+  timezone = nativeFromJson<String>(json['timezone']),
+  updatedAt = Timestamp.fromJson(json['updatedAt']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotFinancialSpace otherTyped =
-        other as GetWorkspaceSnapshotFinancialSpace;
-    return id == otherTyped.id &&
-        name == otherTyped.name &&
-        colorHex == otherTyped.colorHex &&
-        currencyCode == otherTyped.currencyCode &&
-        timezone == otherTyped.timezone &&
-        updatedAt == otherTyped.updatedAt;
+    final GetWorkspaceSnapshotFinancialSpace otherTyped = other as GetWorkspaceSnapshotFinancialSpace;
+    return id == otherTyped.id && 
+    name == otherTyped.name && 
+    colorHex == otherTyped.colorHex && 
+    currencyCode == otherTyped.currencyCode && 
+    timezone == otherTyped.timezone && 
+    updatedAt == otherTyped.updatedAt;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    name.hashCode,
-    colorHex.hashCode,
-    currencyCode.hashCode,
-    timezone.hashCode,
-    updatedAt.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, colorHex.hashCode, currencyCode.hashCode, timezone.hashCode, updatedAt.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -103,50 +84,46 @@ class GetWorkspaceSnapshotSpaceMembers {
   final EnumValue<MembershipStatus> status;
   final Timestamp? joinedAt;
   final GetWorkspaceSnapshotSpaceMembersUser user;
-  GetWorkspaceSnapshotSpaceMembers.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      memberFirebaseUid = nativeFromJson<String>(json['memberFirebaseUid']),
-      role = membershipRoleDeserializer(json['role']),
-      status = membershipStatusDeserializer(json['status']),
-      joinedAt = json['joinedAt'] == null
-          ? null
-          : Timestamp.fromJson(json['joinedAt']),
-      user = GetWorkspaceSnapshotSpaceMembersUser.fromJson(json['user']);
+  GetWorkspaceSnapshotSpaceMembers.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  memberFirebaseUid = nativeFromJson<String>(json['memberFirebaseUid']),
+  role = membershipRoleDeserializer(json['role']),
+  status = membershipStatusDeserializer(json['status']),
+  joinedAt = json['joinedAt'] == null ? null : Timestamp.fromJson(json['joinedAt']),
+  user = GetWorkspaceSnapshotSpaceMembersUser.fromJson(json['user']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotSpaceMembers otherTyped =
-        other as GetWorkspaceSnapshotSpaceMembers;
-    return id == otherTyped.id &&
-        memberFirebaseUid == otherTyped.memberFirebaseUid &&
-        role == otherTyped.role &&
-        status == otherTyped.status &&
-        joinedAt == otherTyped.joinedAt &&
-        user == otherTyped.user;
+    final GetWorkspaceSnapshotSpaceMembers otherTyped = other as GetWorkspaceSnapshotSpaceMembers;
+    return id == otherTyped.id && 
+    memberFirebaseUid == otherTyped.memberFirebaseUid && 
+    role == otherTyped.role && 
+    status == otherTyped.status && 
+    joinedAt == otherTyped.joinedAt && 
+    user == otherTyped.user;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    memberFirebaseUid.hashCode,
-    role.hashCode,
-    status.hashCode,
-    joinedAt.hashCode,
-    user.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, memberFirebaseUid.hashCode, role.hashCode, status.hashCode, joinedAt.hashCode, user.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
     json['memberFirebaseUid'] = nativeToJson<String>(memberFirebaseUid);
-    json['role'] = membershipRoleSerializer(role);
-    json['status'] = membershipStatusSerializer(status);
+    json['role'] = 
+    membershipRoleSerializer(role)
+    ;
+    json['status'] = 
+    membershipStatusSerializer(status)
+    ;
     if (joinedAt != null) {
       json['joinedAt'] = joinedAt!.toJson();
     }
@@ -170,37 +147,31 @@ class GetWorkspaceSnapshotSpaceMembersUser {
   final String displayName;
   final String email;
   final String? photoUrl;
-  GetWorkspaceSnapshotSpaceMembersUser.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      displayName = nativeFromJson<String>(json['displayName']),
-      email = nativeFromJson<String>(json['email']),
-      photoUrl = json['photoUrl'] == null
-          ? null
-          : nativeFromJson<String>(json['photoUrl']);
+  GetWorkspaceSnapshotSpaceMembersUser.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  displayName = nativeFromJson<String>(json['displayName']),
+  email = nativeFromJson<String>(json['email']),
+  photoUrl = json['photoUrl'] == null ? null : nativeFromJson<String>(json['photoUrl']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotSpaceMembersUser otherTyped =
-        other as GetWorkspaceSnapshotSpaceMembersUser;
-    return id == otherTyped.id &&
-        displayName == otherTyped.displayName &&
-        email == otherTyped.email &&
-        photoUrl == otherTyped.photoUrl;
+    final GetWorkspaceSnapshotSpaceMembersUser otherTyped = other as GetWorkspaceSnapshotSpaceMembersUser;
+    return id == otherTyped.id && 
+    displayName == otherTyped.displayName && 
+    email == otherTyped.email && 
+    photoUrl == otherTyped.photoUrl;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    displayName.hashCode,
-    email.hashCode,
-    photoUrl.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, displayName.hashCode, email.hashCode, photoUrl.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -229,41 +200,35 @@ class GetWorkspaceSnapshotCategories {
   final String icon;
   final String colorHex;
   final bool isDefault;
-  GetWorkspaceSnapshotCategories.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']),
-      normalizedName = nativeFromJson<String>(json['normalizedName']),
-      icon = nativeFromJson<String>(json['icon']),
-      colorHex = nativeFromJson<String>(json['colorHex']),
-      isDefault = nativeFromJson<bool>(json['isDefault']);
+  GetWorkspaceSnapshotCategories.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']),
+  normalizedName = nativeFromJson<String>(json['normalizedName']),
+  icon = nativeFromJson<String>(json['icon']),
+  colorHex = nativeFromJson<String>(json['colorHex']),
+  isDefault = nativeFromJson<bool>(json['isDefault']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCategories otherTyped =
-        other as GetWorkspaceSnapshotCategories;
-    return id == otherTyped.id &&
-        name == otherTyped.name &&
-        normalizedName == otherTyped.normalizedName &&
-        icon == otherTyped.icon &&
-        colorHex == otherTyped.colorHex &&
-        isDefault == otherTyped.isDefault;
+    final GetWorkspaceSnapshotCategories otherTyped = other as GetWorkspaceSnapshotCategories;
+    return id == otherTyped.id && 
+    name == otherTyped.name && 
+    normalizedName == otherTyped.normalizedName && 
+    icon == otherTyped.icon && 
+    colorHex == otherTyped.colorHex && 
+    isDefault == otherTyped.isDefault;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    name.hashCode,
-    normalizedName.hashCode,
-    icon.hashCode,
-    colorHex.hashCode,
-    isDefault.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, normalizedName.hashCode, icon.hashCode, colorHex.hashCode, isDefault.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -300,66 +265,47 @@ class GetWorkspaceSnapshotCreditCards {
   final bool remindersEnabled;
   final EnumValue<CreditCardStatus> status;
   final GetWorkspaceSnapshotCreditCardsCardholderMember cardholderMember;
-  GetWorkspaceSnapshotCreditCards.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      nickname = nativeFromJson<String>(json['nickname']),
-      institutionName = json['institutionName'] == null
-          ? null
-          : nativeFromJson<String>(json['institutionName']),
-      brand = json['brand'] == null
-          ? null
-          : nativeFromJson<String>(json['brand']),
-      lastFourDigits = nativeFromJson<String>(json['lastFourDigits']),
-      creditLimitCents = bigIntFromJson(json['creditLimitCents']),
-      closingDay = nativeFromJson<int>(json['closingDay']),
-      dueDay = nativeFromJson<int>(json['dueDay']),
-      colorHex = nativeFromJson<String>(json['colorHex']),
-      remindersEnabled = nativeFromJson<bool>(json['remindersEnabled']),
-      status = creditCardStatusDeserializer(json['status']),
-      cardholderMember =
-          GetWorkspaceSnapshotCreditCardsCardholderMember.fromJson(
-            json['cardholderMember'],
-          );
+  GetWorkspaceSnapshotCreditCards.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  nickname = nativeFromJson<String>(json['nickname']),
+  institutionName = json['institutionName'] == null ? null : nativeFromJson<String>(json['institutionName']),
+  brand = json['brand'] == null ? null : nativeFromJson<String>(json['brand']),
+  lastFourDigits = nativeFromJson<String>(json['lastFourDigits']),
+  creditLimitCents = bigIntFromJson(json['creditLimitCents']),
+  closingDay = nativeFromJson<int>(json['closingDay']),
+  dueDay = nativeFromJson<int>(json['dueDay']),
+  colorHex = nativeFromJson<String>(json['colorHex']),
+  remindersEnabled = nativeFromJson<bool>(json['remindersEnabled']),
+  status = creditCardStatusDeserializer(json['status']),
+  cardholderMember = GetWorkspaceSnapshotCreditCardsCardholderMember.fromJson(json['cardholderMember']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCreditCards otherTyped =
-        other as GetWorkspaceSnapshotCreditCards;
-    return id == otherTyped.id &&
-        nickname == otherTyped.nickname &&
-        institutionName == otherTyped.institutionName &&
-        brand == otherTyped.brand &&
-        lastFourDigits == otherTyped.lastFourDigits &&
-        creditLimitCents == otherTyped.creditLimitCents &&
-        closingDay == otherTyped.closingDay &&
-        dueDay == otherTyped.dueDay &&
-        colorHex == otherTyped.colorHex &&
-        remindersEnabled == otherTyped.remindersEnabled &&
-        status == otherTyped.status &&
-        cardholderMember == otherTyped.cardholderMember;
+    final GetWorkspaceSnapshotCreditCards otherTyped = other as GetWorkspaceSnapshotCreditCards;
+    return id == otherTyped.id && 
+    nickname == otherTyped.nickname && 
+    institutionName == otherTyped.institutionName && 
+    brand == otherTyped.brand && 
+    lastFourDigits == otherTyped.lastFourDigits && 
+    creditLimitCents == otherTyped.creditLimitCents && 
+    closingDay == otherTyped.closingDay && 
+    dueDay == otherTyped.dueDay && 
+    colorHex == otherTyped.colorHex && 
+    remindersEnabled == otherTyped.remindersEnabled && 
+    status == otherTyped.status && 
+    cardholderMember == otherTyped.cardholderMember;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    nickname.hashCode,
-    institutionName.hashCode,
-    brand.hashCode,
-    lastFourDigits.hashCode,
-    creditLimitCents.hashCode,
-    closingDay.hashCode,
-    dueDay.hashCode,
-    colorHex.hashCode,
-    remindersEnabled.hashCode,
-    status.hashCode,
-    cardholderMember.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, nickname.hashCode, institutionName.hashCode, brand.hashCode, lastFourDigits.hashCode, creditLimitCents.hashCode, closingDay.hashCode, dueDay.hashCode, colorHex.hashCode, remindersEnabled.hashCode, status.hashCode, cardholderMember.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -377,7 +323,9 @@ class GetWorkspaceSnapshotCreditCards {
     json['dueDay'] = nativeToJson<int>(dueDay);
     json['colorHex'] = nativeToJson<String>(colorHex);
     json['remindersEnabled'] = nativeToJson<bool>(remindersEnabled);
-    json['status'] = creditCardStatusSerializer(status);
+    json['status'] = 
+    creditCardStatusSerializer(status)
+    ;
     json['cardholderMember'] = cardholderMember.toJson();
     return json;
   }
@@ -402,27 +350,27 @@ class GetWorkspaceSnapshotCreditCards {
 class GetWorkspaceSnapshotCreditCardsCardholderMember {
   final String id;
   final GetWorkspaceSnapshotCreditCardsCardholderMemberUser user;
-  GetWorkspaceSnapshotCreditCardsCardholderMember.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      user = GetWorkspaceSnapshotCreditCardsCardholderMemberUser.fromJson(
-        json['user'],
-      );
+  GetWorkspaceSnapshotCreditCardsCardholderMember.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  user = GetWorkspaceSnapshotCreditCardsCardholderMemberUser.fromJson(json['user']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCreditCardsCardholderMember otherTyped =
-        other as GetWorkspaceSnapshotCreditCardsCardholderMember;
-    return id == otherTyped.id && user == otherTyped.user;
+    final GetWorkspaceSnapshotCreditCardsCardholderMember otherTyped = other as GetWorkspaceSnapshotCreditCardsCardholderMember;
+    return id == otherTyped.id && 
+    user == otherTyped.user;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, user.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -440,24 +388,25 @@ class GetWorkspaceSnapshotCreditCardsCardholderMember {
 @immutable
 class GetWorkspaceSnapshotCreditCardsCardholderMemberUser {
   final String displayName;
-  GetWorkspaceSnapshotCreditCardsCardholderMemberUser.fromJson(dynamic json)
-    : displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotCreditCardsCardholderMemberUser.fromJson(dynamic json):
+  
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCreditCardsCardholderMemberUser otherTyped =
-        other as GetWorkspaceSnapshotCreditCardsCardholderMemberUser;
+    final GetWorkspaceSnapshotCreditCardsCardholderMemberUser otherTyped = other as GetWorkspaceSnapshotCreditCardsCardholderMemberUser;
     return displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => displayName.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -484,71 +433,47 @@ class GetWorkspaceSnapshotPurchases {
   final GetWorkspaceSnapshotPurchasesCreditCard creditCard;
   final GetWorkspaceSnapshotPurchasesCategory category;
   final GetWorkspaceSnapshotPurchasesCreatedByUser createdByUser;
-  GetWorkspaceSnapshotPurchases.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      description = nativeFromJson<String>(json['description']),
-      merchantName = json['merchantName'] == null
-          ? null
-          : nativeFromJson<String>(json['merchantName']),
-      totalAmountCents = bigIntFromJson(json['totalAmountCents']),
-      purchaseDate = nativeFromJson<DateTime>(json['purchaseDate']),
-      installmentCount = nativeFromJson<int>(json['installmentCount']),
-      firstInvoiceReference = nativeFromJson<DateTime>(
-        json['firstInvoiceReference'],
-      ),
-      notes = json['notes'] == null
-          ? null
-          : nativeFromJson<String>(json['notes']),
-      status = purchaseStatusDeserializer(json['status']),
-      creditCard = GetWorkspaceSnapshotPurchasesCreditCard.fromJson(
-        json['creditCard'],
-      ),
-      category = GetWorkspaceSnapshotPurchasesCategory.fromJson(
-        json['category'],
-      ),
-      createdByUser = GetWorkspaceSnapshotPurchasesCreatedByUser.fromJson(
-        json['createdByUser'],
-      );
+  GetWorkspaceSnapshotPurchases.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  description = nativeFromJson<String>(json['description']),
+  merchantName = json['merchantName'] == null ? null : nativeFromJson<String>(json['merchantName']),
+  totalAmountCents = bigIntFromJson(json['totalAmountCents']),
+  purchaseDate = nativeFromJson<DateTime>(json['purchaseDate']),
+  installmentCount = nativeFromJson<int>(json['installmentCount']),
+  firstInvoiceReference = nativeFromJson<DateTime>(json['firstInvoiceReference']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  status = purchaseStatusDeserializer(json['status']),
+  creditCard = GetWorkspaceSnapshotPurchasesCreditCard.fromJson(json['creditCard']),
+  category = GetWorkspaceSnapshotPurchasesCategory.fromJson(json['category']),
+  createdByUser = GetWorkspaceSnapshotPurchasesCreatedByUser.fromJson(json['createdByUser']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchases otherTyped =
-        other as GetWorkspaceSnapshotPurchases;
-    return id == otherTyped.id &&
-        description == otherTyped.description &&
-        merchantName == otherTyped.merchantName &&
-        totalAmountCents == otherTyped.totalAmountCents &&
-        purchaseDate == otherTyped.purchaseDate &&
-        installmentCount == otherTyped.installmentCount &&
-        firstInvoiceReference == otherTyped.firstInvoiceReference &&
-        notes == otherTyped.notes &&
-        status == otherTyped.status &&
-        creditCard == otherTyped.creditCard &&
-        category == otherTyped.category &&
-        createdByUser == otherTyped.createdByUser;
+    final GetWorkspaceSnapshotPurchases otherTyped = other as GetWorkspaceSnapshotPurchases;
+    return id == otherTyped.id && 
+    description == otherTyped.description && 
+    merchantName == otherTyped.merchantName && 
+    totalAmountCents == otherTyped.totalAmountCents && 
+    purchaseDate == otherTyped.purchaseDate && 
+    installmentCount == otherTyped.installmentCount && 
+    firstInvoiceReference == otherTyped.firstInvoiceReference && 
+    notes == otherTyped.notes && 
+    status == otherTyped.status && 
+    creditCard == otherTyped.creditCard && 
+    category == otherTyped.category && 
+    createdByUser == otherTyped.createdByUser;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    description.hashCode,
-    merchantName.hashCode,
-    totalAmountCents.hashCode,
-    purchaseDate.hashCode,
-    installmentCount.hashCode,
-    firstInvoiceReference.hashCode,
-    notes.hashCode,
-    status.hashCode,
-    creditCard.hashCode,
-    category.hashCode,
-    createdByUser.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, description.hashCode, merchantName.hashCode, totalAmountCents.hashCode, purchaseDate.hashCode, installmentCount.hashCode, firstInvoiceReference.hashCode, notes.hashCode, status.hashCode, creditCard.hashCode, category.hashCode, createdByUser.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -560,13 +485,13 @@ class GetWorkspaceSnapshotPurchases {
     json['totalAmountCents'] = bigIntToJson(totalAmountCents);
     json['purchaseDate'] = nativeToJson<DateTime>(purchaseDate);
     json['installmentCount'] = nativeToJson<int>(installmentCount);
-    json['firstInvoiceReference'] = nativeToJson<DateTime>(
-      firstInvoiceReference,
-    );
+    json['firstInvoiceReference'] = nativeToJson<DateTime>(firstInvoiceReference);
     if (notes != null) {
       json['notes'] = nativeToJson<String?>(notes);
     }
-    json['status'] = purchaseStatusSerializer(status);
+    json['status'] = 
+    purchaseStatusSerializer(status)
+    ;
     json['creditCard'] = creditCard.toJson();
     json['category'] = category.toJson();
     json['createdByUser'] = createdByUser.toJson();
@@ -592,24 +517,25 @@ class GetWorkspaceSnapshotPurchases {
 @immutable
 class GetWorkspaceSnapshotPurchasesCreditCard {
   final String id;
-  GetWorkspaceSnapshotPurchasesCreditCard.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']);
+  GetWorkspaceSnapshotPurchasesCreditCard.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchasesCreditCard otherTyped =
-        other as GetWorkspaceSnapshotPurchasesCreditCard;
+    final GetWorkspaceSnapshotPurchasesCreditCard otherTyped = other as GetWorkspaceSnapshotPurchasesCreditCard;
     return id == otherTyped.id;
+    
   }
-
   @override
   int get hashCode => id.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -617,32 +543,36 @@ class GetWorkspaceSnapshotPurchasesCreditCard {
     return json;
   }
 
-  GetWorkspaceSnapshotPurchasesCreditCard({required this.id});
+  GetWorkspaceSnapshotPurchasesCreditCard({
+    required this.id,
+  });
 }
 
 @immutable
 class GetWorkspaceSnapshotPurchasesCategory {
   final String id;
   final String name;
-  GetWorkspaceSnapshotPurchasesCategory.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']);
+  GetWorkspaceSnapshotPurchasesCategory.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchasesCategory otherTyped =
-        other as GetWorkspaceSnapshotPurchasesCategory;
-    return id == otherTyped.id && name == otherTyped.name;
+    final GetWorkspaceSnapshotPurchasesCategory otherTyped = other as GetWorkspaceSnapshotPurchasesCategory;
+    return id == otherTyped.id && 
+    name == otherTyped.name;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -651,32 +581,37 @@ class GetWorkspaceSnapshotPurchasesCategory {
     return json;
   }
 
-  GetWorkspaceSnapshotPurchasesCategory({required this.id, required this.name});
+  GetWorkspaceSnapshotPurchasesCategory({
+    required this.id,
+    required this.name,
+  });
 }
 
 @immutable
 class GetWorkspaceSnapshotPurchasesCreatedByUser {
   final String id;
   final String displayName;
-  GetWorkspaceSnapshotPurchasesCreatedByUser.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotPurchasesCreatedByUser.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchasesCreatedByUser otherTyped =
-        other as GetWorkspaceSnapshotPurchasesCreatedByUser;
-    return id == otherTyped.id && displayName == otherTyped.displayName;
+    final GetWorkspaceSnapshotPurchasesCreatedByUser otherTyped = other as GetWorkspaceSnapshotPurchasesCreatedByUser;
+    return id == otherTyped.id && 
+    displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, displayName.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -712,111 +647,74 @@ class GetWorkspaceSnapshotCashFlowEntries {
   final GetWorkspaceSnapshotCashFlowEntriesCategory? category;
   final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries? recurrenceSeries;
   final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser createdByUser;
-  GetWorkspaceSnapshotCashFlowEntries.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      direction = cashFlowDirectionDeserializer(json['direction']),
-      kind = cashFlowKindDeserializer(json['kind']),
-      paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
-      description = nativeFromJson<String>(json['description']),
-      amountCents = bigIntFromJson(json['amountCents']),
-      occurredAt = Timestamp.fromJson(json['occurredAt']),
-      competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
-      notes = json['notes'] == null
-          ? null
-          : nativeFromJson<String>(json['notes']),
-      status = cashFlowStatusDeserializer(json['status']),
-      occurrenceIndex = json['occurrenceIndex'] == null
-          ? null
-          : nativeFromJson<int>(json['occurrenceIndex']),
-      isRecurrenceException = nativeFromJson<bool>(
-        json['isRecurrenceException'],
-      ),
-      receivedAt = json['receivedAt'] == null
-          ? null
-          : Timestamp.fromJson(json['receivedAt']),
-      paidAt = json['paidAt'] == null
-          ? null
-          : Timestamp.fromJson(json['paidAt']),
-      sourceType = json['sourceType'] == null
-          ? null
-          : nativeFromJson<String>(json['sourceType']),
-      sourceEntityId = json['sourceEntityId'] == null
-          ? null
-          : nativeFromJson<String>(json['sourceEntityId']),
-      category = json['category'] == null
-          ? null
-          : GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(
-              json['category'],
-            ),
-      recurrenceSeries = json['recurrenceSeries'] == null
-          ? null
-          : GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(
-              json['recurrenceSeries'],
-            ),
-      createdByUser = GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(
-        json['createdByUser'],
-      );
+  GetWorkspaceSnapshotCashFlowEntries.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  kind = cashFlowKindDeserializer(json['kind']),
+  paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
+  description = nativeFromJson<String>(json['description']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  occurredAt = Timestamp.fromJson(json['occurredAt']),
+  competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  status = cashFlowStatusDeserializer(json['status']),
+  occurrenceIndex = json['occurrenceIndex'] == null ? null : nativeFromJson<int>(json['occurrenceIndex']),
+  isRecurrenceException = nativeFromJson<bool>(json['isRecurrenceException']),
+  receivedAt = json['receivedAt'] == null ? null : Timestamp.fromJson(json['receivedAt']),
+  paidAt = json['paidAt'] == null ? null : Timestamp.fromJson(json['paidAt']),
+  sourceType = json['sourceType'] == null ? null : nativeFromJson<String>(json['sourceType']),
+  sourceEntityId = json['sourceEntityId'] == null ? null : nativeFromJson<String>(json['sourceEntityId']),
+  category = json['category'] == null ? null : GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(json['category']),
+  recurrenceSeries = json['recurrenceSeries'] == null ? null : GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(json['recurrenceSeries']),
+  createdByUser = GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(json['createdByUser']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCashFlowEntries otherTyped =
-        other as GetWorkspaceSnapshotCashFlowEntries;
-    return id == otherTyped.id &&
-        direction == otherTyped.direction &&
-        kind == otherTyped.kind &&
-        paymentMethod == otherTyped.paymentMethod &&
-        description == otherTyped.description &&
-        amountCents == otherTyped.amountCents &&
-        occurredAt == otherTyped.occurredAt &&
-        competenceMonth == otherTyped.competenceMonth &&
-        notes == otherTyped.notes &&
-        status == otherTyped.status &&
-        occurrenceIndex == otherTyped.occurrenceIndex &&
-        isRecurrenceException == otherTyped.isRecurrenceException &&
-        receivedAt == otherTyped.receivedAt &&
-        paidAt == otherTyped.paidAt &&
-        sourceType == otherTyped.sourceType &&
-        sourceEntityId == otherTyped.sourceEntityId &&
-        category == otherTyped.category &&
-        recurrenceSeries == otherTyped.recurrenceSeries &&
-        createdByUser == otherTyped.createdByUser;
+    final GetWorkspaceSnapshotCashFlowEntries otherTyped = other as GetWorkspaceSnapshotCashFlowEntries;
+    return id == otherTyped.id && 
+    direction == otherTyped.direction && 
+    kind == otherTyped.kind && 
+    paymentMethod == otherTyped.paymentMethod && 
+    description == otherTyped.description && 
+    amountCents == otherTyped.amountCents && 
+    occurredAt == otherTyped.occurredAt && 
+    competenceMonth == otherTyped.competenceMonth && 
+    notes == otherTyped.notes && 
+    status == otherTyped.status && 
+    occurrenceIndex == otherTyped.occurrenceIndex && 
+    isRecurrenceException == otherTyped.isRecurrenceException && 
+    receivedAt == otherTyped.receivedAt && 
+    paidAt == otherTyped.paidAt && 
+    sourceType == otherTyped.sourceType && 
+    sourceEntityId == otherTyped.sourceEntityId && 
+    category == otherTyped.category && 
+    recurrenceSeries == otherTyped.recurrenceSeries && 
+    createdByUser == otherTyped.createdByUser;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    direction.hashCode,
-    kind.hashCode,
-    paymentMethod.hashCode,
-    description.hashCode,
-    amountCents.hashCode,
-    occurredAt.hashCode,
-    competenceMonth.hashCode,
-    notes.hashCode,
-    status.hashCode,
-    occurrenceIndex.hashCode,
-    isRecurrenceException.hashCode,
-    receivedAt.hashCode,
-    paidAt.hashCode,
-    sourceType.hashCode,
-    sourceEntityId.hashCode,
-    category.hashCode,
-    recurrenceSeries.hashCode,
-    createdByUser.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, status.hashCode, occurrenceIndex.hashCode, isRecurrenceException.hashCode, receivedAt.hashCode, paidAt.hashCode, sourceType.hashCode, sourceEntityId.hashCode, category.hashCode, recurrenceSeries.hashCode, createdByUser.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
-    json['direction'] = cashFlowDirectionSerializer(direction);
-    json['kind'] = cashFlowKindSerializer(kind);
-    json['paymentMethod'] = cashFlowPaymentMethodSerializer(paymentMethod);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
+    json['kind'] = 
+    cashFlowKindSerializer(kind)
+    ;
+    json['paymentMethod'] = 
+    cashFlowPaymentMethodSerializer(paymentMethod)
+    ;
     json['description'] = nativeToJson<String>(description);
     json['amountCents'] = bigIntToJson(amountCents);
     json['occurredAt'] = occurredAt.toJson();
@@ -824,7 +722,9 @@ class GetWorkspaceSnapshotCashFlowEntries {
     if (notes != null) {
       json['notes'] = nativeToJson<String?>(notes);
     }
-    json['status'] = cashFlowStatusSerializer(status);
+    json['status'] = 
+    cashFlowStatusSerializer(status)
+    ;
     if (occurrenceIndex != null) {
       json['occurrenceIndex'] = nativeToJson<int?>(occurrenceIndex);
     }
@@ -878,25 +778,27 @@ class GetWorkspaceSnapshotCashFlowEntries {
 class GetWorkspaceSnapshotCashFlowEntriesCategory {
   final String id;
   final String name;
-  GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']);
+  GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCashFlowEntriesCategory otherTyped =
-        other as GetWorkspaceSnapshotCashFlowEntriesCategory;
-    return id == otherTyped.id && name == otherTyped.name;
+    final GetWorkspaceSnapshotCashFlowEntriesCategory otherTyped = other as GetWorkspaceSnapshotCashFlowEntriesCategory;
+    return id == otherTyped.id && 
+    name == otherTyped.name;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -919,50 +821,42 @@ class GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries {
   final DateTime? endDate;
   final int? preferredDay;
   final EnumValue<CashFlowRecurrenceSeriesStatus> status;
-  GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
-      startDate = nativeFromJson<DateTime>(json['startDate']),
-      endDate = json['endDate'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['endDate']),
-      preferredDay = json['preferredDay'] == null
-          ? null
-          : nativeFromJson<int>(json['preferredDay']),
-      status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']);
+  GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
+  startDate = nativeFromJson<DateTime>(json['startDate']),
+  endDate = json['endDate'] == null ? null : nativeFromJson<DateTime>(json['endDate']),
+  preferredDay = json['preferredDay'] == null ? null : nativeFromJson<int>(json['preferredDay']),
+  status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries otherTyped =
-        other as GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries;
-    return id == otherTyped.id &&
-        frequency == otherTyped.frequency &&
-        startDate == otherTyped.startDate &&
-        endDate == otherTyped.endDate &&
-        preferredDay == otherTyped.preferredDay &&
-        status == otherTyped.status;
+    final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries otherTyped = other as GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries;
+    return id == otherTyped.id && 
+    frequency == otherTyped.frequency && 
+    startDate == otherTyped.startDate && 
+    endDate == otherTyped.endDate && 
+    preferredDay == otherTyped.preferredDay && 
+    status == otherTyped.status;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    frequency.hashCode,
-    startDate.hashCode,
-    endDate.hashCode,
-    preferredDay.hashCode,
-    status.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, preferredDay.hashCode, status.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
-    json['frequency'] = cashFlowRecurrenceFrequencySerializer(frequency);
+    json['frequency'] = 
+    cashFlowRecurrenceFrequencySerializer(frequency)
+    ;
     json['startDate'] = nativeToJson<DateTime>(startDate);
     if (endDate != null) {
       json['endDate'] = nativeToJson<DateTime?>(endDate);
@@ -970,7 +864,9 @@ class GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries {
     if (preferredDay != null) {
       json['preferredDay'] = nativeToJson<int?>(preferredDay);
     }
-    json['status'] = cashFlowRecurrenceSeriesStatusSerializer(status);
+    json['status'] = 
+    cashFlowRecurrenceSeriesStatusSerializer(status)
+    ;
     return json;
   }
 
@@ -988,25 +884,27 @@ class GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries {
 class GetWorkspaceSnapshotCashFlowEntriesCreatedByUser {
   final String id;
   final String displayName;
-  GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser otherTyped =
-        other as GetWorkspaceSnapshotCashFlowEntriesCreatedByUser;
-    return id == otherTyped.id && displayName == otherTyped.displayName;
+    final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser otherTyped = other as GetWorkspaceSnapshotCashFlowEntriesCreatedByUser;
+    return id == otherTyped.id && 
+    displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, displayName.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1038,95 +936,74 @@ class GetWorkspaceSnapshotRecurrenceSeries {
   final DateTime? nextOccurrenceDate;
   final EnumValue<CashFlowRecurrenceSeriesStatus> status;
   final GetWorkspaceSnapshotRecurrenceSeriesCategory? category;
-  GetWorkspaceSnapshotRecurrenceSeries.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      direction = cashFlowDirectionDeserializer(json['direction']),
-      kind = cashFlowKindDeserializer(json['kind']),
-      paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
-      description = nativeFromJson<String>(json['description']),
-      amountCents = bigIntFromJson(json['amountCents']),
-      notes = json['notes'] == null
-          ? null
-          : nativeFromJson<String>(json['notes']),
-      frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
-      startDate = nativeFromJson<DateTime>(json['startDate']),
-      endDate = json['endDate'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['endDate']),
-      occurrenceLimit = json['occurrenceLimit'] == null
-          ? null
-          : nativeFromJson<int>(json['occurrenceLimit']),
-      preferredDay = json['preferredDay'] == null
-          ? null
-          : nativeFromJson<int>(json['preferredDay']),
-      nextOccurrenceDate = json['nextOccurrenceDate'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['nextOccurrenceDate']),
-      status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']),
-      category = json['category'] == null
-          ? null
-          : GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(
-              json['category'],
-            );
+  GetWorkspaceSnapshotRecurrenceSeries.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  direction = cashFlowDirectionDeserializer(json['direction']),
+  kind = cashFlowKindDeserializer(json['kind']),
+  paymentMethod = cashFlowPaymentMethodDeserializer(json['paymentMethod']),
+  description = nativeFromJson<String>(json['description']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  frequency = cashFlowRecurrenceFrequencyDeserializer(json['frequency']),
+  startDate = nativeFromJson<DateTime>(json['startDate']),
+  endDate = json['endDate'] == null ? null : nativeFromJson<DateTime>(json['endDate']),
+  occurrenceLimit = json['occurrenceLimit'] == null ? null : nativeFromJson<int>(json['occurrenceLimit']),
+  preferredDay = json['preferredDay'] == null ? null : nativeFromJson<int>(json['preferredDay']),
+  nextOccurrenceDate = json['nextOccurrenceDate'] == null ? null : nativeFromJson<DateTime>(json['nextOccurrenceDate']),
+  status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']),
+  category = json['category'] == null ? null : GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(json['category']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotRecurrenceSeries otherTyped =
-        other as GetWorkspaceSnapshotRecurrenceSeries;
-    return id == otherTyped.id &&
-        direction == otherTyped.direction &&
-        kind == otherTyped.kind &&
-        paymentMethod == otherTyped.paymentMethod &&
-        description == otherTyped.description &&
-        amountCents == otherTyped.amountCents &&
-        notes == otherTyped.notes &&
-        frequency == otherTyped.frequency &&
-        startDate == otherTyped.startDate &&
-        endDate == otherTyped.endDate &&
-        occurrenceLimit == otherTyped.occurrenceLimit &&
-        preferredDay == otherTyped.preferredDay &&
-        nextOccurrenceDate == otherTyped.nextOccurrenceDate &&
-        status == otherTyped.status &&
-        category == otherTyped.category;
+    final GetWorkspaceSnapshotRecurrenceSeries otherTyped = other as GetWorkspaceSnapshotRecurrenceSeries;
+    return id == otherTyped.id && 
+    direction == otherTyped.direction && 
+    kind == otherTyped.kind && 
+    paymentMethod == otherTyped.paymentMethod && 
+    description == otherTyped.description && 
+    amountCents == otherTyped.amountCents && 
+    notes == otherTyped.notes && 
+    frequency == otherTyped.frequency && 
+    startDate == otherTyped.startDate && 
+    endDate == otherTyped.endDate && 
+    occurrenceLimit == otherTyped.occurrenceLimit && 
+    preferredDay == otherTyped.preferredDay && 
+    nextOccurrenceDate == otherTyped.nextOccurrenceDate && 
+    status == otherTyped.status && 
+    category == otherTyped.category;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    direction.hashCode,
-    kind.hashCode,
-    paymentMethod.hashCode,
-    description.hashCode,
-    amountCents.hashCode,
-    notes.hashCode,
-    frequency.hashCode,
-    startDate.hashCode,
-    endDate.hashCode,
-    occurrenceLimit.hashCode,
-    preferredDay.hashCode,
-    nextOccurrenceDate.hashCode,
-    status.hashCode,
-    category.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, notes.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, occurrenceLimit.hashCode, preferredDay.hashCode, nextOccurrenceDate.hashCode, status.hashCode, category.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
-    json['direction'] = cashFlowDirectionSerializer(direction);
-    json['kind'] = cashFlowKindSerializer(kind);
-    json['paymentMethod'] = cashFlowPaymentMethodSerializer(paymentMethod);
+    json['direction'] = 
+    cashFlowDirectionSerializer(direction)
+    ;
+    json['kind'] = 
+    cashFlowKindSerializer(kind)
+    ;
+    json['paymentMethod'] = 
+    cashFlowPaymentMethodSerializer(paymentMethod)
+    ;
     json['description'] = nativeToJson<String>(description);
     json['amountCents'] = bigIntToJson(amountCents);
     if (notes != null) {
       json['notes'] = nativeToJson<String?>(notes);
     }
-    json['frequency'] = cashFlowRecurrenceFrequencySerializer(frequency);
+    json['frequency'] = 
+    cashFlowRecurrenceFrequencySerializer(frequency)
+    ;
     json['startDate'] = nativeToJson<DateTime>(startDate);
     if (endDate != null) {
       json['endDate'] = nativeToJson<DateTime?>(endDate);
@@ -1140,7 +1017,9 @@ class GetWorkspaceSnapshotRecurrenceSeries {
     if (nextOccurrenceDate != null) {
       json['nextOccurrenceDate'] = nativeToJson<DateTime?>(nextOccurrenceDate);
     }
-    json['status'] = cashFlowRecurrenceSeriesStatusSerializer(status);
+    json['status'] = 
+    cashFlowRecurrenceSeriesStatusSerializer(status)
+    ;
     if (category != null) {
       json['category'] = category!.toJson();
     }
@@ -1170,25 +1049,27 @@ class GetWorkspaceSnapshotRecurrenceSeries {
 class GetWorkspaceSnapshotRecurrenceSeriesCategory {
   final String id;
   final String name;
-  GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']);
+  GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotRecurrenceSeriesCategory otherTyped =
-        other as GetWorkspaceSnapshotRecurrenceSeriesCategory;
-    return id == otherTyped.id && name == otherTyped.name;
+    final GetWorkspaceSnapshotRecurrenceSeriesCategory otherTyped = other as GetWorkspaceSnapshotRecurrenceSeriesCategory;
+    return id == otherTyped.id && 
+    name == otherTyped.name;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1213,49 +1094,39 @@ class GetWorkspaceSnapshotCreditCardInvoices {
   final BigInt totalAmountCents;
   final BigInt paidAmountCents;
   final GetWorkspaceSnapshotCreditCardInvoicesCreditCard creditCard;
-  GetWorkspaceSnapshotCreditCardInvoices.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      referenceMonth = nativeFromJson<DateTime>(json['referenceMonth']),
-      closingDate = nativeFromJson<DateTime>(json['closingDate']),
-      dueDate = nativeFromJson<DateTime>(json['dueDate']),
-      status = invoiceStatusDeserializer(json['status']),
-      totalAmountCents = bigIntFromJson(json['totalAmountCents']),
-      paidAmountCents = bigIntFromJson(json['paidAmountCents']),
-      creditCard = GetWorkspaceSnapshotCreditCardInvoicesCreditCard.fromJson(
-        json['creditCard'],
-      );
+  GetWorkspaceSnapshotCreditCardInvoices.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  referenceMonth = nativeFromJson<DateTime>(json['referenceMonth']),
+  closingDate = nativeFromJson<DateTime>(json['closingDate']),
+  dueDate = nativeFromJson<DateTime>(json['dueDate']),
+  status = invoiceStatusDeserializer(json['status']),
+  totalAmountCents = bigIntFromJson(json['totalAmountCents']),
+  paidAmountCents = bigIntFromJson(json['paidAmountCents']),
+  creditCard = GetWorkspaceSnapshotCreditCardInvoicesCreditCard.fromJson(json['creditCard']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCreditCardInvoices otherTyped =
-        other as GetWorkspaceSnapshotCreditCardInvoices;
-    return id == otherTyped.id &&
-        referenceMonth == otherTyped.referenceMonth &&
-        closingDate == otherTyped.closingDate &&
-        dueDate == otherTyped.dueDate &&
-        status == otherTyped.status &&
-        totalAmountCents == otherTyped.totalAmountCents &&
-        paidAmountCents == otherTyped.paidAmountCents &&
-        creditCard == otherTyped.creditCard;
+    final GetWorkspaceSnapshotCreditCardInvoices otherTyped = other as GetWorkspaceSnapshotCreditCardInvoices;
+    return id == otherTyped.id && 
+    referenceMonth == otherTyped.referenceMonth && 
+    closingDate == otherTyped.closingDate && 
+    dueDate == otherTyped.dueDate && 
+    status == otherTyped.status && 
+    totalAmountCents == otherTyped.totalAmountCents && 
+    paidAmountCents == otherTyped.paidAmountCents && 
+    creditCard == otherTyped.creditCard;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    referenceMonth.hashCode,
-    closingDate.hashCode,
-    dueDate.hashCode,
-    status.hashCode,
-    totalAmountCents.hashCode,
-    paidAmountCents.hashCode,
-    creditCard.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, referenceMonth.hashCode, closingDate.hashCode, dueDate.hashCode, status.hashCode, totalAmountCents.hashCode, paidAmountCents.hashCode, creditCard.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1263,7 +1134,9 @@ class GetWorkspaceSnapshotCreditCardInvoices {
     json['referenceMonth'] = nativeToJson<DateTime>(referenceMonth);
     json['closingDate'] = nativeToJson<DateTime>(closingDate);
     json['dueDate'] = nativeToJson<DateTime>(dueDate);
-    json['status'] = invoiceStatusSerializer(status);
+    json['status'] = 
+    invoiceStatusSerializer(status)
+    ;
     json['totalAmountCents'] = bigIntToJson(totalAmountCents);
     json['paidAmountCents'] = bigIntToJson(paidAmountCents);
     json['creditCard'] = creditCard.toJson();
@@ -1286,25 +1159,27 @@ class GetWorkspaceSnapshotCreditCardInvoices {
 class GetWorkspaceSnapshotCreditCardInvoicesCreditCard {
   final String id;
   final String nickname;
-  GetWorkspaceSnapshotCreditCardInvoicesCreditCard.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      nickname = nativeFromJson<String>(json['nickname']);
+  GetWorkspaceSnapshotCreditCardInvoicesCreditCard.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  nickname = nativeFromJson<String>(json['nickname']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotCreditCardInvoicesCreditCard otherTyped =
-        other as GetWorkspaceSnapshotCreditCardInvoicesCreditCard;
-    return id == otherTyped.id && nickname == otherTyped.nickname;
+    final GetWorkspaceSnapshotCreditCardInvoicesCreditCard otherTyped = other as GetWorkspaceSnapshotCreditCardInvoicesCreditCard;
+    return id == otherTyped.id && 
+    nickname == otherTyped.nickname;
+    
   }
-
   @override
   int get hashCode => Object.hashAll([id.hashCode, nickname.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1329,51 +1204,39 @@ class GetWorkspaceSnapshotPurchaseInstallments {
   final EnumValue<InstallmentStatus> status;
   final GetWorkspaceSnapshotPurchaseInstallmentsPurchase purchase;
   final GetWorkspaceSnapshotPurchaseInstallmentsInvoice invoice;
-  GetWorkspaceSnapshotPurchaseInstallments.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      installmentNumber = nativeFromJson<int>(json['installmentNumber']),
-      installmentCount = nativeFromJson<int>(json['installmentCount']),
-      amountCents = bigIntFromJson(json['amountCents']),
-      dueDate = nativeFromJson<DateTime>(json['dueDate']),
-      status = installmentStatusDeserializer(json['status']),
-      purchase = GetWorkspaceSnapshotPurchaseInstallmentsPurchase.fromJson(
-        json['purchase'],
-      ),
-      invoice = GetWorkspaceSnapshotPurchaseInstallmentsInvoice.fromJson(
-        json['invoice'],
-      );
+  GetWorkspaceSnapshotPurchaseInstallments.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  installmentNumber = nativeFromJson<int>(json['installmentNumber']),
+  installmentCount = nativeFromJson<int>(json['installmentCount']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  dueDate = nativeFromJson<DateTime>(json['dueDate']),
+  status = installmentStatusDeserializer(json['status']),
+  purchase = GetWorkspaceSnapshotPurchaseInstallmentsPurchase.fromJson(json['purchase']),
+  invoice = GetWorkspaceSnapshotPurchaseInstallmentsInvoice.fromJson(json['invoice']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchaseInstallments otherTyped =
-        other as GetWorkspaceSnapshotPurchaseInstallments;
-    return id == otherTyped.id &&
-        installmentNumber == otherTyped.installmentNumber &&
-        installmentCount == otherTyped.installmentCount &&
-        amountCents == otherTyped.amountCents &&
-        dueDate == otherTyped.dueDate &&
-        status == otherTyped.status &&
-        purchase == otherTyped.purchase &&
-        invoice == otherTyped.invoice;
+    final GetWorkspaceSnapshotPurchaseInstallments otherTyped = other as GetWorkspaceSnapshotPurchaseInstallments;
+    return id == otherTyped.id && 
+    installmentNumber == otherTyped.installmentNumber && 
+    installmentCount == otherTyped.installmentCount && 
+    amountCents == otherTyped.amountCents && 
+    dueDate == otherTyped.dueDate && 
+    status == otherTyped.status && 
+    purchase == otherTyped.purchase && 
+    invoice == otherTyped.invoice;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    installmentNumber.hashCode,
-    installmentCount.hashCode,
-    amountCents.hashCode,
-    dueDate.hashCode,
-    status.hashCode,
-    purchase.hashCode,
-    invoice.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, installmentNumber.hashCode, installmentCount.hashCode, amountCents.hashCode, dueDate.hashCode, status.hashCode, purchase.hashCode, invoice.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1382,7 +1245,9 @@ class GetWorkspaceSnapshotPurchaseInstallments {
     json['installmentCount'] = nativeToJson<int>(installmentCount);
     json['amountCents'] = bigIntToJson(amountCents);
     json['dueDate'] = nativeToJson<DateTime>(dueDate);
-    json['status'] = installmentStatusSerializer(status);
+    json['status'] = 
+    installmentStatusSerializer(status)
+    ;
     json['purchase'] = purchase.toJson();
     json['invoice'] = invoice.toJson();
     return json;
@@ -1403,24 +1268,25 @@ class GetWorkspaceSnapshotPurchaseInstallments {
 @immutable
 class GetWorkspaceSnapshotPurchaseInstallmentsPurchase {
   final String id;
-  GetWorkspaceSnapshotPurchaseInstallmentsPurchase.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']);
+  GetWorkspaceSnapshotPurchaseInstallmentsPurchase.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchaseInstallmentsPurchase otherTyped =
-        other as GetWorkspaceSnapshotPurchaseInstallmentsPurchase;
+    final GetWorkspaceSnapshotPurchaseInstallmentsPurchase otherTyped = other as GetWorkspaceSnapshotPurchaseInstallmentsPurchase;
     return id == otherTyped.id;
+    
   }
-
   @override
   int get hashCode => id.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1428,30 +1294,33 @@ class GetWorkspaceSnapshotPurchaseInstallmentsPurchase {
     return json;
   }
 
-  GetWorkspaceSnapshotPurchaseInstallmentsPurchase({required this.id});
+  GetWorkspaceSnapshotPurchaseInstallmentsPurchase({
+    required this.id,
+  });
 }
 
 @immutable
 class GetWorkspaceSnapshotPurchaseInstallmentsInvoice {
   final String id;
-  GetWorkspaceSnapshotPurchaseInstallmentsInvoice.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']);
+  GetWorkspaceSnapshotPurchaseInstallmentsInvoice.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotPurchaseInstallmentsInvoice otherTyped =
-        other as GetWorkspaceSnapshotPurchaseInstallmentsInvoice;
+    final GetWorkspaceSnapshotPurchaseInstallmentsInvoice otherTyped = other as GetWorkspaceSnapshotPurchaseInstallmentsInvoice;
     return id == otherTyped.id;
+    
   }
-
   @override
   int get hashCode => id.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1459,7 +1328,9 @@ class GetWorkspaceSnapshotPurchaseInstallmentsInvoice {
     return json;
   }
 
-  GetWorkspaceSnapshotPurchaseInstallmentsInvoice({required this.id});
+  GetWorkspaceSnapshotPurchaseInstallmentsInvoice({
+    required this.id,
+  });
 }
 
 @immutable
@@ -1471,50 +1342,37 @@ class GetWorkspaceSnapshotInvoicePayments {
   final EnumValue<PaymentStatus> status;
   final GetWorkspaceSnapshotInvoicePaymentsInvoice invoice;
   final GetWorkspaceSnapshotInvoicePaymentsCreatedByUser createdByUser;
-  GetWorkspaceSnapshotInvoicePayments.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      amountCents = bigIntFromJson(json['amountCents']),
-      paidAt = Timestamp.fromJson(json['paidAt']),
-      notes = json['notes'] == null
-          ? null
-          : nativeFromJson<String>(json['notes']),
-      status = paymentStatusDeserializer(json['status']),
-      invoice = GetWorkspaceSnapshotInvoicePaymentsInvoice.fromJson(
-        json['invoice'],
-      ),
-      createdByUser = GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(
-        json['createdByUser'],
-      );
+  GetWorkspaceSnapshotInvoicePayments.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  paidAt = Timestamp.fromJson(json['paidAt']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  status = paymentStatusDeserializer(json['status']),
+  invoice = GetWorkspaceSnapshotInvoicePaymentsInvoice.fromJson(json['invoice']),
+  createdByUser = GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(json['createdByUser']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotInvoicePayments otherTyped =
-        other as GetWorkspaceSnapshotInvoicePayments;
-    return id == otherTyped.id &&
-        amountCents == otherTyped.amountCents &&
-        paidAt == otherTyped.paidAt &&
-        notes == otherTyped.notes &&
-        status == otherTyped.status &&
-        invoice == otherTyped.invoice &&
-        createdByUser == otherTyped.createdByUser;
+    final GetWorkspaceSnapshotInvoicePayments otherTyped = other as GetWorkspaceSnapshotInvoicePayments;
+    return id == otherTyped.id && 
+    amountCents == otherTyped.amountCents && 
+    paidAt == otherTyped.paidAt && 
+    notes == otherTyped.notes && 
+    status == otherTyped.status && 
+    invoice == otherTyped.invoice && 
+    createdByUser == otherTyped.createdByUser;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    amountCents.hashCode,
-    paidAt.hashCode,
-    notes.hashCode,
-    status.hashCode,
-    invoice.hashCode,
-    createdByUser.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, status.hashCode, invoice.hashCode, createdByUser.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1524,7 +1382,9 @@ class GetWorkspaceSnapshotInvoicePayments {
     if (notes != null) {
       json['notes'] = nativeToJson<String?>(notes);
     }
-    json['status'] = paymentStatusSerializer(status);
+    json['status'] = 
+    paymentStatusSerializer(status)
+    ;
     json['invoice'] = invoice.toJson();
     json['createdByUser'] = createdByUser.toJson();
     return json;
@@ -1544,24 +1404,25 @@ class GetWorkspaceSnapshotInvoicePayments {
 @immutable
 class GetWorkspaceSnapshotInvoicePaymentsInvoice {
   final String id;
-  GetWorkspaceSnapshotInvoicePaymentsInvoice.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']);
+  GetWorkspaceSnapshotInvoicePaymentsInvoice.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotInvoicePaymentsInvoice otherTyped =
-        other as GetWorkspaceSnapshotInvoicePaymentsInvoice;
+    final GetWorkspaceSnapshotInvoicePaymentsInvoice otherTyped = other as GetWorkspaceSnapshotInvoicePaymentsInvoice;
     return id == otherTyped.id;
+    
   }
-
   @override
   int get hashCode => id.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1569,30 +1430,33 @@ class GetWorkspaceSnapshotInvoicePaymentsInvoice {
     return json;
   }
 
-  GetWorkspaceSnapshotInvoicePaymentsInvoice({required this.id});
+  GetWorkspaceSnapshotInvoicePaymentsInvoice({
+    required this.id,
+  });
 }
 
 @immutable
 class GetWorkspaceSnapshotInvoicePaymentsCreatedByUser {
   final String displayName;
-  GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(dynamic json)
-    : displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(dynamic json):
+  
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotInvoicePaymentsCreatedByUser otherTyped =
-        other as GetWorkspaceSnapshotInvoicePaymentsCreatedByUser;
+    final GetWorkspaceSnapshotInvoicePaymentsCreatedByUser otherTyped = other as GetWorkspaceSnapshotInvoicePaymentsCreatedByUser;
     return displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => displayName.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1600,7 +1464,9 @@ class GetWorkspaceSnapshotInvoicePaymentsCreatedByUser {
     return json;
   }
 
-  GetWorkspaceSnapshotInvoicePaymentsCreatedByUser({required this.displayName});
+  GetWorkspaceSnapshotInvoicePaymentsCreatedByUser({
+    required this.displayName,
+  });
 }
 
 @immutable
@@ -1618,78 +1484,49 @@ class GetWorkspaceSnapshotLoans {
   final String? notes;
   final EnumValue<LoanStatus> status;
   final GetWorkspaceSnapshotLoansCreatedByUser createdByUser;
-  GetWorkspaceSnapshotLoans.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      name = nativeFromJson<String>(json['name']),
-      lender = json['lender'] == null
-          ? null
-          : nativeFromJson<String>(json['lender']),
-      principalAmountCents = bigIntFromJson(json['principalAmountCents']),
-      monthlyInterestRateMicros = bigIntFromJson(
-        json['monthlyInterestRateMicros'],
-      ),
-      amortizationMethod = loanAmortizationMethodDeserializer(
-        json['amortizationMethod'],
-      ),
-      installmentCount = nativeFromJson<int>(json['installmentCount']),
-      contractedAt = json['contractedAt'] == null
-          ? null
-          : nativeFromJson<DateTime>(json['contractedAt']),
-      firstDueDate = nativeFromJson<DateTime>(json['firstDueDate']),
-      expectedInstallmentAmountCents =
-          json['expectedInstallmentAmountCents'] == null
-          ? null
-          : bigIntFromJson(json['expectedInstallmentAmountCents']),
-      notes = json['notes'] == null
-          ? null
-          : nativeFromJson<String>(json['notes']),
-      status = loanStatusDeserializer(json['status']),
-      createdByUser = GetWorkspaceSnapshotLoansCreatedByUser.fromJson(
-        json['createdByUser'],
-      );
+  GetWorkspaceSnapshotLoans.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']),
+  lender = json['lender'] == null ? null : nativeFromJson<String>(json['lender']),
+  principalAmountCents = bigIntFromJson(json['principalAmountCents']),
+  monthlyInterestRateMicros = bigIntFromJson(json['monthlyInterestRateMicros']),
+  amortizationMethod = loanAmortizationMethodDeserializer(json['amortizationMethod']),
+  installmentCount = nativeFromJson<int>(json['installmentCount']),
+  contractedAt = json['contractedAt'] == null ? null : nativeFromJson<DateTime>(json['contractedAt']),
+  firstDueDate = nativeFromJson<DateTime>(json['firstDueDate']),
+  expectedInstallmentAmountCents = json['expectedInstallmentAmountCents'] == null ? null : bigIntFromJson(json['expectedInstallmentAmountCents']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  status = loanStatusDeserializer(json['status']),
+  createdByUser = GetWorkspaceSnapshotLoansCreatedByUser.fromJson(json['createdByUser']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotLoans otherTyped =
-        other as GetWorkspaceSnapshotLoans;
-    return id == otherTyped.id &&
-        name == otherTyped.name &&
-        lender == otherTyped.lender &&
-        principalAmountCents == otherTyped.principalAmountCents &&
-        monthlyInterestRateMicros == otherTyped.monthlyInterestRateMicros &&
-        amortizationMethod == otherTyped.amortizationMethod &&
-        installmentCount == otherTyped.installmentCount &&
-        contractedAt == otherTyped.contractedAt &&
-        firstDueDate == otherTyped.firstDueDate &&
-        expectedInstallmentAmountCents ==
-            otherTyped.expectedInstallmentAmountCents &&
-        notes == otherTyped.notes &&
-        status == otherTyped.status &&
-        createdByUser == otherTyped.createdByUser;
+    final GetWorkspaceSnapshotLoans otherTyped = other as GetWorkspaceSnapshotLoans;
+    return id == otherTyped.id && 
+    name == otherTyped.name && 
+    lender == otherTyped.lender && 
+    principalAmountCents == otherTyped.principalAmountCents && 
+    monthlyInterestRateMicros == otherTyped.monthlyInterestRateMicros && 
+    amortizationMethod == otherTyped.amortizationMethod && 
+    installmentCount == otherTyped.installmentCount && 
+    contractedAt == otherTyped.contractedAt && 
+    firstDueDate == otherTyped.firstDueDate && 
+    expectedInstallmentAmountCents == otherTyped.expectedInstallmentAmountCents && 
+    notes == otherTyped.notes && 
+    status == otherTyped.status && 
+    createdByUser == otherTyped.createdByUser;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    name.hashCode,
-    lender.hashCode,
-    principalAmountCents.hashCode,
-    monthlyInterestRateMicros.hashCode,
-    amortizationMethod.hashCode,
-    installmentCount.hashCode,
-    contractedAt.hashCode,
-    firstDueDate.hashCode,
-    expectedInstallmentAmountCents.hashCode,
-    notes.hashCode,
-    status.hashCode,
-    createdByUser.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, lender.hashCode, principalAmountCents.hashCode, monthlyInterestRateMicros.hashCode, amortizationMethod.hashCode, installmentCount.hashCode, contractedAt.hashCode, firstDueDate.hashCode, expectedInstallmentAmountCents.hashCode, notes.hashCode, status.hashCode, createdByUser.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1700,23 +1537,23 @@ class GetWorkspaceSnapshotLoans {
     }
     json['principalAmountCents'] = bigIntToJson(principalAmountCents);
     json['monthlyInterestRateMicros'] = bigIntToJson(monthlyInterestRateMicros);
-    json['amortizationMethod'] = loanAmortizationMethodSerializer(
-      amortizationMethod,
-    );
+    json['amortizationMethod'] = 
+    loanAmortizationMethodSerializer(amortizationMethod)
+    ;
     json['installmentCount'] = nativeToJson<int>(installmentCount);
     if (contractedAt != null) {
       json['contractedAt'] = nativeToJson<DateTime?>(contractedAt);
     }
     json['firstDueDate'] = nativeToJson<DateTime>(firstDueDate);
     if (expectedInstallmentAmountCents != null) {
-      json['expectedInstallmentAmountCents'] = bigIntToJson(
-        expectedInstallmentAmountCents,
-      );
+      json['expectedInstallmentAmountCents'] = bigIntToJson(expectedInstallmentAmountCents);
     }
     if (notes != null) {
       json['notes'] = nativeToJson<String?>(notes);
     }
-    json['status'] = loanStatusSerializer(status);
+    json['status'] = 
+    loanStatusSerializer(status)
+    ;
     json['createdByUser'] = createdByUser.toJson();
     return json;
   }
@@ -1741,24 +1578,25 @@ class GetWorkspaceSnapshotLoans {
 @immutable
 class GetWorkspaceSnapshotLoansCreatedByUser {
   final String displayName;
-  GetWorkspaceSnapshotLoansCreatedByUser.fromJson(dynamic json)
-    : displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotLoansCreatedByUser.fromJson(dynamic json):
+  
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotLoansCreatedByUser otherTyped =
-        other as GetWorkspaceSnapshotLoansCreatedByUser;
+    final GetWorkspaceSnapshotLoansCreatedByUser otherTyped = other as GetWorkspaceSnapshotLoansCreatedByUser;
     return displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => displayName.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1766,7 +1604,9 @@ class GetWorkspaceSnapshotLoansCreatedByUser {
     return json;
   }
 
-  GetWorkspaceSnapshotLoansCreatedByUser({required this.displayName});
+  GetWorkspaceSnapshotLoansCreatedByUser({
+    required this.displayName,
+  });
 }
 
 @immutable
@@ -1781,53 +1621,43 @@ class GetWorkspaceSnapshotLoanInstallments {
   final BigInt paidAmountCents;
   final EnumValue<LoanInstallmentStatus> status;
   final GetWorkspaceSnapshotLoanInstallmentsLoan loan;
-  GetWorkspaceSnapshotLoanInstallments.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      installmentNumber = nativeFromJson<int>(json['installmentNumber']),
-      dueDate = nativeFromJson<DateTime>(json['dueDate']),
-      openingBalanceCents = bigIntFromJson(json['openingBalanceCents']),
-      principalAmountCents = bigIntFromJson(json['principalAmountCents']),
-      interestAmountCents = bigIntFromJson(json['interestAmountCents']),
-      totalAmountCents = bigIntFromJson(json['totalAmountCents']),
-      paidAmountCents = bigIntFromJson(json['paidAmountCents']),
-      status = loanInstallmentStatusDeserializer(json['status']),
-      loan = GetWorkspaceSnapshotLoanInstallmentsLoan.fromJson(json['loan']);
+  GetWorkspaceSnapshotLoanInstallments.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  installmentNumber = nativeFromJson<int>(json['installmentNumber']),
+  dueDate = nativeFromJson<DateTime>(json['dueDate']),
+  openingBalanceCents = bigIntFromJson(json['openingBalanceCents']),
+  principalAmountCents = bigIntFromJson(json['principalAmountCents']),
+  interestAmountCents = bigIntFromJson(json['interestAmountCents']),
+  totalAmountCents = bigIntFromJson(json['totalAmountCents']),
+  paidAmountCents = bigIntFromJson(json['paidAmountCents']),
+  status = loanInstallmentStatusDeserializer(json['status']),
+  loan = GetWorkspaceSnapshotLoanInstallmentsLoan.fromJson(json['loan']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotLoanInstallments otherTyped =
-        other as GetWorkspaceSnapshotLoanInstallments;
-    return id == otherTyped.id &&
-        installmentNumber == otherTyped.installmentNumber &&
-        dueDate == otherTyped.dueDate &&
-        openingBalanceCents == otherTyped.openingBalanceCents &&
-        principalAmountCents == otherTyped.principalAmountCents &&
-        interestAmountCents == otherTyped.interestAmountCents &&
-        totalAmountCents == otherTyped.totalAmountCents &&
-        paidAmountCents == otherTyped.paidAmountCents &&
-        status == otherTyped.status &&
-        loan == otherTyped.loan;
+    final GetWorkspaceSnapshotLoanInstallments otherTyped = other as GetWorkspaceSnapshotLoanInstallments;
+    return id == otherTyped.id && 
+    installmentNumber == otherTyped.installmentNumber && 
+    dueDate == otherTyped.dueDate && 
+    openingBalanceCents == otherTyped.openingBalanceCents && 
+    principalAmountCents == otherTyped.principalAmountCents && 
+    interestAmountCents == otherTyped.interestAmountCents && 
+    totalAmountCents == otherTyped.totalAmountCents && 
+    paidAmountCents == otherTyped.paidAmountCents && 
+    status == otherTyped.status && 
+    loan == otherTyped.loan;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    installmentNumber.hashCode,
-    dueDate.hashCode,
-    openingBalanceCents.hashCode,
-    principalAmountCents.hashCode,
-    interestAmountCents.hashCode,
-    totalAmountCents.hashCode,
-    paidAmountCents.hashCode,
-    status.hashCode,
-    loan.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, installmentNumber.hashCode, dueDate.hashCode, openingBalanceCents.hashCode, principalAmountCents.hashCode, interestAmountCents.hashCode, totalAmountCents.hashCode, paidAmountCents.hashCode, status.hashCode, loan.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1839,7 +1669,9 @@ class GetWorkspaceSnapshotLoanInstallments {
     json['interestAmountCents'] = bigIntToJson(interestAmountCents);
     json['totalAmountCents'] = bigIntToJson(totalAmountCents);
     json['paidAmountCents'] = bigIntToJson(paidAmountCents);
-    json['status'] = loanInstallmentStatusSerializer(status);
+    json['status'] = 
+    loanInstallmentStatusSerializer(status)
+    ;
     json['loan'] = loan.toJson();
     return json;
   }
@@ -1861,24 +1693,25 @@ class GetWorkspaceSnapshotLoanInstallments {
 @immutable
 class GetWorkspaceSnapshotLoanInstallmentsLoan {
   final String id;
-  GetWorkspaceSnapshotLoanInstallmentsLoan.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']);
+  GetWorkspaceSnapshotLoanInstallmentsLoan.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotLoanInstallmentsLoan otherTyped =
-        other as GetWorkspaceSnapshotLoanInstallmentsLoan;
+    final GetWorkspaceSnapshotLoanInstallmentsLoan otherTyped = other as GetWorkspaceSnapshotLoanInstallmentsLoan;
     return id == otherTyped.id;
+    
   }
-
   @override
   int get hashCode => id.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1886,7 +1719,9 @@ class GetWorkspaceSnapshotLoanInstallmentsLoan {
     return json;
   }
 
-  GetWorkspaceSnapshotLoanInstallmentsLoan({required this.id});
+  GetWorkspaceSnapshotLoanInstallmentsLoan({
+    required this.id,
+  });
 }
 
 @immutable
@@ -1897,41 +1732,35 @@ class GetWorkspaceSnapshotNotificationPreferences {
   final bool inAppEnabled;
   final String preferredTime;
   final String timezone;
-  GetWorkspaceSnapshotNotificationPreferences.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      enabled = nativeFromJson<bool>(json['enabled']),
-      pushEnabled = nativeFromJson<bool>(json['pushEnabled']),
-      inAppEnabled = nativeFromJson<bool>(json['inAppEnabled']),
-      preferredTime = nativeFromJson<String>(json['preferredTime']),
-      timezone = nativeFromJson<String>(json['timezone']);
+  GetWorkspaceSnapshotNotificationPreferences.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  enabled = nativeFromJson<bool>(json['enabled']),
+  pushEnabled = nativeFromJson<bool>(json['pushEnabled']),
+  inAppEnabled = nativeFromJson<bool>(json['inAppEnabled']),
+  preferredTime = nativeFromJson<String>(json['preferredTime']),
+  timezone = nativeFromJson<String>(json['timezone']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotNotificationPreferences otherTyped =
-        other as GetWorkspaceSnapshotNotificationPreferences;
-    return id == otherTyped.id &&
-        enabled == otherTyped.enabled &&
-        pushEnabled == otherTyped.pushEnabled &&
-        inAppEnabled == otherTyped.inAppEnabled &&
-        preferredTime == otherTyped.preferredTime &&
-        timezone == otherTyped.timezone;
+    final GetWorkspaceSnapshotNotificationPreferences otherTyped = other as GetWorkspaceSnapshotNotificationPreferences;
+    return id == otherTyped.id && 
+    enabled == otherTyped.enabled && 
+    pushEnabled == otherTyped.pushEnabled && 
+    inAppEnabled == otherTyped.inAppEnabled && 
+    preferredTime == otherTyped.preferredTime && 
+    timezone == otherTyped.timezone;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    enabled.hashCode,
-    pushEnabled.hashCode,
-    inAppEnabled.hashCode,
-    preferredTime.hashCode,
-    timezone.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, enabled.hashCode, pushEnabled.hashCode, inAppEnabled.hashCode, preferredTime.hashCode, timezone.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -1960,40 +1789,38 @@ class GetWorkspaceSnapshotNotificationRules {
   final EnumValue<NotificationEventType> eventType;
   final int daysBefore;
   final bool enabled;
-  GetWorkspaceSnapshotNotificationRules.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      eventType = notificationEventTypeDeserializer(json['eventType']),
-      daysBefore = nativeFromJson<int>(json['daysBefore']),
-      enabled = nativeFromJson<bool>(json['enabled']);
+  GetWorkspaceSnapshotNotificationRules.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  eventType = notificationEventTypeDeserializer(json['eventType']),
+  daysBefore = nativeFromJson<int>(json['daysBefore']),
+  enabled = nativeFromJson<bool>(json['enabled']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotNotificationRules otherTyped =
-        other as GetWorkspaceSnapshotNotificationRules;
-    return id == otherTyped.id &&
-        eventType == otherTyped.eventType &&
-        daysBefore == otherTyped.daysBefore &&
-        enabled == otherTyped.enabled;
+    final GetWorkspaceSnapshotNotificationRules otherTyped = other as GetWorkspaceSnapshotNotificationRules;
+    return id == otherTyped.id && 
+    eventType == otherTyped.eventType && 
+    daysBefore == otherTyped.daysBefore && 
+    enabled == otherTyped.enabled;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    eventType.hashCode,
-    daysBefore.hashCode,
-    enabled.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, eventType.hashCode, daysBefore.hashCode, enabled.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['id'] = nativeToJson<String>(id);
-    json['eventType'] = notificationEventTypeSerializer(eventType);
+    json['eventType'] = 
+    notificationEventTypeSerializer(eventType)
+    ;
     json['daysBefore'] = nativeToJson<int>(daysBefore);
     json['enabled'] = nativeToJson<bool>(enabled);
     return json;
@@ -2016,46 +1843,37 @@ class GetWorkspaceSnapshotAuditEvents {
   final String summary;
   final Timestamp occurredAt;
   final GetWorkspaceSnapshotAuditEventsActorUser actorUser;
-  GetWorkspaceSnapshotAuditEvents.fromJson(dynamic json)
-    : id = nativeFromJson<String>(json['id']),
-      entityType = nativeFromJson<String>(json['entityType']),
-      entityId = nativeFromJson<String>(json['entityId']),
-      action = nativeFromJson<String>(json['action']),
-      summary = nativeFromJson<String>(json['summary']),
-      occurredAt = Timestamp.fromJson(json['occurredAt']),
-      actorUser = GetWorkspaceSnapshotAuditEventsActorUser.fromJson(
-        json['actorUser'],
-      );
+  GetWorkspaceSnapshotAuditEvents.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  entityType = nativeFromJson<String>(json['entityType']),
+  entityId = nativeFromJson<String>(json['entityId']),
+  action = nativeFromJson<String>(json['action']),
+  summary = nativeFromJson<String>(json['summary']),
+  occurredAt = Timestamp.fromJson(json['occurredAt']),
+  actorUser = GetWorkspaceSnapshotAuditEventsActorUser.fromJson(json['actorUser']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotAuditEvents otherTyped =
-        other as GetWorkspaceSnapshotAuditEvents;
-    return id == otherTyped.id &&
-        entityType == otherTyped.entityType &&
-        entityId == otherTyped.entityId &&
-        action == otherTyped.action &&
-        summary == otherTyped.summary &&
-        occurredAt == otherTyped.occurredAt &&
-        actorUser == otherTyped.actorUser;
+    final GetWorkspaceSnapshotAuditEvents otherTyped = other as GetWorkspaceSnapshotAuditEvents;
+    return id == otherTyped.id && 
+    entityType == otherTyped.entityType && 
+    entityId == otherTyped.entityId && 
+    action == otherTyped.action && 
+    summary == otherTyped.summary && 
+    occurredAt == otherTyped.occurredAt && 
+    actorUser == otherTyped.actorUser;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    id.hashCode,
-    entityType.hashCode,
-    entityId.hashCode,
-    action.hashCode,
-    summary.hashCode,
-    occurredAt.hashCode,
-    actorUser.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([id.hashCode, entityType.hashCode, entityId.hashCode, action.hashCode, summary.hashCode, occurredAt.hashCode, actorUser.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -2083,24 +1901,25 @@ class GetWorkspaceSnapshotAuditEvents {
 @immutable
 class GetWorkspaceSnapshotAuditEventsActorUser {
   final String displayName;
-  GetWorkspaceSnapshotAuditEventsActorUser.fromJson(dynamic json)
-    : displayName = nativeFromJson<String>(json['displayName']);
+  GetWorkspaceSnapshotAuditEventsActorUser.fromJson(dynamic json):
+  
+  displayName = nativeFromJson<String>(json['displayName']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotAuditEventsActorUser otherTyped =
-        other as GetWorkspaceSnapshotAuditEventsActorUser;
+    final GetWorkspaceSnapshotAuditEventsActorUser otherTyped = other as GetWorkspaceSnapshotAuditEventsActorUser;
     return displayName == otherTyped.displayName;
+    
   }
-
   @override
   int get hashCode => displayName.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -2108,7 +1927,9 @@ class GetWorkspaceSnapshotAuditEventsActorUser {
     return json;
   }
 
-  GetWorkspaceSnapshotAuditEventsActorUser({required this.displayName});
+  GetWorkspaceSnapshotAuditEventsActorUser({
+    required this.displayName,
+  });
 }
 
 @immutable
@@ -2125,105 +1946,84 @@ class GetWorkspaceSnapshotData {
   final List<GetWorkspaceSnapshotInvoicePayments> invoicePayments;
   final List<GetWorkspaceSnapshotLoans> loans;
   final List<GetWorkspaceSnapshotLoanInstallments> loanInstallments;
-  final List<GetWorkspaceSnapshotNotificationPreferences>
-  notificationPreferences;
+  final List<GetWorkspaceSnapshotNotificationPreferences> notificationPreferences;
   final List<GetWorkspaceSnapshotNotificationRules> notificationRules;
   final List<GetWorkspaceSnapshotAuditEvents> auditEvents;
-  GetWorkspaceSnapshotData.fromJson(dynamic json)
-    : financialSpace = json['financialSpace'] == null
-          ? null
-          : GetWorkspaceSnapshotFinancialSpace.fromJson(json['financialSpace']),
-      spaceMembers = (json['spaceMembers'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotSpaceMembers.fromJson(e))
-          .toList(),
-      categories = (json['categories'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotCategories.fromJson(e))
-          .toList(),
-      creditCards = (json['creditCards'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotCreditCards.fromJson(e))
-          .toList(),
-      purchases = (json['purchases'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotPurchases.fromJson(e))
-          .toList(),
-      cashFlowEntries = (json['cashFlowEntries'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotCashFlowEntries.fromJson(e))
-          .toList(),
-      recurrenceSeries = (json['recurrenceSeries'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotRecurrenceSeries.fromJson(e))
-          .toList(),
-      creditCardInvoices = (json['creditCardInvoices'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotCreditCardInvoices.fromJson(e))
-          .toList(),
-      purchaseInstallments = (json['purchaseInstallments'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotPurchaseInstallments.fromJson(e))
-          .toList(),
-      invoicePayments = (json['invoicePayments'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotInvoicePayments.fromJson(e))
-          .toList(),
-      loans = (json['loans'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotLoans.fromJson(e))
-          .toList(),
-      loanInstallments = (json['loanInstallments'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotLoanInstallments.fromJson(e))
-          .toList(),
-      notificationPreferences =
-          (json['notificationPreferences'] as List<dynamic>)
-              .map(
-                (e) => GetWorkspaceSnapshotNotificationPreferences.fromJson(e),
-              )
-              .toList(),
-      notificationRules = (json['notificationRules'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotNotificationRules.fromJson(e))
-          .toList(),
-      auditEvents = (json['auditEvents'] as List<dynamic>)
-          .map((e) => GetWorkspaceSnapshotAuditEvents.fromJson(e))
-          .toList();
+  GetWorkspaceSnapshotData.fromJson(dynamic json):
+  
+  financialSpace = json['financialSpace'] == null ? null : GetWorkspaceSnapshotFinancialSpace.fromJson(json['financialSpace']),
+  spaceMembers = (json['spaceMembers'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotSpaceMembers.fromJson(e))
+        .toList(),
+  categories = (json['categories'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotCategories.fromJson(e))
+        .toList(),
+  creditCards = (json['creditCards'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotCreditCards.fromJson(e))
+        .toList(),
+  purchases = (json['purchases'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotPurchases.fromJson(e))
+        .toList(),
+  cashFlowEntries = (json['cashFlowEntries'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotCashFlowEntries.fromJson(e))
+        .toList(),
+  recurrenceSeries = (json['recurrenceSeries'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotRecurrenceSeries.fromJson(e))
+        .toList(),
+  creditCardInvoices = (json['creditCardInvoices'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotCreditCardInvoices.fromJson(e))
+        .toList(),
+  purchaseInstallments = (json['purchaseInstallments'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotPurchaseInstallments.fromJson(e))
+        .toList(),
+  invoicePayments = (json['invoicePayments'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotInvoicePayments.fromJson(e))
+        .toList(),
+  loans = (json['loans'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotLoans.fromJson(e))
+        .toList(),
+  loanInstallments = (json['loanInstallments'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotLoanInstallments.fromJson(e))
+        .toList(),
+  notificationPreferences = (json['notificationPreferences'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotNotificationPreferences.fromJson(e))
+        .toList(),
+  notificationRules = (json['notificationRules'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotNotificationRules.fromJson(e))
+        .toList(),
+  auditEvents = (json['auditEvents'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotAuditEvents.fromJson(e))
+        .toList();
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotData otherTyped =
-        other as GetWorkspaceSnapshotData;
-    return financialSpace == otherTyped.financialSpace &&
-        spaceMembers == otherTyped.spaceMembers &&
-        categories == otherTyped.categories &&
-        creditCards == otherTyped.creditCards &&
-        purchases == otherTyped.purchases &&
-        cashFlowEntries == otherTyped.cashFlowEntries &&
-        recurrenceSeries == otherTyped.recurrenceSeries &&
-        creditCardInvoices == otherTyped.creditCardInvoices &&
-        purchaseInstallments == otherTyped.purchaseInstallments &&
-        invoicePayments == otherTyped.invoicePayments &&
-        loans == otherTyped.loans &&
-        loanInstallments == otherTyped.loanInstallments &&
-        notificationPreferences == otherTyped.notificationPreferences &&
-        notificationRules == otherTyped.notificationRules &&
-        auditEvents == otherTyped.auditEvents;
+    final GetWorkspaceSnapshotData otherTyped = other as GetWorkspaceSnapshotData;
+    return financialSpace == otherTyped.financialSpace && 
+    spaceMembers == otherTyped.spaceMembers && 
+    categories == otherTyped.categories && 
+    creditCards == otherTyped.creditCards && 
+    purchases == otherTyped.purchases && 
+    cashFlowEntries == otherTyped.cashFlowEntries && 
+    recurrenceSeries == otherTyped.recurrenceSeries && 
+    creditCardInvoices == otherTyped.creditCardInvoices && 
+    purchaseInstallments == otherTyped.purchaseInstallments && 
+    invoicePayments == otherTyped.invoicePayments && 
+    loans == otherTyped.loans && 
+    loanInstallments == otherTyped.loanInstallments && 
+    notificationPreferences == otherTyped.notificationPreferences && 
+    notificationRules == otherTyped.notificationRules && 
+    auditEvents == otherTyped.auditEvents;
+    
   }
-
   @override
-  int get hashCode => Object.hashAll([
-    financialSpace.hashCode,
-    spaceMembers.hashCode,
-    categories.hashCode,
-    creditCards.hashCode,
-    purchases.hashCode,
-    cashFlowEntries.hashCode,
-    recurrenceSeries.hashCode,
-    creditCardInvoices.hashCode,
-    purchaseInstallments.hashCode,
-    invoicePayments.hashCode,
-    loans.hashCode,
-    loanInstallments.hashCode,
-    notificationPreferences.hashCode,
-    notificationRules.hashCode,
-    auditEvents.hashCode,
-  ]);
+  int get hashCode => Object.hashAll([financialSpace.hashCode, spaceMembers.hashCode, categories.hashCode, creditCards.hashCode, purchases.hashCode, cashFlowEntries.hashCode, recurrenceSeries.hashCode, creditCardInvoices.hashCode, purchaseInstallments.hashCode, invoicePayments.hashCode, loans.hashCode, loanInstallments.hashCode, notificationPreferences.hashCode, notificationRules.hashCode, auditEvents.hashCode]);
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -2236,21 +2036,13 @@ class GetWorkspaceSnapshotData {
     json['purchases'] = purchases.map((e) => e.toJson()).toList();
     json['cashFlowEntries'] = cashFlowEntries.map((e) => e.toJson()).toList();
     json['recurrenceSeries'] = recurrenceSeries.map((e) => e.toJson()).toList();
-    json['creditCardInvoices'] = creditCardInvoices
-        .map((e) => e.toJson())
-        .toList();
-    json['purchaseInstallments'] = purchaseInstallments
-        .map((e) => e.toJson())
-        .toList();
+    json['creditCardInvoices'] = creditCardInvoices.map((e) => e.toJson()).toList();
+    json['purchaseInstallments'] = purchaseInstallments.map((e) => e.toJson()).toList();
     json['invoicePayments'] = invoicePayments.map((e) => e.toJson()).toList();
     json['loans'] = loans.map((e) => e.toJson()).toList();
     json['loanInstallments'] = loanInstallments.map((e) => e.toJson()).toList();
-    json['notificationPreferences'] = notificationPreferences
-        .map((e) => e.toJson())
-        .toList();
-    json['notificationRules'] = notificationRules
-        .map((e) => e.toJson())
-        .toList();
+    json['notificationPreferences'] = notificationPreferences.map((e) => e.toJson()).toList();
+    json['notificationRules'] = notificationRules.map((e) => e.toJson()).toList();
     json['auditEvents'] = auditEvents.map((e) => e.toJson()).toList();
     return json;
   }
@@ -2277,27 +2069,26 @@ class GetWorkspaceSnapshotData {
 @immutable
 class GetWorkspaceSnapshotVariables {
   final String spaceId;
-  @Deprecated(
-    'fromJson is deprecated for Variable classes as they are no longer required for deserialization.',
-  )
-  GetWorkspaceSnapshotVariables.fromJson(Map<String, dynamic> json)
-    : spaceId = nativeFromJson<String>(json['spaceId']);
+  @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
+  GetWorkspaceSnapshotVariables.fromJson(Map<String, dynamic> json):
+  
+  spaceId = nativeFromJson<String>(json['spaceId']);
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) {
+    if(identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
+    if(other.runtimeType != runtimeType) {
       return false;
     }
 
-    final GetWorkspaceSnapshotVariables otherTyped =
-        other as GetWorkspaceSnapshotVariables;
+    final GetWorkspaceSnapshotVariables otherTyped = other as GetWorkspaceSnapshotVariables;
     return spaceId == otherTyped.spaceId;
+    
   }
-
   @override
   int get hashCode => spaceId.hashCode;
+  
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -2305,5 +2096,8 @@ class GetWorkspaceSnapshotVariables {
     return json;
   }
 
-  GetWorkspaceSnapshotVariables({required this.spaceId});
+  GetWorkspaceSnapshotVariables({
+    required this.spaceId,
+  });
 }
+
