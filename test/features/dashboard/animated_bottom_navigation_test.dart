@@ -15,9 +15,19 @@ void main() {
       label: 'Cartões',
     ),
     AppBottomNavigationDestination(
+      icon: Icons.add_circle_outline_rounded,
+      selectedIcon: Icons.add_circle_rounded,
+      label: 'Novo',
+    ),
+    AppBottomNavigationDestination(
       icon: Icons.calendar_today_outlined,
       selectedIcon: Icons.calendar_month_rounded,
       label: 'Agenda',
+    ),
+    AppBottomNavigationDestination(
+      icon: Icons.more_horiz_rounded,
+      selectedIcon: Icons.more_horiz_rounded,
+      label: 'Mais',
     ),
   ];
 
@@ -40,11 +50,46 @@ void main() {
 
     expect(find.text('Início'), findsOneWidget);
     expect(find.text('Cartões'), findsOneWidget);
+    expect(find.text('Novo'), findsOneWidget);
     expect(find.text('Agenda'), findsOneWidget);
+    expect(find.text('Mais'), findsOneWidget);
 
     await tester.tap(find.text('Agenda'));
     await tester.pump();
 
-    expect(selectedIndex, 2);
+    expect(selectedIndex, 3);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('remains usable with enlarged text on a narrow phone', (
+    tester,
+  ) async {
+    tester.view
+      ..physicalSize = const Size(320, 800)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(2)),
+          child: child!,
+        ),
+        home: Scaffold(
+          bottomNavigationBar: AnimatedBottomNavigationBar(
+            selectedIndex: 0,
+            destinations: destinations,
+            onDestinationSelected: (_) {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Início'), findsOneWidget);
+    expect(find.text('Mais'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

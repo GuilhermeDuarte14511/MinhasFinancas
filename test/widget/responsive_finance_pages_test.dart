@@ -119,15 +119,40 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Visão de'), findsOneWidget);
-    expect(find.textContaining('Fluxo de caixa de'), findsOneWidget);
-    expect(
-      find.textContaining('Movimentação prevista por semana'),
-      findsOneWidget,
-    );
+    expect(find.text('Seu mês em uma visão'), findsOneWidget);
+    expect(find.text('Próximos compromissos'), findsOneWidget);
+    expect(find.text('Ver análises e relatórios'), findsOneWidget);
     expect(find.text('Movimentações recentes'), findsOneWidget);
     expect(find.text('Atividades do espaço'), findsOneWidget);
-    expect(find.textContaining('Fluxo em '), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    container.dispose();
+  });
+
+  testWidgets('home remains usable at 320 px with text enlarged to 200%', (
+    tester,
+  ) async {
+    useCompactViewport(tester);
+    final container = await configuredContainer();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: const Scaffold(body: DashboardPage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Seu mês em uma visão'), findsOneWidget);
+    expect(find.text('Movimentações recentes'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();
@@ -210,7 +235,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Projeção até o fim do mês'), findsOneWidget);
+    expect(find.text('Saldo no fim do mês'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();

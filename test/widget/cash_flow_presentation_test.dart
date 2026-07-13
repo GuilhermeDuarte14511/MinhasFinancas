@@ -115,7 +115,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Salário de agosto'), findsOneWidget);
-    expect(find.text('Salário'), findsOneWidget);
+    expect(find.textContaining('Salário •'), findsOneWidget);
     expect(find.text('Prevista'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Ações do lançamento'));

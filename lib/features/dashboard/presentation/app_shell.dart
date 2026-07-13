@@ -7,7 +7,6 @@ import '../../../app/widgets/app_widgets.dart';
 import '../../finance/application/finance_controller.dart';
 import '../../finance/presentation/agenda_page.dart';
 import '../../finance/presentation/cards_page.dart';
-import '../../finance/presentation/loans_page.dart';
 import '../../finance/presentation/more_page.dart';
 import '../../onboarding/presentation/entry_gate_page.dart';
 import 'animated_bottom_navigation.dart';
@@ -34,11 +33,6 @@ class AppShell extends ConsumerWidget {
       iconSize: 31,
     ),
     AppBottomNavigationDestination(
-      icon: Icons.account_balance_outlined,
-      selectedIcon: Icons.account_balance_rounded,
-      label: 'Empréstimo',
-    ),
-    AppBottomNavigationDestination(
       icon: Icons.calendar_today_outlined,
       selectedIcon: Icons.calendar_month_rounded,
       label: 'Agenda',
@@ -54,15 +48,13 @@ class AppShell extends ConsumerWidget {
 
   int get _currentIndex => switch (section) {
     'cards' => 1,
-    'loans' => 3,
-    'agenda' => 4,
-    'more' => 5,
+    'agenda' => 3,
+    'more' => 4,
     _ => 0,
   };
 
   Widget get _page => switch (section) {
     'cards' => const CardsPage(),
-    'loans' => const LoansPage(embedded: true),
     'agenda' => const AgendaPage(),
     'more' => const MorePage(),
     _ => const DashboardPage(),
@@ -357,9 +349,8 @@ class AppShell extends ConsumerWidget {
           }
           context.go(switch (index) {
             1 => '/app/cards',
-            3 => '/app/loans',
-            4 => '/app/agenda',
-            5 => '/app/more',
+            3 => '/app/agenda',
+            4 => '/app/more',
             _ => '/app/home',
           });
         },

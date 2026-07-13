@@ -24,23 +24,39 @@ class SectionHeading extends StatelessWidget {
     };
     final resolvedActionLabel =
         actionLabel ?? (historyDestination == null ? null : 'Ver mais');
-    final resolvedOnAction = onAction ??
+    final resolvedOnAction =
+        onAction ??
         (historyDestination == null
             ? null
             : () {
                 openWorkspaceHistory(context, historyDestination);
               });
 
+    final titleWidget = Text(
+      title,
+      style: Theme.of(context).textTheme.titleLarge,
+    );
+    if (resolvedActionLabel == null) return titleWidget;
+
+    final action = TextButton(
+      onPressed: resolvedOnAction,
+      child: Text(resolvedActionLabel),
+    );
+    final enlargedText = MediaQuery.textScalerOf(context).scale(14) >= 21;
+    if (enlargedText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          titleWidget,
+          Align(alignment: Alignment.centerRight, child: action),
+        ],
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-        ),
-        if (resolvedActionLabel != null)
-          TextButton(
-            onPressed: resolvedOnAction,
-            child: Text(resolvedActionLabel),
-          ),
+        Expanded(child: titleWidget),
+        action,
       ],
     );
   }

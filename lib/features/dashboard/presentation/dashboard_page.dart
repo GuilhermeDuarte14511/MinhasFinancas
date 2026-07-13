@@ -19,115 +19,17 @@ class DashboardPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final finance = ref.watch(financeControllerProvider);
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     final month = DateTime(now.year, now.month);
-    final installments = finance.purchaseInstallments
-        .where(
-          (installment) =>
-              installment.status != InstallmentStatus.cancelled &&
-              _isSameMonth(installment.dueDate, month),
-        )
-        .toList();
-    final cardExpenses = _sumMoney(
-      installments.map((installment) => installment.amount),
+    final monthEnd = DateTime(now.year, now.month + 1, 0);
+    final forecast = finance.cashFlowForecast(
+      referenceDate: today,
+      horizonDays: monthEnd.difference(today).inDays,
     );
-    final incomes = finance.cashFlowEntries
-        .where(
-          (income) =>
-              income.isIncome &&
-              income.status != CashFlowStatus.cancelled &&
-              _isSameMonth(income.occurredAt, month),
-        )
-        .toList();
-    final expectedIncome = _sumMoney(incomes.map((income) => income.amount));
-    final receivedIncome = _sumMoney(
-      incomes
-          .where((income) => income.status == CashFlowStatus.confirmed)
-          .map((income) => income.amount),
-    );
-    final otherExpenseEntries = finance.cashFlowEntries
-        .where(
-          (entry) =>
-              !entry.isIncome &&
-              entry.status != CashFlowStatus.cancelled &&
-              _isSameMonth(entry.occurredAt, month),
-        )
-        .toList();
-    final otherExpenses = _sumMoney(
-      otherExpenseEntries.map((entry) => entry.amount),
-    );
-    final weeklyIncome = List<Money>.generate(5, (_) => const Money.zero());
-    final weeklyExpenses = List<Money>.generate(5, (_) => const Money.zero());
-    for (final income in incomes) {
-      final week = ((income.occurredAt.day - 1) ~/ 7).clamp(0, 4);
-      weeklyIncome[week] = weeklyIncome[week] + income.amount;
-    }
-    for (final expense in otherExpenseEntries) {
-      final week = ((expense.occurredAt.day - 1) ~/ 7).clamp(0, 4);
-      weeklyExpenses[week] = weeklyExpenses[week] + expense.amount;
-    }
-    for (final installment in installments) {
-      final week = ((installment.dueDate.day - 1) ~/ 7).clamp(0, 4);
-      weeklyExpenses[week] = weeklyExpenses[week] + installment.amount;
-    }
-    final loansById = {for (final loan in finance.loans) loan.id: loan};
-    final allMonthLoanInstallments = finance.loanInstallments
-        .where(
-          (installment) =>
-              _isSameMonth(installment.dueDate, month) &&
-              installment.status != LoanInstallmentStatus.cancelled,
-        )
-        .toList();
-    final loanExpenses = _sumMoney(
-      allMonthLoanInstallments.map((installment) => installment.total),
-    );
-    for (final installment in allMonthLoanInstallments) {
-      final week = ((installment.dueDate.day - 1) ~/ 7).clamp(0, 4);
-      weeklyExpenses[week] = weeklyExpenses[week] + installment.total;
-    }
-    final monthLoanInstallments = allMonthLoanInstallments
-        .where(
-          (installment) => installment.status != LoanInstallmentStatus.paid,
-        )
-        .toList();
-    final scheduledLoanIds = allMonthLoanInstallments
-        .map((installment) => installment.loanId)
-        .toSet();
-    final dueItems = <_DashboardDueItem>[
-      for (final invoice in finance.invoices)
-        if (_isSameMonth(invoice.dueDate, month) &&
-            invoice.status != InvoiceStatus.paid &&
-            invoice.status != InvoiceStatus.cancelled)
-          _DashboardDueItem.invoice(invoice),
-      for (final installment in monthLoanInstallments)
-        if (loansById[installment.loanId] case final loan?)
-          _DashboardDueItem.loanInstallment(installment, loan),
-      for (final loan in finance.loans)
-        if (!loan.outstandingBalance.isZero &&
-            !scheduledLoanIds.contains(loan.id))
-          _DashboardDueItem.loan(
-            loan,
-            DateTime(
-              month.year,
-              month.month,
-              loan.dueDay.clamp(
-                1,
-                DateUtils.getDaysInMonth(month.year, month.month),
-              ),
-            ),
-          ),
-    ]..sort((first, second) => first.date.compareTo(second.date));
-    final overdueCount = dueItems.where((item) => item.isOverdue).length;
-    final totalExpenses = cardExpenses + loanExpenses + otherExpenses;
-    final balance = expectedIncome - totalExpenses;
-    final financialPosition = finance.financialPosition(now);
-    final forecast = finance.cashFlowForecast(referenceDate: now);
-    final budgetProgress = finance.budgetProgress(month);
-    final budgetLimit = _sumMoney(
-      budgetProgress.map((item) => item.budget.limit),
-    );
-    final budgetCommitted = _sumMoney(
-      budgetProgress.map((item) => item.committed),
-    );
+    final position = finance.financialPosition(today);
+    final budgets = finance.budgetProgress(month);
+    final budgetLimit = _sumMoney(budgets.map((item) => item.budget.limit));
+    final budgetCommitted = _sumMoney(budgets.map((item) => item.committed));
     final monthName = toBeginningOfSentenceCase(
       DateFormat.MMMM('pt_BR').format(month),
     );
@@ -138,132 +40,76 @@ class DashboardPage extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         child: AppContent(
           maxWidth: 760,
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.md,
+            AppSpacing.md,
+            AppSpacing.xl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _MonthHeader(monthName: monthName, year: month.year),
-              const SizedBox(height: 18),
+              const SizedBox(height: AppSpacing.md),
               AnimatedPageEntry(
-                child: _CashFlowOverview(
+                duration: AppMotion.emphasized,
+                child: _MonthlyPositionHero(
                   monthName: monthName,
-                  expectedIncome: expectedIncome,
-                  receivedIncome: receivedIncome,
-                  cardExpenses: cardExpenses,
-                  loanExpenses: loanExpenses,
-                  otherExpenses: otherExpenses,
-                  balance: balance,
-                ),
-              ),
-              const SizedBox(height: 14),
-              AnimatedPageEntry(
-                delay: const Duration(milliseconds: 80),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _MetricTile(
-                        icon: Icons.south_west_rounded,
-                        label: 'Já recebido',
-                        value: receivedIncome.format(),
-                        helper:
-                            '${incomes.where((income) => income.status == CashFlowStatus.confirmed).length} entradas',
-                        isIncome: true,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _MetricTile(
-                        icon: Icons.warning_amber_rounded,
-                        label: 'Vencidos',
-                        value: '$overdueCount',
-                        helper: overdueCount == 1 ? 'pendência' : 'pendências',
-                        isError: overdueCount > 0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
-              AnimatedPageEntry(
-                delay: const Duration(milliseconds: 110),
-                child: _PlanningOverview(
+                  monthEnd: monthEnd,
                   hasAccounts: finance.accounts.isNotEmpty,
-                  currentBalance: financialPosition.currentBalance,
-                  projectedBalance: forecast.closingBalance,
-                  hasBudgets: budgetProgress.isNotEmpty,
-                  budgetAvailable: budgetLimit - budgetCommitted,
-                  budgetUsage: budgetLimit.cents <= 0
-                      ? 0
-                      : budgetCommitted.cents / budgetLimit.cents,
+                  currentBalance: position.currentBalance,
+                  forecast: forecast,
                 ),
               ),
-              const SizedBox(height: 14),
-              AnimatedPageEntry(
-                delay: const Duration(milliseconds: 125),
-                child: _DashboardForecastCard(forecast: forecast),
-              ),
-              const SizedBox(height: 26),
-              AnimatedPageEntry(
-                delay: const Duration(milliseconds: 140),
-                child: _WeeklyCashFlowChart(
-                  monthName: monthName,
-                  weeklyIncome: weeklyIncome,
-                  weeklyExpenses: weeklyExpenses,
+              if (finance.accounts.isEmpty ||
+                  forecast.hasNegativeBalanceRisk ||
+                  forecast.overdueCount > 0) ...[
+                const SizedBox(height: AppSpacing.sm),
+                _DashboardAlert(
+                  hasAccounts: finance.accounts.isNotEmpty,
+                  forecast: forecast,
                 ),
+              ],
+              const SizedBox(height: AppSpacing.lg),
+              SectionHeading(
+                title: 'Próximos compromissos',
+                actionLabel: 'Ver agenda',
+                onAction: () => context.go('/app/agenda'),
               ),
-              const SizedBox(height: 26),
-              const SectionHeading(title: 'Limites disponíveis agora'),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _LimitTile(
-                      label: 'Disponível',
-                      value: finance.availableLimit,
-                      emphasized: true,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _LimitTile(
-                      label: 'Limite total',
-                      value: finance.totalLimit,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Vencimentos de $monthName',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/app/agenda'),
-                    child: const Text('Ver agenda'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _DueItemsCard(items: dueItems.take(4).toList()),
+              const SizedBox(height: AppSpacing.xs),
+              _UpcomingCommitments(lines: forecast.lines.take(3).toList()),
+              if (budgets.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.lg),
+                _BudgetOverview(limit: budgetLimit, committed: budgetCommitted),
+              ],
               if (finance.cashFlowEntries.isNotEmpty) ...[
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.lg),
                 const SectionHeading(title: 'Movimentações recentes'),
-                const SizedBox(height: 8),
-                _RecentCashFlowList(entries: finance.cashFlowEntries.take(5)),
+                const SizedBox(height: AppSpacing.xs),
+                AppSurfaceCard(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: _RecentCashFlowList(
+                    entries: finance.cashFlowEntries.take(4),
+                  ),
+                ),
               ],
               if (finance.activities.isNotEmpty) ...[
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.lg),
                 const SectionHeading(title: 'Atividades do espaço'),
-                const SizedBox(height: 12),
-                for (final activity in finance.activities.take(3)) ...[
+                const SizedBox(height: AppSpacing.xs),
+                for (final activity in finance.activities.take(2)) ...[
                   _ActivityTile(activity: activity),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.xs),
                 ],
               ],
+              const SizedBox(height: AppSpacing.md),
+              OutlinedButton.icon(
+                onPressed: () => context.push('/analytics'),
+                icon: const Icon(Icons.query_stats_rounded),
+                label: const Text('Ver análises e relatórios'),
+              ),
             ],
           ),
         ),
@@ -272,115 +118,387 @@ class DashboardPage extends ConsumerWidget {
   }
 }
 
-class _DashboardForecastCard extends StatelessWidget {
-  const _DashboardForecastCard({required this.forecast});
+class _MonthlyPositionHero extends StatelessWidget {
+  const _MonthlyPositionHero({
+    required this.monthName,
+    required this.monthEnd,
+    required this.hasAccounts,
+    required this.currentBalance,
+    required this.forecast,
+  });
 
+  final String monthName;
+  final DateTime monthEnd;
+  final bool hasAccounts;
+  final Money currentBalance;
   final CashFlowForecast forecast;
 
   @override
   Widget build(BuildContext context) {
     final risk = forecast.hasNegativeBalanceRisk;
-    final foreground = risk ? AppColors.error : AppColors.primary;
-    return Material(
-      color: risk ? const Color(0xFFFFF1F0) : AppColors.surfaceLow,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        onTap: () => context.push('/forecast'),
-        borderRadius: BorderRadius.circular(18),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: risk
-                  ? AppColors.error.withValues(alpha: .3)
-                  : AppColors.outline,
+    return Semantics(
+      container: true,
+      label:
+          'Previsão de $monthName. Saldo no fim do mês ${forecast.closingBalance.format()}. Ainda entra ${forecast.expectedIncome.format()} e ainda sai ${forecast.expectedExpenses.format()}.',
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.heroDark, AppColors.primaryContainer],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.hero),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x243525CD),
+              blurRadius: 14,
+              offset: Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xs,
+              children: [
+                Text(
+                  'PREVISÃO PARA ${DateFormat('dd/MM', 'pt_BR').format(monthEnd)}',
+                  style: const TextStyle(
+                    color: AppColors.onPrimaryContainer,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: .8,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xxs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: .12),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        risk
+                            ? Icons.warning_amber_rounded
+                            : Icons.check_circle_outline_rounded,
+                        color: risk
+                            ? AppColors.errorContainer
+                            : AppColors.secondaryContainer,
+                        size: 15,
+                      ),
+                      const SizedBox(width: AppSpacing.xxs),
+                      Flexible(
+                        child: Text(
+                          risk ? 'Atenção' : 'No controle',
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: risk
+                                ? AppColors.errorContainer
+                                : AppColors.secondaryContainer,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                forecast.closingBalance.format(),
+                style: TextStyle(
+                  color: risk ? AppColors.errorContainer : Colors.white,
+                  fontSize: 36,
+                  fontWeight: FontWeight.w700,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: _HeroMetric(
+                    label: hasAccounts ? 'Saldo hoje' : 'Saldo inicial',
+                    value: currentBalance,
+                    icon: Icons.account_balance_wallet_outlined,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: _HeroMetric(
+                    label: 'Ainda entra',
+                    value: forecast.expectedIncome,
+                    icon: Icons.south_west_rounded,
+                    color: AppColors.secondaryContainer,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: _HeroMetric(
+                    label: 'Ainda sai',
+                    value: forecast.expectedExpenses,
+                    icon: Icons.north_east_rounded,
+                    color: AppColors.errorContainer,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(height: 1, color: Colors.white.withValues(alpha: .18)),
+            const SizedBox(height: AppSpacing.xs),
+            InkWell(
+              onTap: () => context.push('/forecast'),
+              borderRadius: BorderRadius.circular(AppRadius.control),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.timeline_rounded,
+                      size: 18,
+                      color: AppColors.onPrimaryContainer,
+                    ),
+                    SizedBox(width: AppSpacing.xs),
+                    Expanded(
+                      child: Text(
+                        'Ver previsão detalhada de caixa',
+                        style: TextStyle(
+                          color: AppColors.onPrimaryContainer,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.onPrimaryContainer,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroMetric extends StatelessWidget {
+  const _HeroMetric({
+    required this.label,
+    required this.value,
+    required this.icon,
+    this.color = AppColors.onPrimaryContainer,
+  });
+
+  final String label;
+  final Money value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(AppSpacing.xs),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: .1),
+      borderRadius: BorderRadius.circular(AppRadius.input),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: AppSpacing.xxs),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: color, fontSize: 10),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            value.format(),
+            style: TextStyle(
+              color: color,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      ],
+    ),
+  );
+}
+
+class _DashboardAlert extends StatelessWidget {
+  const _DashboardAlert({required this.hasAccounts, required this.forecast});
+
+  final bool hasAccounts;
+  final CashFlowForecast forecast;
+
+  @override
+  Widget build(BuildContext context) {
+    final negative = forecast.hasNegativeBalanceRisk;
+    final color = negative ? AppColors.error : AppColors.warning;
+    final title = !hasAccounts
+        ? 'Configure suas contas para usar o saldo real'
+        : negative
+        ? 'Saldo pode ficar negativo em ${DateFormat('dd/MM').format(forecast.lowestBalanceDate)}'
+        : '${forecast.overdueCount} ${forecast.overdueCount == 1 ? 'compromisso atrasado' : 'compromissos atrasados'}';
+    final route = !hasAccounts ? '/accounts' : '/forecast';
+    return AppSurfaceCard(
+      color: negative ? const Color(0xFFFFF1F0) : AppColors.warningContainer,
+      onTap: () => context.push(route),
+      child: Row(
+        children: [
+          Icon(
+            negative
+                ? Icons.warning_amber_rounded
+                : Icons.notification_important_outlined,
+            color: color,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(color: color, fontWeight: FontWeight.w700),
+            ),
+          ),
+          Icon(Icons.chevron_right_rounded, color: color),
+        ],
+      ),
+    );
+  }
+}
+
+class _UpcomingCommitments extends StatelessWidget {
+  const _UpcomingCommitments({required this.lines});
+
+  final List<CashForecastLine> lines;
+
+  @override
+  Widget build(BuildContext context) => AppSurfaceCard(
+    padding: EdgeInsets.zero,
+    child: lines.isEmpty
+        ? const Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: Row(
+              children: [
+                Icon(Icons.event_available_rounded, color: AppColors.secondary),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(child: Text('Nenhum compromisso pendente neste mês.')),
+              ],
+            ),
+          )
+        : Column(
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: foreground.withValues(alpha: .1),
-                    child: Icon(Icons.timeline_rounded, color: foreground),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Próximos 30 dias',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          risk
-                              ? 'Seu saldo pode ficar negativo'
-                              : '${forecast.lines.length} compromissos previstos',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: foreground, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right_rounded),
-                ],
+              for (final indexed in lines.indexed) ...[
+                _UpcomingRow(line: indexed.$2),
+                if (indexed.$1 < lines.length - 1) const Divider(height: 1),
+              ],
+            ],
+          ),
+  );
+}
+
+class _UpcomingRow extends StatelessWidget {
+  const _UpcomingRow({required this.line});
+
+  final CashForecastLine line;
+
+  @override
+  Widget build(BuildContext context) {
+    final event = line.event;
+    final income = event.isIncome;
+    final color = event.isOverdue
+        ? AppColors.error
+        : income
+        ? AppColors.secondary
+        : AppColors.primary;
+    final icon = switch (event.source) {
+      CashForecastSource.cashFlow =>
+        income ? Icons.south_west_rounded : Icons.receipt_long_outlined,
+      CashForecastSource.invoice => Icons.credit_card_outlined,
+      CashForecastSource.loanInstallment => Icons.account_balance_outlined,
+    };
+    final route = switch (event.source) {
+      CashForecastSource.cashFlow => '/cash-flow/${event.sourceId}',
+      CashForecastSource.invoice => '/invoice/${event.sourceId}',
+      CashForecastSource.loanInstallment => '/loans/${event.sourceId}',
+    };
+    return InkWell(
+      onTap: () => context.push(route),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 72),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: color.withValues(alpha: .11),
+                child: Icon(icon, color: color, size: 20),
               ),
-              const SizedBox(height: 16),
-              Text(
-                'SALDO AO FINAL',
-                style: TextStyle(
-                  color: foreground,
-                  fontSize: 11,
-                  letterSpacing: .7,
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      event.isOverdue
+                          ? 'Atrasado desde ${DateFormat('dd/MM').format(event.date)}'
+                          : '${income ? 'Entra' : 'Sai'} em ${DateFormat('dd/MM').format(event.date)}',
+                      style: TextStyle(color: color, fontSize: 12),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 3),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  forecast.closingBalance.format(),
-                  style: TextStyle(
-                    color: foreground,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              Row(
-                children: [
-                  Expanded(
-                    child: _DashboardForecastMetric(
-                      label: 'Ainda entra',
-                      value: forecast.expectedIncome,
-                      color: AppColors.secondary,
+              const SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '${income ? '+' : '−'} ${event.amount.format()}',
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                      fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _DashboardForecastMetric(
-                      label: 'Ainda sai',
-                      value: forecast.expectedExpenses,
-                      color: AppColors.error,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Menor saldo: ${forecast.lowestBalance.format()} em ${DateFormat('dd/MM', 'pt_BR').format(forecast.lowestBalanceDate)}',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: risk ? AppColors.error : AppColors.textMuted,
-                  fontSize: 12,
-                  fontWeight: risk ? FontWeight.w700 : FontWeight.normal,
                 ),
               ),
             ],
@@ -391,159 +509,81 @@ class _DashboardForecastCard extends StatelessWidget {
   }
 }
 
-class _DashboardForecastMetric extends StatelessWidget {
-  const _DashboardForecastMetric({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+class _BudgetOverview extends StatelessWidget {
+  const _BudgetOverview({required this.limit, required this.committed});
 
-  final String label;
-  final Money value;
-  final Color color;
+  final Money limit;
+  final Money committed;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(11),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(13),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: TextStyle(color: color, fontSize: 11)),
-        const SizedBox(height: 4),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            value.format(),
-            style: TextStyle(color: color, fontWeight: FontWeight.w700),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _PlanningOverview extends StatelessWidget {
-  const _PlanningOverview({
-    required this.hasAccounts,
-    required this.currentBalance,
-    required this.projectedBalance,
-    required this.hasBudgets,
-    required this.budgetAvailable,
-    required this.budgetUsage,
-  });
-
-  final bool hasAccounts;
-  final Money currentBalance;
-  final Money projectedBalance;
-  final bool hasBudgets;
-  final Money budgetAvailable;
-  final double budgetUsage;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: AppColors.outline),
-    ),
-    child: Column(
-      children: [
-        _PlanningRow(
-          icon: Icons.account_balance_wallet_outlined,
-          title: 'Saldo nas contas',
-          value: hasAccounts ? currentBalance.format() : 'Configurar',
-          subtitle: hasAccounts
-              ? 'Previsto: ${projectedBalance.format()}'
-              : 'Cadastre onde seu dinheiro fica',
-          onTap: () => context.push('/accounts'),
-        ),
-        const Divider(height: 1),
-        _PlanningRow(
-          icon: Icons.donut_small_rounded,
-          title: 'Orçamento do mês',
-          value: hasBudgets ? budgetAvailable.format() : 'Definir limites',
-          subtitle: hasBudgets
-              ? '${(budgetUsage * 100).round()}% comprometido'
-              : 'Acompanhe os gastos por categoria',
-          isError: hasBudgets && budgetAvailable.isNegative,
-          onTap: () => context.push('/budgets'),
-        ),
-      ],
-    ),
-  );
-}
-
-class _PlanningRow extends StatelessWidget {
-  const _PlanningRow({
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.subtitle,
-    required this.onTap,
-    this.isError = false,
-  });
-
-  final IconData icon;
-  final String title;
-  final String value;
-  final String subtitle;
-  final VoidCallback onTap;
-  final bool isError;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(18),
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
+  Widget build(BuildContext context) {
+    final remaining = limit - committed;
+    final usage = limit.cents <= 0 ? 0.0 : committed.cents / limit.cents;
+    final color = remaining.isNegative ? AppColors.error : AppColors.primary;
+    return AppSurfaceCard(
+      onTap: () => context.push('/budgets'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundColor: AppColors.surfaceContainer,
-            child: Icon(icon, color: AppColors.primary),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+          Row(
+            children: [
+              const Icon(Icons.donut_small_rounded, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Orçamento do mês',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      remaining.isNegative ? 'Excedido' : 'Disponível',
+                      style: TextStyle(color: color, fontSize: 12),
+                    ),
+                  ],
                 ),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: isError ? AppColors.error : AppColors.primary,
-                fontWeight: FontWeight.w700,
               ),
+              const Icon(Icons.chevron_right_rounded),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    remaining.format(),
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ),
+              Text(
+                '${(usage * 100).round()}% usado',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            child: LinearProgressIndicator(
+              value: usage.clamp(0, 1),
+              minHeight: 8,
+              color: color,
             ),
           ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right_rounded),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _RecentCashFlowList extends StatelessWidget {
@@ -572,7 +612,7 @@ class _CashFlowRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final income = entry.direction == CashFlowDirection.income;
+    final income = entry.isIncome;
     final cancelled = entry.status == CashFlowStatus.cancelled;
     final color = cancelled
         ? AppColors.textMuted
@@ -589,74 +629,67 @@ class _CashFlowRow extends StatelessWidget {
         : income
         ? entry.receivedAt ?? entry.occurredAt
         : entry.paidAt ?? entry.occurredAt;
-    final formattedDate = DateFormat(
-      "d 'de' MMM",
-      'pt_BR',
-    ).format(effectiveDate);
-    final signedValue = '${income ? '+' : '−'} ${entry.amount.format()}';
     return InkWell(
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppRadius.control),
       onTap: () => context.push('/cash-flow/${entry.id}'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 21,
-              backgroundColor: color.withValues(alpha: .1),
-              child: Icon(cashFlowKindIcon(entry.kind), size: 21, color: color),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          entry.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            decoration: cancelled
-                                ? TextDecoration.lineThrough
-                                : null,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            signedValue,
-                            style: TextStyle(
-                              color: color,
-                              fontWeight: FontWeight.w700,
-                              decoration: cancelled
-                                  ? TextDecoration.lineThrough
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    '$statusLabel • ${cashFlowKindLabel(entry.kind)} • $formattedDate',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 72),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: color.withValues(alpha: .1),
+                child: Icon(
+                  cashFlowKindIcon(entry.kind),
+                  size: 20,
+                  color: color,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        decoration: cancelled
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '$statusLabel • ${DateFormat("d 'de' MMM", 'pt_BR').format(effectiveDate)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '${income ? '+' : '−'} ${entry.amount.format()}',
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      decoration: cancelled ? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -673,21 +706,17 @@ class _ActivityTile extends StatelessWidget {
     final initial = activity.person.trim().isEmpty
         ? '?'
         : activity.person.characters.first.toUpperCase();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          backgroundColor: AppColors.surfaceContainer,
-          child: Text(initial),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceLow,
-              borderRadius: BorderRadius.circular(16),
-            ),
+    return AppSurfaceCard(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: AppColors.surfaceContainer,
+            child: Text(initial),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -696,13 +725,13 @@ class _ActivityTile extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${activity.person} ',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(text: activity.description),
                     ],
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   activity.whenLabel,
                   style: Theme.of(context).textTheme.bodySmall,
@@ -710,8 +739,8 @@ class _ActivityTile extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -726,10 +755,10 @@ class _MonthHeader extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Container(
-        width: 42,
-        height: 42,
+        width: 40,
+        height: 40,
         decoration: const BoxDecoration(
-          color: Color(0xFFE2DFFF),
+          color: AppColors.primaryFixed,
           shape: BoxShape.circle,
         ),
         child: const Icon(
@@ -737,768 +766,30 @@ class _MonthHeader extends StatelessWidget {
           color: AppColors.primary,
         ),
       ),
-      const SizedBox(width: 12),
+      const SizedBox(width: AppSpacing.sm),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Visão de $monthName',
+              'Seu mês em uma visão',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
-              '$year · somente o mês atual',
+              '$monthName de $year',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
       ),
-      Material(
-        color: AppColors.surfaceContainer,
-        shape: const StadiumBorder(),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: () => context.push('/analytics'),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.query_stats_rounded,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  'Análises',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      IconButton(
+        tooltip: 'Análises e relatórios',
+        onPressed: () => context.push('/analytics'),
+        icon: const Icon(Icons.query_stats_rounded),
       ),
     ],
   );
-}
-
-class _CashFlowOverview extends StatelessWidget {
-  const _CashFlowOverview({
-    required this.monthName,
-    required this.expectedIncome,
-    required this.receivedIncome,
-    required this.cardExpenses,
-    required this.loanExpenses,
-    required this.otherExpenses,
-    required this.balance,
-  });
-
-  final String monthName;
-  final Money expectedIncome;
-  final Money receivedIncome;
-  final Money cardExpenses;
-  final Money loanExpenses;
-  final Money otherExpenses;
-  final Money balance;
-
-  @override
-  Widget build(BuildContext context) {
-    final expenses = cardExpenses + loanExpenses + otherExpenses;
-    final positive = !balance.isNegative;
-    return Container(
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF302F69), AppColors.primaryContainer],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x243525CD),
-            blurRadius: 14,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Fluxo de caixa de ${monthName.toLowerCase()}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(color: Colors.white),
-                ),
-              ),
-              Material(
-                color: const Color(0x22FFFFFF),
-                shape: const StadiumBorder(),
-                child: InkWell(
-                  customBorder: const StadiumBorder(),
-                  onTap: () => context.push('/incomes'),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Text(
-                      'Ver receitas',
-                      style: TextStyle(color: Color(0xFFDAD7FF), fontSize: 12),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Text(
-            positive ? 'SALDO PREVISTO' : 'DÉFICIT PREVISTO',
-            style: const TextStyle(
-              color: Color(0xFFDAD7FF),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 1.1,
-            ),
-          ),
-          const SizedBox(height: 4),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              balance.format(),
-              style: TextStyle(
-                color: positive ? Colors.white : const Color(0xFFFFDAD6),
-                fontSize: 36,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          _FlowRow(
-            icon: Icons.south_west_rounded,
-            label: 'Receitas previstas',
-            value: expectedIncome,
-            color: const Color(0xFF99EFE5),
-          ),
-          const SizedBox(height: 9),
-          _FlowRow(
-            icon: Icons.credit_card_outlined,
-            label: 'Cartões',
-            value: cardExpenses,
-            color: const Color(0xFFDAD7FF),
-          ),
-          const SizedBox(height: 9),
-          _FlowRow(
-            icon: Icons.account_balance_outlined,
-            label: 'Empréstimos',
-            value: loanExpenses,
-            color: const Color(0xFFDAD7FF),
-          ),
-          if (!otherExpenses.isZero) ...[
-            const SizedBox(height: 9),
-            _FlowRow(
-              icon: Icons.payments_outlined,
-              label: 'Outras despesas',
-              value: otherExpenses,
-              color: const Color(0xFFDAD7FF),
-            ),
-          ],
-          const SizedBox(height: 14),
-          Container(height: 1, color: const Color(0x33FFFFFF)),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Recebido: ${receivedIncome.format()}',
-                  style: const TextStyle(
-                    color: Color(0xFF99EFE5),
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              Text(
-                'Despesas: ${expenses.format()}',
-                style: const TextStyle(color: Color(0xFFDAD7FF), fontSize: 12),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FlowRow extends StatelessWidget {
-  const _FlowRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final Money value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Icon(icon, color: color, size: 18),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Text(label, style: TextStyle(color: color, fontSize: 13)),
-      ),
-      Text(
-        value.format(),
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-        ),
-      ),
-    ],
-  );
-}
-
-class _MetricTile extends StatelessWidget {
-  const _MetricTile({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.helper,
-    this.isError = false,
-    this.isIncome = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final String helper;
-  final bool isError;
-  final bool isIncome;
-
-  @override
-  Widget build(BuildContext context) {
-    final background = isIncome
-        ? AppColors.secondaryContainer
-        : isError
-        ? const Color(0xFFFFDAD6)
-        : AppColors.surfaceLow;
-    final foreground = isIncome
-        ? AppColors.secondary
-        : isError
-        ? const Color(0xFF93000A)
-        : AppColors.text;
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: isError ? AppColors.error : AppColors.outline,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 18, color: foreground),
-              const SizedBox(width: 7),
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: foreground, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              value,
-              style: TextStyle(
-                color: foreground,
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          Text(
-            helper,
-            style: TextStyle(
-              color: foreground.withValues(alpha: .76),
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WeeklyCashFlowChart extends StatelessWidget {
-  const _WeeklyCashFlowChart({
-    required this.monthName,
-    required this.weeklyIncome,
-    required this.weeklyExpenses,
-  });
-
-  final String monthName;
-  final List<Money> weeklyIncome;
-  final List<Money> weeklyExpenses;
-
-  @override
-  Widget build(BuildContext context) {
-    final maxCents = [...weeklyIncome, ...weeklyExpenses].fold<int>(
-      0,
-      (maximum, value) => value.cents > maximum ? value.cents : maximum,
-    );
-    const labels = ['1–7', '8–14', '15–21', '22–28', '29+'];
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.outline),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0D0F172A),
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const CircleAvatar(
-                radius: 20,
-                backgroundColor: AppColors.secondaryContainer,
-                child: Icon(
-                  Icons.bar_chart_rounded,
-                  color: AppColors.secondary,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Entradas e saídas',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Movimentação prevista por semana de $monthName',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              _ChartLegend(color: AppColors.secondary, label: 'Receitas'),
-              SizedBox(width: 16),
-              _ChartLegend(color: AppColors.primary, label: 'Despesas'),
-            ],
-          ),
-          const SizedBox(height: 14),
-          SizedBox(
-            height: 132,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (var index = 0; index < weeklyIncome.length; index++)
-                  Expanded(
-                    child: _WeeklyBarPair(
-                      label: labels[index],
-                      income: weeklyIncome[index],
-                      expenses: weeklyExpenses[index],
-                      incomeFraction: maxCents == 0
-                          ? 0
-                          : weeklyIncome[index].cents / maxCents,
-                      expenseFraction: maxCents == 0
-                          ? 0
-                          : weeklyExpenses[index].cents / maxCents,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (maxCents == 0)
-            const Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text(
-                'Receitas, compras e empréstimos aparecerão aqui ao serem registrados.',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 12),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChartLegend extends StatelessWidget {
-  const _ChartLegend({required this.color, required this.label});
-
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        width: 9,
-        height: 9,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      ),
-      const SizedBox(width: 6),
-      Text(
-        label,
-        style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-      ),
-    ],
-  );
-}
-
-class _WeeklyBarPair extends StatelessWidget {
-  const _WeeklyBarPair({
-    required this.label,
-    required this.income,
-    required this.expenses,
-    required this.incomeFraction,
-    required this.expenseFraction,
-  });
-
-  final String label;
-  final Money income;
-  final Money expenses;
-  final double incomeFraction;
-  final double expenseFraction;
-
-  @override
-  Widget build(BuildContext context) => Tooltip(
-    message:
-        '$label · Receitas: ${income.format()} · Despesas: ${expenses.format()}',
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: FractionallySizedBox(
-                      heightFactor: incomeFraction == 0
-                          ? .035
-                          : (.15 + incomeFraction * .85),
-                      widthFactor: .68,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: AppColors.secondary,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(6),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 3),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: FractionallySizedBox(
-                      heightFactor: expenseFraction == 0
-                          ? .035
-                          : (.15 + expenseFraction * .85),
-                      widthFactor: .68,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(6),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 7),
-          Text(
-            label,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _LimitTile extends StatelessWidget {
-  const _LimitTile({
-    required this.label,
-    required this.value,
-    this.emphasized = false,
-  });
-
-  final String label;
-  final Money value;
-  final bool emphasized;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: emphasized ? AppColors.primaryContainer : AppColors.surfaceLow,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(
-        color: emphasized ? AppColors.primaryContainer : AppColors.outline,
-      ),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: emphasized ? const Color(0xFFDAD7FF) : AppColors.textMuted,
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 8),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            value.format(),
-            style: TextStyle(
-              color: emphasized ? Colors.white : AppColors.text,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _DueItemsCard extends StatelessWidget {
-  const _DueItemsCard({required this.items});
-
-  final List<_DashboardDueItem> items;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: AppColors.outline),
-    ),
-    child: items.isEmpty
-        ? const Padding(
-            padding: EdgeInsets.all(24),
-            child: Row(
-              children: [
-                Icon(Icons.event_available_rounded, color: AppColors.secondary),
-                SizedBox(width: 12),
-                Expanded(child: Text('Nenhum vencimento pendente neste mês.')),
-              ],
-            ),
-          )
-        : Column(
-            children: [
-              for (final entry in items.indexed) ...[
-                InkWell(
-                  borderRadius: entry.$1 == 0
-                      ? const BorderRadius.vertical(top: Radius.circular(18))
-                      : entry.$1 == items.length - 1
-                      ? const BorderRadius.vertical(bottom: Radius.circular(18))
-                      : BorderRadius.zero,
-                  onTap: () => context.push(entry.$2.route),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: entry.$2.isOverdue
-                              ? const Color(0xFFFFDAD6)
-                              : entry.$2.iconBackground,
-                          child: Icon(
-                            entry.$2.isOverdue
-                                ? Icons.warning_amber_rounded
-                                : entry.$2.icon,
-                            color: entry.$2.isOverdue
-                                ? const Color(0xFF93000A)
-                                : entry.$2.iconColor,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                entry.$2.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Text(
-                                entry.$2.subtitle,
-                                style: TextStyle(
-                                  color: entry.$2.isOverdue
-                                      ? AppColors.error
-                                      : AppColors.textMuted,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          entry.$2.amount.format(),
-                          style: TextStyle(
-                            color: entry.$2.isOverdue
-                                ? AppColors.error
-                                : AppColors.text,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (entry.$1 < items.length - 1) const Divider(height: 1),
-              ],
-            ],
-          ),
-  );
-}
-
-class _DashboardDueItem {
-  const _DashboardDueItem({
-    required this.title,
-    required this.subtitle,
-    required this.date,
-    required this.amount,
-    required this.route,
-    required this.icon,
-    required this.iconBackground,
-    required this.iconColor,
-    required this.isOverdue,
-  });
-
-  factory _DashboardDueItem.invoice(InvoiceSummary invoice) {
-    final overdue =
-        invoice.status == InvoiceStatus.overdue ||
-        invoice.dueDate.isBefore(DateUtils.dateOnly(DateTime.now()));
-    return _DashboardDueItem(
-      title: invoice.cardName.toLowerCase().startsWith('fatura')
-          ? invoice.cardName
-          : 'Fatura ${invoice.cardName}',
-      subtitle: overdue
-          ? 'Venceu em ${DateFormat('dd/MM').format(invoice.dueDate)}'
-          : 'Vence em ${DateFormat('dd/MM').format(invoice.dueDate)}',
-      date: invoice.dueDate,
-      amount: invoice.pending,
-      route: '/invoice/${invoice.id}',
-      icon: Icons.receipt_long_outlined,
-      iconBackground: const Color(0xFFE2DFFF),
-      iconColor: AppColors.primary,
-      isOverdue: overdue,
-    );
-  }
-
-  factory _DashboardDueItem.loan(LoanContract loan, DateTime date) {
-    final overdue = date.isBefore(DateUtils.dateOnly(DateTime.now()));
-    return _DashboardDueItem(
-      title: loan.description,
-      subtitle: overdue
-          ? 'Venceu em ${DateFormat('dd/MM').format(date)}'
-          : 'Vence em ${DateFormat('dd/MM').format(date)}',
-      date: date,
-      amount: loan.installmentAmount,
-      route: '/loans/${loan.id}',
-      icon: Icons.account_balance_outlined,
-      iconBackground: AppColors.surfaceContainer,
-      iconColor: AppColors.text,
-      isOverdue: overdue,
-    );
-  }
-
-  factory _DashboardDueItem.loanInstallment(
-    LoanInstallmentRecord installment,
-    LoanContract loan,
-  ) {
-    final overdue =
-        installment.status == LoanInstallmentStatus.overdue ||
-        installment.dueDate.isBefore(DateUtils.dateOnly(DateTime.now()));
-    return _DashboardDueItem(
-      title: loan.description,
-      subtitle: overdue
-          ? 'Venceu em ${DateFormat('dd/MM').format(installment.dueDate)}'
-          : 'Vence em ${DateFormat('dd/MM').format(installment.dueDate)}',
-      date: installment.dueDate,
-      amount: installment.pending,
-      route: '/loans/${loan.id}',
-      icon: Icons.account_balance_outlined,
-      iconBackground: AppColors.surfaceContainer,
-      iconColor: AppColors.text,
-      isOverdue: overdue,
-    );
-  }
-
-  final String title;
-  final String subtitle;
-  final DateTime date;
-  final Money amount;
-  final String route;
-  final IconData icon;
-  final Color iconBackground;
-  final Color iconColor;
-  final bool isOverdue;
 }
 
 Money _sumMoney(Iterable<Money> values) =>
     values.fold(const Money.zero(), (total, value) => total + value);
-
-bool _isSameMonth(DateTime first, DateTime second) =>
-    first.year == second.year && first.month == second.month;

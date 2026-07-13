@@ -26,7 +26,7 @@ class AnimatedBottomNavigationBar extends StatelessWidget {
        assert(selectedIndex >= 0),
        assert(selectedIndex < destinations.length);
 
-  static const _duration = Duration(milliseconds: 340);
+  static const _duration = AppMotion.standard;
   static const _curve = Curves.easeOutCubic;
 
   final int selectedIndex;
@@ -36,6 +36,14 @@ class AnimatedBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scaledLabelSize = MediaQuery.textScalerOf(context).scale(12);
+    final extraHeight =
+        ((scaledLabelSize - 12) * 2 + (scaledLabelSize > 12 ? 2 : 0)).clamp(
+          0.0,
+          30.0,
+        );
+    final navigationHeight = 84 + extraHeight;
+    final itemHeight = 70 + extraHeight;
     final backgroundColor =
         theme.navigationBarTheme.backgroundColor ??
         theme.colorScheme.surfaceContainer;
@@ -48,13 +56,11 @@ class AnimatedBottomNavigationBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Container(
-          height: 84,
+          height: navigationHeight,
           padding: const EdgeInsets.fromLTRB(8, 7, 8, 7),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(
-                color: AppColors.outline.withValues(alpha: .45),
-              ),
+              top: BorderSide(color: AppColors.outline.withValues(alpha: .45)),
             ),
           ),
           child: LayoutBuilder(
@@ -71,7 +77,7 @@ class AnimatedBottomNavigationBar extends StatelessWidget {
                     left: itemWidth * selectedIndex + 4,
                     top: 0,
                     width: indicatorWidth,
-                    height: 70,
+                    height: itemHeight,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: indicatorColor,
@@ -127,10 +133,9 @@ class _AnimatedBottomNavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor = selected
-        ? AppColors.primary
-        : AppColors.textMuted;
+    final foregroundColor = selected ? AppColors.primary : AppColors.textMuted;
 
+    final isPrimaryAction = destination.label == 'Novo';
     return Semantics(
       button: true,
       selected: selected,
@@ -141,69 +146,113 @@ class _AnimatedBottomNavigationItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(22),
           child: SizedBox.expand(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedSlide(
-                  duration: duration,
-                  curve: curve,
-                  offset: selected ? const Offset(0, -.08) : Offset.zero,
-                  child: AnimatedScale(
-                    duration: duration,
-                    curve: curve,
-                    scale: selected ? 1.13 : 1,
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 220),
-                      switchInCurve: Curves.easeOutBack,
-                      switchOutCurve: Curves.easeIn,
-                      transitionBuilder: (child, animation) =>
-                          ScaleTransition(scale: animation, child: child),
-                      child: Icon(
-                        selected
-                            ? destination.selectedIcon
-                            : destination.icon,
-                        key: ValueKey(selected),
-                        size: destination.iconSize,
-                        color: foregroundColor,
+            child: isPrimaryAction
+                ? _PrimaryNavigationAction(destination: destination)
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedSlide(
+                        duration: duration,
+                        curve: curve,
+                        offset: selected ? const Offset(0, -.08) : Offset.zero,
+                        child: AnimatedScale(
+                          duration: duration,
+                          curve: curve,
+                          scale: selected ? 1.13 : 1,
+                          child: AnimatedSwitcher(
+                            duration: AppMotion.quick,
+                            switchInCurve: Curves.easeOutBack,
+                            switchOutCurve: Curves.easeIn,
+                            transitionBuilder: (child, animation) =>
+                                ScaleTransition(scale: animation, child: child),
+                            child: Icon(
+                              selected
+                                  ? destination.selectedIcon
+                                  : destination.icon,
+                              key: ValueKey(selected),
+                              size: destination.iconSize,
+                              color: foregroundColor,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 5),
+                      AnimatedDefaultTextStyle(
+                        duration: duration,
+                        curve: curve,
+                        style: TextStyle(
+                          color: foregroundColor,
+                          fontSize: selected ? 12.5 : 11.5,
+                          height: 1,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            destination.label,
+                            maxLines: 1,
+                            softWrap: false,
+                          ),
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: duration,
+                        curve: curve,
+                        width: selected ? 18 : 0,
+                        height: 3,
+                        margin: const EdgeInsets.only(top: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 5),
-                AnimatedDefaultTextStyle(
-                  duration: duration,
-                  curve: curve,
-                  style: TextStyle(
-                    color: foregroundColor,
-                    fontSize: selected ? 12.5 : 11.5,
-                    height: 1,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      destination.label,
-                      maxLines: 1,
-                      softWrap: false,
-                    ),
-                  ),
-                ),
-                AnimatedContainer(
-                  duration: duration,
-                  curve: curve,
-                  width: selected ? 18 : 0,
-                  height: 3,
-                  margin: const EdgeInsets.only(top: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(99),
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
+}
+
+class _PrimaryNavigationAction extends StatelessWidget {
+  const _PrimaryNavigationAction({required this.destination});
+
+  final AppBottomNavigationDestination destination;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: AppColors.primaryContainer,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x333525CD),
+              blurRadius: 12,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(destination.selectedIcon, color: Colors.white, size: 29),
+      ),
+      const SizedBox(height: 2),
+      const Text(
+        'Novo',
+        style: TextStyle(
+          color: AppColors.primary,
+          fontSize: 11,
+          height: 1,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    ],
+  );
 }

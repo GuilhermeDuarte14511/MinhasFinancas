@@ -39,6 +39,35 @@ class AppContent extends StatelessWidget {
   }
 }
 
+class AppSurfaceCard extends StatelessWidget {
+  const AppSurfaceCard({
+    required this.child,
+    this.padding = const EdgeInsets.all(AppSpacing.md),
+    this.color = Colors.white,
+    this.onTap,
+    super.key,
+  });
+
+  final Widget child;
+  final EdgeInsets padding;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: color,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadius.card),
+      side: const BorderSide(color: AppColors.outline),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(padding: padding, child: child),
+    ),
+  );
+}
+
 class AnimatedPageEntry extends StatefulWidget {
   const AnimatedPageEntry({
     required this.child,

@@ -12,6 +12,13 @@ abstract final class AppColors {
   static const text = Color(0xFF1B1B24);
   static const textMuted = Color(0xFF5F5D6D);
   static const error = Color(0xFFBA1A1A);
+  static const errorContainer = Color(0xFFFFDAD6);
+  static const onErrorContainer = Color(0xFF93000A);
+  static const warning = Color(0xFF8A5A00);
+  static const warningContainer = Color(0xFFFFE4A8);
+  static const primaryFixed = Color(0xFFE2DFFF);
+  static const onPrimaryContainer = Color(0xFFDAD7FF);
+  static const heroDark = Color(0xFF302F69);
 }
 
 abstract final class AppSpacing {
@@ -23,6 +30,20 @@ abstract final class AppSpacing {
   static const xl = 32.0;
   static const section = 40.0;
   static const page = 48.0;
+}
+
+abstract final class AppRadius {
+  static const input = 12.0;
+  static const control = 14.0;
+  static const card = 18.0;
+  static const hero = 20.0;
+  static const pill = 999.0;
+}
+
+abstract final class AppMotion {
+  static const quick = Duration(milliseconds: 180);
+  static const standard = Duration(milliseconds: 280);
+  static const emphasized = Duration(milliseconds: 420);
 }
 
 abstract final class AppTheme {
@@ -79,6 +100,12 @@ abstract final class AppTheme {
           height: 1.4,
           color: AppColors.textMuted,
         ),
+        labelLarge: const TextStyle(
+          fontSize: 14,
+          height: 1.4,
+          fontWeight: FontWeight.w600,
+          color: AppColors.text,
+        ),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.surface,
@@ -92,7 +119,7 @@ abstract final class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.card),
           side: const BorderSide(color: AppColors.outline),
         ),
       ),
@@ -104,15 +131,15 @@ abstract final class AppTheme {
           vertical: 18,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.input),
           borderSide: const BorderSide(color: AppColors.outline),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.input),
           borderSide: const BorderSide(color: AppColors.outline),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.input),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
@@ -122,7 +149,7 @@ abstract final class AppTheme {
           backgroundColor: AppColors.primaryContainer,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.control),
           ),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
@@ -132,7 +159,7 @@ abstract final class AppTheme {
           minimumSize: const Size.fromHeight(52),
           side: const BorderSide(color: AppColors.outline),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.control),
           ),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
@@ -143,7 +170,27 @@ abstract final class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.input),
+        ),
+      ),
+      chipTheme: base.chipTheme.copyWith(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          side: const BorderSide(color: AppColors.outline),
+        ),
+        selectedColor: AppColors.primaryFixed,
+        checkmarkColor: AppColors.primary,
+        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        showDragHandle: true,
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.surfaceContainer,
       ),
     );
   }
