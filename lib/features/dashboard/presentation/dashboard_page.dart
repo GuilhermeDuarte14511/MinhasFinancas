@@ -10,6 +10,7 @@ import '../../finance/application/finance_controller.dart';
 import '../../finance/domain/cash_flow.dart';
 import '../../finance/domain/cash_flow_forecast.dart';
 import '../../finance/domain/finance_models.dart';
+import '../../finance/domain/monthly_cash_flow_projection.dart';
 import '../../finance/presentation/cash_flow_labels.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -26,7 +27,7 @@ class DashboardPage extends ConsumerWidget {
       referenceDate: today,
       horizonDays: monthEnd.difference(today).inDays,
     );
-    final position = finance.financialPosition(today);
+    final monthProjection = finance.monthlyCashFlowProjection(month);
     final budgets = finance.budgetProgress(month);
     final budgetLimit = _sumMoney(budgets.map((item) => item.budget.limit));
     final budgetCommitted = _sumMoney(budgets.map((item) => item.committed));
@@ -56,8 +57,7 @@ class DashboardPage extends ConsumerWidget {
                 child: _MonthlyPositionHero(
                   monthName: monthName,
                   monthEnd: monthEnd,
-                  hasAccounts: finance.accounts.isNotEmpty,
-                  currentBalance: position.currentBalance,
+                  monthProjection: monthProjection,
                   forecast: forecast,
                 ),
               ),
@@ -122,24 +122,28 @@ class _MonthlyPositionHero extends StatelessWidget {
   const _MonthlyPositionHero({
     required this.monthName,
     required this.monthEnd,
-    required this.hasAccounts,
-    required this.currentBalance,
+    required this.monthProjection,
     required this.forecast,
   });
 
   final String monthName;
   final DateTime monthEnd;
-  final bool hasAccounts;
-  final Money currentBalance;
+  final MonthlyCashFlowProjection monthProjection;
   final CashFlowForecast forecast;
 
   @override
   Widget build(BuildContext context) {
-    final risk = forecast.hasNegativeBalanceRisk;
+    final negativeResult = monthProjection.result.isNegative;
+    final risk = negativeResult || forecast.hasNegativeBalanceRisk;
+    final statusLabel = negativeResult
+        ? 'Mês negativo'
+        : forecast.hasNegativeBalanceRisk
+        ? 'Atenção ao saldo'
+        : 'No controle';
     return Semantics(
       container: true,
       label:
-          'Previsão de $monthName. Saldo no fim do mês ${forecast.closingBalance.format()}. Ainda entra ${forecast.expectedIncome.format()} e ainda sai ${forecast.expectedExpenses.format()}.',
+          'Resultado previsto de $monthName ${monthProjection.result.format()}. Entradas ${monthProjection.income.format()}, saídas ${monthProjection.expenses.format()} e saldo projetado em ${DateFormat('dd/MM', 'pt_BR').format(monthEnd)} ${forecast.closingBalance.format()}.',
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
@@ -167,7 +171,7 @@ class _MonthlyPositionHero extends StatelessWidget {
               runSpacing: AppSpacing.xs,
               children: [
                 Text(
-                  'PREVISÃO PARA ${DateFormat('dd/MM', 'pt_BR').format(monthEnd)}',
+                  'RESULTADO PREVISTO DE ${monthName.toUpperCase()}',
                   style: const TextStyle(
                     color: AppColors.onPrimaryContainer,
                     fontSize: 11,
@@ -199,7 +203,7 @@ class _MonthlyPositionHero extends StatelessWidget {
                       const SizedBox(width: AppSpacing.xxs),
                       Flexible(
                         child: Text(
-                          risk ? 'Atenção' : 'No controle',
+                          statusLabel,
                           maxLines: 2,
                           style: TextStyle(
                             color: risk
@@ -220,9 +224,12 @@ class _MonthlyPositionHero extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: Text(
-                forecast.closingBalance.format(),
+                key: const Key('monthly-result-value'),
+                monthProjection.result.format(),
                 style: TextStyle(
-                  color: risk ? AppColors.errorContainer : Colors.white,
+                  color: negativeResult
+                      ? AppColors.errorContainer
+                      : Colors.white,
                   fontSize: 36,
                   fontWeight: FontWeight.w700,
                   fontFeatures: const [FontFeature.tabularFigures()],
@@ -234,16 +241,8 @@ class _MonthlyPositionHero extends StatelessWidget {
               children: [
                 Expanded(
                   child: _HeroMetric(
-                    label: hasAccounts ? 'Saldo hoje' : 'Saldo inicial',
-                    value: currentBalance,
-                    icon: Icons.account_balance_wallet_outlined,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Expanded(
-                  child: _HeroMetric(
-                    label: 'Ainda entra',
-                    value: forecast.expectedIncome,
+                    label: 'Entradas do mês',
+                    value: monthProjection.income,
                     icon: Icons.south_west_rounded,
                     color: AppColors.secondaryContainer,
                   ),
@@ -251,10 +250,19 @@ class _MonthlyPositionHero extends StatelessWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: _HeroMetric(
-                    label: 'Ainda sai',
-                    value: forecast.expectedExpenses,
+                    label: 'Saídas do mês',
+                    value: monthProjection.expenses,
                     icon: Icons.north_east_rounded,
                     color: AppColors.errorContainer,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: _HeroMetric(
+                    label:
+                        'Saldo em ${DateFormat('dd/MM', 'pt_BR').format(monthEnd)}',
+                    value: forecast.closingBalance,
+                    icon: Icons.account_balance_wallet_outlined,
                   ),
                 ),
               ],

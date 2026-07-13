@@ -7,6 +7,7 @@ import '../domain/cash_flow.dart';
 import '../domain/cash_flow_forecast.dart';
 import '../domain/finance_models.dart';
 import '../domain/financial_planning.dart';
+import '../domain/monthly_cash_flow_projection.dart';
 import 'finance_repository.dart';
 
 final financeRepositoryProvider = Provider<FinanceRepository>((ref) {
@@ -115,6 +116,16 @@ final class FinanceState {
       throughDate: reference.add(Duration(days: horizonDays)),
     );
   }
+
+  MonthlyCashFlowProjection monthlyCashFlowProjection([
+    DateTime? referenceMonth,
+  ]) => const MonthlyCashFlowProjectionCalculator().calculate(
+    month: referenceMonth ?? DateTime.now(),
+    entries: cashFlowEntries,
+    invoices: invoices,
+    loans: loans,
+    loanInstallments: loanInstallments,
+  );
 
   Money get totalLimit =>
       cards.fold(const Money.zero(), (total, card) => total + card.limit);

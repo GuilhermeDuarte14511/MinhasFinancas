@@ -120,6 +120,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Seu mês em uma visão'), findsOneWidget);
+    expect(find.textContaining('RESULTADO PREVISTO DE'), findsOneWidget);
+    final resultValue = find.byKey(const Key('monthly-result-value'));
+    expect(resultValue, findsOneWidget);
+    expect(
+      tester.widget<Text>(resultValue).data,
+      Money.fromCents(350000).format(),
+    );
+    expect(find.text(Money.fromCents(450000).format()), findsOneWidget);
+    expect(find.text('Entradas do mês'), findsOneWidget);
+    expect(find.text('Saídas do mês'), findsOneWidget);
     expect(find.text('Próximos compromissos'), findsOneWidget);
     expect(find.text('Ver análises e relatórios'), findsOneWidget);
     expect(find.text('Movimentações recentes'), findsOneWidget);
