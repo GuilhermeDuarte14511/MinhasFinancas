@@ -14,8 +14,10 @@ import 'package:nossa_grana/features/finance/domain/financial_planning.dart';
 import 'package:nossa_grana/features/finance/presentation/accounts_page.dart';
 import 'package:nossa_grana/features/finance/presentation/add_card_page.dart';
 import 'package:nossa_grana/features/finance/presentation/add_cash_flow_entry_page.dart';
+import 'package:nossa_grana/features/finance/presentation/agenda_page.dart';
 import 'package:nossa_grana/features/finance/presentation/cards_page.dart';
 import 'package:nossa_grana/features/finance/presentation/budgets_page.dart';
+import 'package:nossa_grana/features/finance/presentation/cash_flow_forecast_page.dart';
 import 'package:nossa_grana/features/finance/presentation/members_page.dart';
 
 void main() {
@@ -178,6 +180,37 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Limites por categoria'), findsOneWidget);
     expect(find.text('Mercado'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    container.dispose();
+  });
+
+  testWidgets('forecast and agenda projection remain readable at 320 px', (
+    tester,
+  ) async {
+    useCompactViewport(tester);
+    final container = await configuredContainer();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: CashFlowForecastPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Previsão de caixa'), findsOneWidget);
+    expect(find.text('30 dias'), findsOneWidget);
+    expect(find.text('Linha do tempo financeira'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: Scaffold(body: AgendaPage())),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Projeção até o fim do mês'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();

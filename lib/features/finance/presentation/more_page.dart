@@ -25,6 +25,12 @@ class MorePage extends ConsumerWidget {
         route: '/analytics',
       ),
       const _MenuItem(
+        icon: Icons.timeline_rounded,
+        title: 'Previsão de caixa',
+        subtitle: 'Veja quanto entra, sai e sobra em 30, 60 ou 90 dias',
+        route: '/forecast',
+      ),
+      const _MenuItem(
         icon: Icons.savings_outlined,
         title: 'Receitas',
         subtitle: 'Acompanhe entradas previstas e recebidas',

@@ -8,6 +8,7 @@ import '../../../app/widgets/app_widgets.dart';
 import '../../../core/money/money.dart';
 import '../application/finance_controller.dart';
 import '../domain/cash_flow.dart';
+import '../domain/cash_flow_forecast.dart';
 import '../domain/finance_models.dart';
 import '../domain/loan_agenda_entry.dart';
 import 'cash_flow_action_dialogs.dart';
@@ -15,7 +16,7 @@ import 'cash_flow_labels.dart';
 
 enum _AgendaFilter { all, income, expenses, invoices, loans }
 
-enum _AgendaAction { markAsReceived, delete }
+enum _AgendaAction { markAsCompleted, delete }
 
 class AgendaPage extends ConsumerStatefulWidget {
   const AgendaPage({super.key});
@@ -44,17 +45,26 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
     });
   }
 
-  Future<void> _markAsReceived(CashFlowEntry entry) async {
+  Future<void> _markAsCompleted(CashFlowEntry entry) async {
     try {
       await ref
           .read(financeControllerProvider.notifier)
           .updateCashFlowStatus(entry.id, CashFlowStatus.confirmed);
       if (mounted) {
-        showSuccessMessage(context, 'Entrada marcada como recebida.');
+        showSuccessMessage(
+          context,
+          entry.isIncome
+              ? 'Entrada marcada como recebida.'
+              : 'Despesa marcada como paga.',
+        );
       }
     } catch (_) {
       if (mounted) {
-        await _showActionError('Não foi possível confirmar a entrada.');
+        await _showActionError(
+          entry.isIncome
+              ? 'Não foi possível confirmar a entrada.'
+              : 'Não foi possível confirmar a despesa.',
+        );
       }
     }
   }
@@ -125,6 +135,19 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
   @override
   Widget build(BuildContext context) {
     final finance = ref.watch(financeControllerProvider);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final monthEnd = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+    final forecast = monthEnd.isBefore(today)
+        ? null
+        : finance.cashFlowForecast(
+            referenceDate: today,
+            horizonDays: monthEnd.difference(today).inDays,
+          );
+    final balanceAfterByEvent = {
+      if (forecast != null)
+        for (final line in forecast.lines) line.event.id: line.balanceAfter,
+    };
     final loanEntries = loanAgendaEntriesForMonth(
       loans: finance.loans,
       installments: finance.loanInstallments,
@@ -174,6 +197,14 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
                 onPrevious: () => _changeMonth(-1),
                 onNext: () => _changeMonth(1),
               ),
+              if (forecast != null) ...[
+                const SizedBox(height: 14),
+                _AgendaProjectionSummary(
+                  forecast: forecast,
+                  selectedMonth: _selectedMonth,
+                  hasAccounts: finance.accounts.isNotEmpty,
+                ),
+              ],
               const SizedBox(height: 18),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -201,14 +232,13 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
                   _AgendaCard(
                     item: item,
                     canEdit: finance.canEdit,
+                    balanceAfter: balanceAfterByEvent[item.forecastEventId],
                     onDelete: item.cashFlowEntry == null
                         ? null
                         : () => _deleteEntry(item.cashFlowEntry!),
-                    onMarkAsReceived:
-                        item.cashFlowEntry?.isIncome == true &&
-                            item.cashFlowEntry?.status ==
-                                CashFlowStatus.scheduled
-                        ? () => _markAsReceived(item.cashFlowEntry!)
+                    onMarkAsCompleted:
+                        item.cashFlowEntry?.status == CashFlowStatus.scheduled
+                        ? () => _markAsCompleted(item.cashFlowEntry!)
                         : null,
                   ),
                   const SizedBox(height: 12),
@@ -282,6 +312,172 @@ class _MonthSelector extends StatelessWidget {
   );
 }
 
+class _AgendaProjectionSummary extends StatelessWidget {
+  const _AgendaProjectionSummary({
+    required this.forecast,
+    required this.selectedMonth,
+    required this.hasAccounts,
+  });
+
+  final CashFlowForecast forecast;
+  final DateTime selectedMonth;
+  final bool hasAccounts;
+
+  @override
+  Widget build(BuildContext context) {
+    final monthStart = DateTime(selectedMonth.year, selectedMonth.month);
+    final monthEnd = DateTime(selectedMonth.year, selectedMonth.month + 1, 0);
+    final monthLines = forecast.lines
+        .where((line) => _isSameMonth(line.projectedAt, selectedMonth))
+        .toList();
+    var income = const Money.zero();
+    var expenses = const Money.zero();
+    var closing = forecast.openingBalance;
+    var balanceAtMonthStart = forecast.openingBalance;
+    for (final line in forecast.lines) {
+      if (line.projectedAt.isBefore(monthStart)) {
+        balanceAtMonthStart = line.balanceAfter;
+      }
+    }
+    var lowest = balanceAtMonthStart;
+    var lowestDate = monthStart;
+    for (final line in forecast.lines) {
+      if (!line.projectedAt.isAfter(monthEnd)) closing = line.balanceAfter;
+      if (line.projectedAt.isBefore(monthStart) ||
+          line.projectedAt.isAfter(monthEnd)) {
+        continue;
+      }
+      if (line.event.isIncome) {
+        income += line.event.amount;
+      } else {
+        expenses += line.event.amount;
+      }
+      if (line.balanceAfter.cents < lowest.cents) {
+        lowest = line.balanceAfter;
+        lowestDate = line.projectedAt;
+      }
+    }
+    final risk = lowest.isNegative;
+    return Material(
+      color: risk ? const Color(0xFFFFF1F0) : AppColors.surfaceLow,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: () => context.push('/forecast'),
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: risk
+                  ? AppColors.error.withValues(alpha: .3)
+                  : AppColors.outline,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    risk ? Icons.warning_amber_rounded : Icons.timeline_rounded,
+                    color: risk ? AppColors.error : AppColors.primary,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      'Projeção até o fim do mês',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded),
+                ],
+              ),
+              const SizedBox(height: 13),
+              Row(
+                children: [
+                  Expanded(
+                    child: _AgendaProjectionMetric(
+                      label: 'Ainda entra',
+                      value: income,
+                      color: AppColors.secondary,
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: _AgendaProjectionMetric(
+                      label: 'Ainda sai',
+                      value: expenses,
+                      color: AppColors.error,
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: _AgendaProjectionMetric(
+                      label: 'Saldo final',
+                      value: closing,
+                      color: closing.isNegative
+                          ? AppColors.error
+                          : AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                !hasAccounts
+                    ? 'Cadastre uma conta para usar o saldo real como ponto de partida.'
+                    : risk
+                    ? 'Atenção: saldo de ${lowest.format()} previsto para ${DateFormat('dd/MM', 'pt_BR').format(lowestDate)}.'
+                    : '${monthLines.length} ${monthLines.length == 1 ? 'compromisso pendente' : 'compromissos pendentes'} neste mês.',
+                style: TextStyle(
+                  color: risk ? AppColors.error : AppColors.textMuted,
+                  fontSize: 12,
+                  fontWeight: risk ? FontWeight.w700 : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AgendaProjectionMetric extends StatelessWidget {
+  const _AgendaProjectionMetric({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final Money value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: color, fontSize: 10),
+      ),
+      const SizedBox(height: 3),
+      FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          value.format(),
+          style: TextStyle(color: color, fontWeight: FontWeight.w700),
+        ),
+      ),
+    ],
+  );
+}
+
 class _FilterChip extends StatelessWidget {
   const _FilterChip({
     required this.label,
@@ -305,14 +501,16 @@ class _AgendaCard extends StatelessWidget {
   const _AgendaCard({
     required this.item,
     required this.canEdit,
+    this.balanceAfter,
     this.onDelete,
-    this.onMarkAsReceived,
+    this.onMarkAsCompleted,
   });
 
   final _AgendaItem item;
   final bool canEdit;
+  final Money? balanceAfter;
   final VoidCallback? onDelete;
-  final VoidCallback? onMarkAsReceived;
+  final VoidCallback? onMarkAsCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -355,13 +553,14 @@ class _AgendaCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (canEdit && (onDelete != null || onMarkAsReceived != null))
+                  if (canEdit &&
+                      (onDelete != null || onMarkAsCompleted != null))
                     PopupMenuButton<_AgendaAction>(
                       tooltip: 'Ações do lançamento',
                       onSelected: (action) {
                         switch (action) {
-                          case _AgendaAction.markAsReceived:
-                            onMarkAsReceived?.call();
+                          case _AgendaAction.markAsCompleted:
+                            onMarkAsCompleted?.call();
                             break;
                           case _AgendaAction.delete:
                             onDelete?.call();
@@ -369,13 +568,19 @@ class _AgendaCard extends StatelessWidget {
                         }
                       },
                       itemBuilder: (context) => [
-                        if (onMarkAsReceived != null)
-                          const PopupMenuItem(
-                            value: _AgendaAction.markAsReceived,
+                        if (onMarkAsCompleted != null)
+                          PopupMenuItem(
+                            value: _AgendaAction.markAsCompleted,
                             child: ListTile(
                               contentPadding: EdgeInsets.zero,
-                              leading: Icon(Icons.check_circle_outline_rounded),
-                              title: Text('Marcar como recebida'),
+                              leading: const Icon(
+                                Icons.check_circle_outline_rounded,
+                              ),
+                              title: Text(
+                                item.isIncome
+                                    ? 'Marcar como recebida'
+                                    : 'Marcar como paga',
+                              ),
                             ),
                           ),
                         if (onDelete != null)
@@ -421,21 +626,79 @@ class _AgendaCard extends StatelessWidget {
                     color: item.amountColor,
                   ),
                   const SizedBox(width: 7),
-                  Text(
-                    item.isIncome ? 'Entrada' : 'Saída',
-                    style: TextStyle(color: item.amountColor),
+                  Expanded(
+                    child: Text(
+                      item.isIncome ? 'Entrada' : 'Saída',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: item.amountColor),
+                    ),
                   ),
-                  const Spacer(),
-                  Text(
-                    item.amount.format(),
-                    style: TextStyle(
-                      color: item.amountColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        item.amount.format(),
+                        style: TextStyle(
+                          color: item.amountColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
+              if (balanceAfter != null) ...[
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: balanceAfter!.isNegative
+                        ? const Color(0xFFFFDAD6)
+                        : AppColors.surfaceLow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.account_balance_wallet_outlined,
+                        size: 16,
+                        color: balanceAfter!.isNegative
+                            ? AppColors.error
+                            : AppColors.textMuted,
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          'Saldo previsto após este lançamento',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            balanceAfter!.format(),
+                            style: TextStyle(
+                              color: balanceAfter!.isNegative
+                                  ? AppColors.error
+                                  : AppColors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -525,6 +788,7 @@ class _AgendaItem {
     this.route,
     this.relatedCard,
     this.cashFlowEntry,
+    this.forecastEventId,
   });
 
   factory _AgendaItem.invoice(InvoiceSummary invoice) => _AgendaItem(
@@ -534,13 +798,14 @@ class _AgendaItem {
         'Vence ${DateFormat("d 'de' MMMM", 'pt_BR').format(invoice.dueDate)}',
     type: 'Fatura',
     amount: invoice.pending,
-    status: _invoiceStatusLabel(invoice.status),
-    statusColor: _invoiceStatusColor(invoice.status),
+    status: _invoiceStatusLabel(invoice.status, invoice.dueDate),
+    statusColor: _invoiceStatusColor(invoice.status, invoice.dueDate),
     route: '/invoice/${invoice.id}',
     relatedCard: invoice.cardName,
     backgroundColor: AppColors.surfaceContainer,
     foregroundColor: AppColors.primary,
     isIncome: false,
+    forecastEventId: 'invoice:${invoice.id}',
   );
 
   factory _AgendaItem.loan(LoanAgendaEntry entry) => _AgendaItem(
@@ -550,12 +815,19 @@ class _AgendaItem {
         '${entry.loan.lender} • Parcela ${entry.installment.number}/${entry.loan.installmentCount}',
     type: 'Empréstimo',
     amount: entry.installment.total,
-    status: _loanInstallmentStatusLabel(entry.installment.status),
-    statusColor: _loanInstallmentStatusColor(entry.installment.status),
+    status: _loanInstallmentStatusLabel(
+      entry.installment.status,
+      entry.installment.dueDate,
+    ),
+    statusColor: _loanInstallmentStatusColor(
+      entry.installment.status,
+      entry.installment.dueDate,
+    ),
     route: '/loans/${entry.loan.id}',
     backgroundColor: AppColors.secondaryContainer,
     foregroundColor: AppColors.secondary,
     isIncome: false,
+    forecastEventId: 'loan-installment:${entry.installment.id}',
   );
 
   factory _AgendaItem.cashFlow(CashFlowEntry entry, {String? relatedCard}) =>
@@ -566,7 +838,7 @@ class _AgendaItem {
         type: cashFlowKindLabel(entry.kind),
         amount: entry.amount,
         status: _cashFlowStatusLabel(entry),
-        statusColor: _cashFlowStatusColor(entry.status),
+        statusColor: _cashFlowStatusColor(entry),
         route: '/cash-flow/${entry.id}',
         relatedCard: relatedCard,
         backgroundColor: entry.isIncome
@@ -577,6 +849,7 @@ class _AgendaItem {
             : AppColors.primary,
         isIncome: entry.isIncome,
         cashFlowEntry: entry,
+        forecastEventId: 'cash-flow:${entry.id}',
       );
 
   final DateTime date;
@@ -592,6 +865,7 @@ class _AgendaItem {
   final Color foregroundColor;
   final bool isIncome;
   final CashFlowEntry? cashFlowEntry;
+  final String? forecastEventId;
 
   Color get amountColor => isIncome ? AppColors.secondary : AppColors.error;
 }
@@ -624,45 +898,96 @@ String _filterLabel(_AgendaFilter filter) => switch (filter) {
   _AgendaFilter.loans => 'Empréstimos',
 };
 
-String _invoiceStatusLabel(InvoiceStatus status) => switch (status) {
-  InvoiceStatus.open || InvoiceStatus.closed => 'Pendente',
-  InvoiceStatus.partiallyPaid => 'Parcialmente paga',
-  InvoiceStatus.paid => 'Paga',
-  InvoiceStatus.overdue => 'Vencida',
-  InvoiceStatus.cancelled => 'Cancelada',
-};
+String _invoiceStatusLabel(InvoiceStatus status, [DateTime? dueDate]) {
+  if (dueDate != null &&
+      dueDate.isBefore(_today()) &&
+      (status == InvoiceStatus.open ||
+          status == InvoiceStatus.closed ||
+          status == InvoiceStatus.partiallyPaid)) {
+    return 'Vencida';
+  }
+  return switch (status) {
+    InvoiceStatus.open || InvoiceStatus.closed => 'Pendente',
+    InvoiceStatus.partiallyPaid => 'Parcialmente paga',
+    InvoiceStatus.paid => 'Paga',
+    InvoiceStatus.overdue => 'Vencida',
+    InvoiceStatus.cancelled => 'Cancelada',
+  };
+}
 
-Color _invoiceStatusColor(InvoiceStatus status) => switch (status) {
-  InvoiceStatus.paid => AppColors.secondary,
-  InvoiceStatus.overdue || InvoiceStatus.cancelled => AppColors.error,
-  _ => AppColors.primary,
-};
+Color _invoiceStatusColor(InvoiceStatus status, DateTime dueDate) {
+  if (dueDate.isBefore(_today()) &&
+      status != InvoiceStatus.paid &&
+      status != InvoiceStatus.cancelled) {
+    return AppColors.error;
+  }
+  return switch (status) {
+    InvoiceStatus.paid => AppColors.secondary,
+    InvoiceStatus.overdue || InvoiceStatus.cancelled => AppColors.error,
+    _ => AppColors.primary,
+  };
+}
 
-String _loanInstallmentStatusLabel(LoanInstallmentStatus status) =>
-    switch (status) {
-      LoanInstallmentStatus.planned || LoanInstallmentStatus.open => 'Pendente',
-      LoanInstallmentStatus.partiallyPaid => 'Parcialmente paga',
-      LoanInstallmentStatus.paid => 'Paga',
-      LoanInstallmentStatus.overdue => 'Vencida',
-      LoanInstallmentStatus.cancelled => 'Cancelada',
-    };
+String _loanInstallmentStatusLabel(
+  LoanInstallmentStatus status,
+  DateTime dueDate,
+) {
+  if (dueDate.isBefore(_today()) &&
+      status != LoanInstallmentStatus.paid &&
+      status != LoanInstallmentStatus.cancelled) {
+    return 'Vencida';
+  }
+  return switch (status) {
+    LoanInstallmentStatus.planned || LoanInstallmentStatus.open => 'Pendente',
+    LoanInstallmentStatus.partiallyPaid => 'Parcialmente paga',
+    LoanInstallmentStatus.paid => 'Paga',
+    LoanInstallmentStatus.overdue => 'Vencida',
+    LoanInstallmentStatus.cancelled => 'Cancelada',
+  };
+}
 
-Color _loanInstallmentStatusColor(LoanInstallmentStatus status) =>
-    switch (status) {
-      LoanInstallmentStatus.paid => AppColors.secondary,
-      LoanInstallmentStatus.overdue ||
-      LoanInstallmentStatus.cancelled => AppColors.error,
-      _ => AppColors.primary,
-    };
+Color _loanInstallmentStatusColor(
+  LoanInstallmentStatus status,
+  DateTime dueDate,
+) {
+  if (dueDate.isBefore(_today()) &&
+      status != LoanInstallmentStatus.paid &&
+      status != LoanInstallmentStatus.cancelled) {
+    return AppColors.error;
+  }
+  return switch (status) {
+    LoanInstallmentStatus.paid => AppColors.secondary,
+    LoanInstallmentStatus.overdue ||
+    LoanInstallmentStatus.cancelled => AppColors.error,
+    _ => AppColors.primary,
+  };
+}
 
-String _cashFlowStatusLabel(CashFlowEntry entry) => switch (entry.status) {
-  CashFlowStatus.scheduled => entry.isIncome ? 'Prevista' : 'Pendente',
-  CashFlowStatus.confirmed => entry.isIncome ? 'Recebida' : 'Paga',
-  CashFlowStatus.cancelled => 'Cancelada',
-};
+String _cashFlowStatusLabel(CashFlowEntry entry) {
+  if (entry.status == CashFlowStatus.scheduled &&
+      entry.occurredAt.isBefore(_today())) {
+    return entry.isIncome ? 'Atrasada' : 'Vencida';
+  }
+  return switch (entry.status) {
+    CashFlowStatus.scheduled => entry.isIncome ? 'Prevista' : 'Pendente',
+    CashFlowStatus.confirmed => entry.isIncome ? 'Recebida' : 'Paga',
+    CashFlowStatus.cancelled => 'Cancelada',
+  };
+}
 
-Color _cashFlowStatusColor(CashFlowStatus status) => switch (status) {
-  CashFlowStatus.scheduled => AppColors.primary,
-  CashFlowStatus.confirmed => AppColors.secondary,
-  CashFlowStatus.cancelled => AppColors.error,
-};
+Color _cashFlowStatusColor(CashFlowEntry entry) {
+  if (entry.status == CashFlowStatus.scheduled &&
+      entry.occurredAt.isBefore(_today())) {
+    return AppColors.error;
+  }
+  return switch (entry.status) {
+    CashFlowStatus.scheduled => AppColors.primary,
+    CashFlowStatus.confirmed => AppColors.secondary,
+    CashFlowStatus.cancelled => AppColors.error,
+  };
+}
+
+DateTime _today() {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+}

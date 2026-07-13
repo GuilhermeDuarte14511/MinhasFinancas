@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money.dart';
 import '../domain/cash_flow.dart';
+import '../domain/cash_flow_forecast.dart';
 import '../domain/finance_models.dart';
 import '../domain/financial_planning.dart';
 import 'finance_repository.dart';
@@ -97,6 +98,23 @@ final class FinanceState {
         installments: purchaseInstallments,
         referenceMonth: referenceMonth ?? DateTime.now(),
       );
+
+  CashFlowForecast cashFlowForecast({
+    DateTime? referenceDate,
+    int horizonDays = 30,
+  }) {
+    final reference = referenceDate ?? DateTime.now();
+    final openingBalance = financialPosition(reference).currentBalance;
+    return const CashFlowForecastCalculator().calculate(
+      openingBalance: openingBalance,
+      entries: cashFlowEntries,
+      invoices: invoices,
+      loans: loans,
+      loanInstallments: loanInstallments,
+      referenceDate: reference,
+      throughDate: reference.add(Duration(days: horizonDays)),
+    );
+  }
 
   Money get totalLimit =>
       cards.fold(const Money.zero(), (total, card) => total + card.limit);

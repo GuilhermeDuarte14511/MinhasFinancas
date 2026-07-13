@@ -20,6 +20,7 @@ import '../../features/finance/presentation/categories_page.dart';
 import '../../features/finance/presentation/budgets_page.dart';
 import '../../features/finance/presentation/card_detail_page.dart';
 import '../../features/finance/presentation/cash_flow_entry_detail_page.dart';
+import '../../features/finance/presentation/cash_flow_forecast_page.dart';
 import '../../features/finance/presentation/edit_card_page.dart';
 import '../../features/finance/presentation/help_page.dart';
 import '../../features/finance/presentation/invoice_detail_page.dart';
@@ -139,6 +140,12 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) =>
           _animatedPage(state, const AnalyticsPage()),
+    ),
+    GoRoute(
+      path: '/forecast',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const CashFlowForecastPage()),
     ),
     GoRoute(
       path: '/incomes',

@@ -8,6 +8,7 @@ import '../../../app/widgets/app_widgets.dart';
 import '../../../core/money/money.dart';
 import '../../finance/application/finance_controller.dart';
 import '../../finance/domain/cash_flow.dart';
+import '../../finance/domain/cash_flow_forecast.dart';
 import '../../finance/domain/finance_models.dart';
 import '../../finance/presentation/cash_flow_labels.dart';
 
@@ -119,6 +120,7 @@ class DashboardPage extends ConsumerWidget {
     final totalExpenses = cardExpenses + loanExpenses + otherExpenses;
     final balance = expectedIncome - totalExpenses;
     final financialPosition = finance.financialPosition(now);
+    final forecast = finance.cashFlowForecast(referenceDate: now);
     final budgetProgress = finance.budgetProgress(month);
     final budgetLimit = _sumMoney(
       budgetProgress.map((item) => item.budget.limit),
@@ -187,13 +189,18 @@ class DashboardPage extends ConsumerWidget {
                 child: _PlanningOverview(
                   hasAccounts: finance.accounts.isNotEmpty,
                   currentBalance: financialPosition.currentBalance,
-                  projectedBalance: financialPosition.projectedBalance,
+                  projectedBalance: forecast.closingBalance,
                   hasBudgets: budgetProgress.isNotEmpty,
                   budgetAvailable: budgetLimit - budgetCommitted,
                   budgetUsage: budgetLimit.cents <= 0
                       ? 0
                       : budgetCommitted.cents / budgetLimit.cents,
                 ),
+              ),
+              const SizedBox(height: 14),
+              AnimatedPageEntry(
+                delay: const Duration(milliseconds: 125),
+                child: _DashboardForecastCard(forecast: forecast),
               ),
               const SizedBox(height: 26),
               AnimatedPageEntry(
@@ -263,6 +270,161 @@ class DashboardPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _DashboardForecastCard extends StatelessWidget {
+  const _DashboardForecastCard({required this.forecast});
+
+  final CashFlowForecast forecast;
+
+  @override
+  Widget build(BuildContext context) {
+    final risk = forecast.hasNegativeBalanceRisk;
+    final foreground = risk ? AppColors.error : AppColors.primary;
+    return Material(
+      color: risk ? const Color(0xFFFFF1F0) : AppColors.surfaceLow,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: () => context.push('/forecast'),
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: risk
+                  ? AppColors.error.withValues(alpha: .3)
+                  : AppColors.outline,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: foreground.withValues(alpha: .1),
+                    child: Icon(Icons.timeline_rounded, color: foreground),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Próximos 30 dias',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          risk
+                              ? 'Seu saldo pode ficar negativo'
+                              : '${forecast.lines.length} compromissos previstos',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: foreground, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'SALDO AO FINAL',
+                style: TextStyle(
+                  color: foreground,
+                  fontSize: 11,
+                  letterSpacing: .7,
+                ),
+              ),
+              const SizedBox(height: 3),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  forecast.closingBalance.format(),
+                  style: TextStyle(
+                    color: foreground,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 13),
+              Row(
+                children: [
+                  Expanded(
+                    child: _DashboardForecastMetric(
+                      label: 'Ainda entra',
+                      value: forecast.expectedIncome,
+                      color: AppColors.secondary,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _DashboardForecastMetric(
+                      label: 'Ainda sai',
+                      value: forecast.expectedExpenses,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Menor saldo: ${forecast.lowestBalance.format()} em ${DateFormat('dd/MM', 'pt_BR').format(forecast.lowestBalanceDate)}',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: risk ? AppColors.error : AppColors.textMuted,
+                  fontSize: 12,
+                  fontWeight: risk ? FontWeight.w700 : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DashboardForecastMetric extends StatelessWidget {
+  const _DashboardForecastMetric({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final Money value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(11),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(13),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(color: color, fontSize: 11)),
+        const SizedBox(height: 4),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            value.format(),
+            style: TextStyle(color: color, fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _PlanningOverview extends StatelessWidget {
