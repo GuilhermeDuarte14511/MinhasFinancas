@@ -2,6 +2,8 @@ part of 'client.dart';
 
 class CreateIncomeEntryVariablesBuilder {
   String spaceId;
+  Optional<String> _categoryId = Optional.optional(nativeFromJson, nativeToJson);
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   String description;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -11,7 +13,15 @@ class CreateIncomeEntryVariablesBuilder {
   Optional<String> _notes = Optional.optional(nativeFromJson, nativeToJson);
   String idempotencyKey;
 
-  final FirebaseDataConnect _dataConnect;  CreateIncomeEntryVariablesBuilder notes(String? t) {
+  final FirebaseDataConnect _dataConnect;  CreateIncomeEntryVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  CreateIncomeEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  CreateIncomeEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -24,7 +34,7 @@ class CreateIncomeEntryVariablesBuilder {
   }
 
   MutationRef<CreateIncomeEntryData, CreateIncomeEntryVariables> ref() {
-    CreateIncomeEntryVariables vars= CreateIncomeEntryVariables(spaceId: spaceId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
+    CreateIncomeEntryVariables vars= CreateIncomeEntryVariables(spaceId: spaceId,categoryId: _categoryId,accountId: _accountId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
     return _dataConnect.mutation("CreateIncomeEntry", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -139,6 +149,8 @@ class CreateIncomeEntryData {
 @immutable
 class CreateIncomeEntryVariables {
   final String spaceId;
+  late final Optional<String>categoryId;
+  late final Optional<String>accountId;
   final String description;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -159,6 +171,14 @@ class CreateIncomeEntryVariables {
   competenceMonth = nativeFromJson<DateTime>(json['competenceMonth']),
   idempotencyKey = nativeFromJson<String>(json['idempotencyKey']) {
   
+  
+  
+    categoryId = Optional.optional(nativeFromJson, nativeToJson);
+    categoryId.value = json['categoryId'] == null ? null : nativeFromJson<String>(json['categoryId']);
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -183,6 +203,8 @@ class CreateIncomeEntryVariables {
 
     final CreateIncomeEntryVariables otherTyped = other as CreateIncomeEntryVariables;
     return spaceId == otherTyped.spaceId && 
+    categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     description == otherTyped.description && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -194,12 +216,18 @@ class CreateIncomeEntryVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, accountId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['spaceId'] = nativeToJson<String>(spaceId);
+    if(categoryId.state == OptionalState.set) {
+      json['categoryId'] = categoryId.toJson();
+    }
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
+    }
     json['description'] = nativeToJson<String>(description);
     json['kind'] = 
     kind.name
@@ -219,6 +247,8 @@ class CreateIncomeEntryVariables {
 
   CreateIncomeEntryVariables({
     required this.spaceId,
+    required this.categoryId,
+    required this.accountId,
     required this.description,
     required this.kind,
     required this.paymentMethod,

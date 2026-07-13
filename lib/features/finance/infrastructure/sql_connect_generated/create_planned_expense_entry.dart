@@ -3,6 +3,7 @@ part of 'client.dart';
 class CreatePlannedExpenseEntryVariablesBuilder {
   String spaceId;
   String categoryId;
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   String description;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -12,7 +13,11 @@ class CreatePlannedExpenseEntryVariablesBuilder {
   Optional<String> _notes = Optional.optional(nativeFromJson, nativeToJson);
   String idempotencyKey;
 
-  final FirebaseDataConnect _dataConnect;  CreatePlannedExpenseEntryVariablesBuilder notes(String? t) {
+  final FirebaseDataConnect _dataConnect;  CreatePlannedExpenseEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  CreatePlannedExpenseEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -25,7 +30,7 @@ class CreatePlannedExpenseEntryVariablesBuilder {
   }
 
   MutationRef<CreatePlannedExpenseEntryData, CreatePlannedExpenseEntryVariables> ref() {
-    CreatePlannedExpenseEntryVariables vars= CreatePlannedExpenseEntryVariables(spaceId: spaceId,categoryId: categoryId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
+    CreatePlannedExpenseEntryVariables vars= CreatePlannedExpenseEntryVariables(spaceId: spaceId,categoryId: categoryId,accountId: _accountId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
     return _dataConnect.mutation("CreatePlannedExpenseEntry", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -141,6 +146,7 @@ class CreatePlannedExpenseEntryData {
 class CreatePlannedExpenseEntryVariables {
   final String spaceId;
   final String categoryId;
+  late final Optional<String>accountId;
   final String description;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -163,6 +169,10 @@ class CreatePlannedExpenseEntryVariables {
   idempotencyKey = nativeFromJson<String>(json['idempotencyKey']) {
   
   
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -188,6 +198,7 @@ class CreatePlannedExpenseEntryVariables {
     final CreatePlannedExpenseEntryVariables otherTyped = other as CreatePlannedExpenseEntryVariables;
     return spaceId == otherTyped.spaceId && 
     categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     description == otherTyped.description && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -199,13 +210,16 @@ class CreatePlannedExpenseEntryVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, accountId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['spaceId'] = nativeToJson<String>(spaceId);
     json['categoryId'] = nativeToJson<String>(categoryId);
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
+    }
     json['description'] = nativeToJson<String>(description);
     json['kind'] = 
     kind.name
@@ -226,6 +240,7 @@ class CreatePlannedExpenseEntryVariables {
   CreatePlannedExpenseEntryVariables({
     required this.spaceId,
     required this.categoryId,
+    required this.accountId,
     required this.description,
     required this.kind,
     required this.paymentMethod,

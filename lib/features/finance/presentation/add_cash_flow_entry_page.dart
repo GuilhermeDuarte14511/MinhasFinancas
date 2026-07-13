@@ -38,6 +38,7 @@ class _AddCashFlowEntryPageState extends ConsumerState<AddCashFlowEntryPage> {
   int _preferredDay = DateTime.now().day;
   bool _statusWasSelected = false;
   String? _category;
+  String? _accountId;
   String? _errorMessage;
   bool _saving = false;
 
@@ -149,6 +150,7 @@ class _AddCashFlowEntryPageState extends ConsumerState<AddCashFlowEntryPage> {
             status: _isIncome ? _status : CashFlowStatus.confirmed,
             recurrence: _buildRecurrenceRule(),
             category: _category,
+            accountId: _accountId,
             notes: _notesController.text.trim(),
           );
       if (!mounted) return;
@@ -211,6 +213,7 @@ class _AddCashFlowEntryPageState extends ConsumerState<AddCashFlowEntryPage> {
       );
     }
     _category ??= finance.categories.isEmpty ? null : finance.categories.first;
+    _accountId ??= finance.accounts.firstOrNull?.id;
     final accent = _isIncome ? AppColors.secondary : AppColors.primary;
     return Scaffold(
       appBar: BrandAppBar(
@@ -332,6 +335,28 @@ class _AddCashFlowEntryPageState extends ConsumerState<AddCashFlowEntryPage> {
                       if (value != null) _paymentMethod = value;
                     },
                   ),
+                  if (finance.accounts.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      initialValue: _accountId,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Conta',
+                        prefixIcon: Icon(Icons.account_balance_outlined),
+                        helperText: 'O saldo desta conta será atualizado.',
+                      ),
+                      items: [
+                        for (final account in finance.accounts)
+                          DropdownMenuItem(
+                            value: account.id,
+                            child: Text(account.name),
+                          ),
+                      ],
+                      validator: (value) =>
+                          value == null ? 'Selecione uma conta.' : null,
+                      onChanged: (value) => _accountId = value,
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   _DateField(date: _occurredAt, onTap: _selectDate),
                   if (_isIncome) ...[

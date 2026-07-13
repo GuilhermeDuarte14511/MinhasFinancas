@@ -272,6 +272,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required CashFlowStatus status,
     RecurrenceRule? recurrence,
     String? categoryId,
+    String? accountId,
     String? notes,
   }) async {
     lastCreatedStatus = status;

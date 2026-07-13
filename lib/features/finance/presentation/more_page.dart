@@ -31,6 +31,18 @@ class MorePage extends ConsumerWidget {
         route: '/incomes',
       ),
       const _MenuItem(
+        icon: Icons.account_balance_wallet_outlined,
+        title: 'Contas e saldos',
+        subtitle: 'Veja onde está seu dinheiro e o saldo previsto',
+        route: '/accounts',
+      ),
+      const _MenuItem(
+        icon: Icons.donut_small_rounded,
+        title: 'Orçamento mensal',
+        subtitle: 'Defina limites de gasto por categoria',
+        route: '/budgets',
+      ),
+      const _MenuItem(
         icon: Icons.payments_outlined,
         title: 'Empréstimos',
         subtitle: 'Simule ou acompanhe seus contratos',

@@ -49,6 +49,24 @@ enum PaymentStatus {
   REVERSED
 }
 
+enum FinancialAccountType {
+  CHECKING
+  SAVINGS
+  CASH
+  INVESTMENT
+  OTHER
+}
+
+enum FinancialAccountStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum AccountTransferStatus {
+  CONFIRMED
+  CANCELLED
+}
+
 enum CashFlowDirection {
   INCOME
   EXPENSE
@@ -236,6 +254,67 @@ type Category
   version: Int! @default(value: 1)
 }
 
+type FinancialAccount
+  @table(name: "financial_account")
+  @unique(fields: ["financialSpace", "normalizedName"])
+  @index(fields: ["financialSpaceId", "status"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  name: String! @col(dataType: "varchar(100)")
+  normalizedName: String! @col(dataType: "varchar(100)")
+  institutionName: String @col(dataType: "varchar(120)")
+  type: FinancialAccountType!
+  openingBalanceCents: Int64!
+  openingBalanceAt: Timestamp!
+  colorHex: String! @col(dataType: "char(7)")
+  includeInTotal: Boolean! @default(value: true)
+  status: FinancialAccountStatus!
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  archivedAt: Timestamp
+  version: Int! @default(value: 1)
+}
+
+type AccountTransfer
+  @table(name: "account_transfer")
+  @unique(fields: ["financialSpace", "idempotencyKey"])
+  @index(fields: ["financialSpaceId", "status", "transferredAt"])
+  @index(fields: ["fromAccountId", "status", "transferredAt"])
+  @index(fields: ["toAccountId", "status", "transferredAt"]) {
+  id: UUID! @default(expr: "uuidV4()")
+  financialSpace: FinancialSpace!
+  fromAccount: FinancialAccount!
+  toAccount: FinancialAccount!
+  amountCents: Int64!
+  transferredAt: Timestamp!
+  notes: String @col(dataType: "varchar(500)")
+  status: AccountTransferStatus!
+  idempotencyKey: String! @col(dataType: "varchar(128)")
+  createdByUser: UserProfile!
+  cancelledByUser: UserProfile
+  cancelledAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type MonthlyBudget
+  @table(name: "monthly_budget")
+  @unique(fields: ["financialSpace", "category", "referenceMonth"])
+  @index(fields: ["financialSpaceId", "referenceMonth"]) {
+  id: UUID!
+  financialSpace: FinancialSpace!
+  category: Category!
+  referenceMonth: Date!
+  limitAmountCents: Int64!
+  createdByUser: UserProfile!
+  updatedByUser: UserProfile!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  version: Int! @default(value: 1)
+}
+
 type CreditCard
   @table(name: "credit_card")
   @index(fields: ["financialSpaceId", "status"])
@@ -331,6 +410,7 @@ type InvoicePayment
   id: UUID! @default(expr: "uuidV4()")
   financialSpace: FinancialSpace!
   invoice: CreditCardInvoice!
+  financialAccount: FinancialAccount
   amountCents: Int64!
   paidAt: Timestamp!
   notes: String @col(dataType: "varchar(1000)")
@@ -351,6 +431,7 @@ type CashFlowRecurrenceSeries
   id: UUID! @default(expr: "uuidV4()")
   financialSpace: FinancialSpace!
   category: Category
+  financialAccount: FinancialAccount
   direction: CashFlowDirection!
   kind: CashFlowKind!
   paymentMethod: CashFlowPaymentMethod!
@@ -386,6 +467,7 @@ type CashFlowEntry
   id: UUID! @default(expr: "uuidV4()")
   financialSpace: FinancialSpace!
   category: Category
+  financialAccount: FinancialAccount
   direction: CashFlowDirection!
   kind: CashFlowKind!
   paymentMethod: CashFlowPaymentMethod!
@@ -466,6 +548,7 @@ type LoanPayment
   financialSpace: FinancialSpace!
   loan: Loan!
   loanInstallment: LoanInstallment!
+  financialAccount: FinancialAccount
   amountCents: Int64!
   paidAt: Timestamp!
   notes: String @col(dataType: "varchar(1000)")

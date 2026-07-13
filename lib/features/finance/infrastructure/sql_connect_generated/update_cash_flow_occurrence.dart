@@ -5,6 +5,7 @@ class UpdateCashFlowOccurrenceVariablesBuilder {
   String entryId;
   CashFlowMutationScope scope;
   Optional<String> _categoryId = Optional.optional(nativeFromJson, nativeToJson);
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   String description;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -18,6 +19,10 @@ class UpdateCashFlowOccurrenceVariablesBuilder {
 
   final FirebaseDataConnect _dataConnect;  UpdateCashFlowOccurrenceVariablesBuilder categoryId(String? t) {
    _categoryId.value = t;
+   return this;
+  }
+  UpdateCashFlowOccurrenceVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
    return this;
   }
   UpdateCashFlowOccurrenceVariablesBuilder notes(String? t) {
@@ -41,7 +46,7 @@ class UpdateCashFlowOccurrenceVariablesBuilder {
   }
 
   MutationRef<UpdateCashFlowOccurrenceData, UpdateCashFlowOccurrenceVariables> ref() {
-    UpdateCashFlowOccurrenceVariables vars= UpdateCashFlowOccurrenceVariables(spaceId: spaceId,entryId: entryId,scope: scope,categoryId: _categoryId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,status: status,receivedAt: _receivedAt,paidAt: _paidAt,);
+    UpdateCashFlowOccurrenceVariables vars= UpdateCashFlowOccurrenceVariables(spaceId: spaceId,entryId: entryId,scope: scope,categoryId: _categoryId,accountId: _accountId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,status: status,receivedAt: _receivedAt,paidAt: _paidAt,);
     return _dataConnect.mutation("UpdateCashFlowOccurrence", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -122,6 +127,7 @@ class UpdateCashFlowOccurrenceVariables {
   final String entryId;
   final CashFlowMutationScope scope;
   late final Optional<String>categoryId;
+  late final Optional<String>accountId;
   final String description;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -152,6 +158,10 @@ class UpdateCashFlowOccurrenceVariables {
   
     categoryId = Optional.optional(nativeFromJson, nativeToJson);
     categoryId.value = json['categoryId'] == null ? null : nativeFromJson<String>(json['categoryId']);
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -187,6 +197,7 @@ class UpdateCashFlowOccurrenceVariables {
     entryId == otherTyped.entryId && 
     scope == otherTyped.scope && 
     categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     description == otherTyped.description && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -200,7 +211,7 @@ class UpdateCashFlowOccurrenceVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, entryId.hashCode, scope.hashCode, categoryId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, status.hashCode, receivedAt.hashCode, paidAt.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, entryId.hashCode, scope.hashCode, categoryId.hashCode, accountId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, status.hashCode, receivedAt.hashCode, paidAt.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -212,6 +223,9 @@ class UpdateCashFlowOccurrenceVariables {
     ;
     if(categoryId.state == OptionalState.set) {
       json['categoryId'] = categoryId.toJson();
+    }
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
     }
     json['description'] = nativeToJson<String>(description);
     json['kind'] = 
@@ -243,6 +257,7 @@ class UpdateCashFlowOccurrenceVariables {
     required this.entryId,
     required this.scope,
     required this.categoryId,
+    required this.accountId,
     required this.description,
     required this.kind,
     required this.paymentMethod,

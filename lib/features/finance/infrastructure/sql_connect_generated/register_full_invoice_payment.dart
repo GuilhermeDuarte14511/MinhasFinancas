@@ -3,11 +3,16 @@ part of 'client.dart';
 class RegisterFullInvoicePaymentVariablesBuilder {
   String spaceId;
   String invoiceId;
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   BigInt amountCents;
   Timestamp paidAt;
   String idempotencyKey;
 
-  final FirebaseDataConnect _dataConnect;
+  final FirebaseDataConnect _dataConnect;  RegisterFullInvoicePaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+
   RegisterFullInvoicePaymentVariablesBuilder(this._dataConnect, {required  this.spaceId,required  this.invoiceId,required  this.amountCents,required  this.paidAt,required  this.idempotencyKey,});
   Deserializer<RegisterFullInvoicePaymentData> dataDeserializer = (dynamic json)  => RegisterFullInvoicePaymentData.fromJson(jsonDecode(json));
   Serializer<RegisterFullInvoicePaymentVariables> varsSerializer = (RegisterFullInvoicePaymentVariables vars) => jsonEncode(vars.toJson());
@@ -16,7 +21,7 @@ class RegisterFullInvoicePaymentVariablesBuilder {
   }
 
   MutationRef<RegisterFullInvoicePaymentData, RegisterFullInvoicePaymentVariables> ref() {
-    RegisterFullInvoicePaymentVariables vars= RegisterFullInvoicePaymentVariables(spaceId: spaceId,invoiceId: invoiceId,amountCents: amountCents,paidAt: paidAt,idempotencyKey: idempotencyKey,);
+    RegisterFullInvoicePaymentVariables vars= RegisterFullInvoicePaymentVariables(spaceId: spaceId,invoiceId: invoiceId,accountId: _accountId,amountCents: amountCents,paidAt: paidAt,idempotencyKey: idempotencyKey,);
     return _dataConnect.mutation("RegisterFullInvoicePayment", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -178,6 +183,7 @@ class RegisterFullInvoicePaymentData {
 class RegisterFullInvoicePaymentVariables {
   final String spaceId;
   final String invoiceId;
+  late final Optional<String>accountId;
   final BigInt amountCents;
   final Timestamp paidAt;
   final String idempotencyKey;
@@ -188,7 +194,18 @@ class RegisterFullInvoicePaymentVariables {
   invoiceId = nativeFromJson<String>(json['invoiceId']),
   amountCents = bigIntFromJson(json['amountCents']),
   paidAt = Timestamp.fromJson(json['paidAt']),
-  idempotencyKey = nativeFromJson<String>(json['idempotencyKey']);
+  idempotencyKey = nativeFromJson<String>(json['idempotencyKey']) {
+  
+  
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
+  
+  
+  
+  
+  }
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -201,19 +218,23 @@ class RegisterFullInvoicePaymentVariables {
     final RegisterFullInvoicePaymentVariables otherTyped = other as RegisterFullInvoicePaymentVariables;
     return spaceId == otherTyped.spaceId && 
     invoiceId == otherTyped.invoiceId && 
+    accountId == otherTyped.accountId && 
     amountCents == otherTyped.amountCents && 
     paidAt == otherTyped.paidAt && 
     idempotencyKey == otherTyped.idempotencyKey;
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, invoiceId.hashCode, amountCents.hashCode, paidAt.hashCode, idempotencyKey.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, invoiceId.hashCode, accountId.hashCode, amountCents.hashCode, paidAt.hashCode, idempotencyKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['spaceId'] = nativeToJson<String>(spaceId);
     json['invoiceId'] = nativeToJson<String>(invoiceId);
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
+    }
     json['amountCents'] = bigIntToJson(amountCents);
     json['paidAt'] = paidAt.toJson();
     json['idempotencyKey'] = nativeToJson<String>(idempotencyKey);
@@ -223,6 +244,7 @@ class RegisterFullInvoicePaymentVariables {
   RegisterFullInvoicePaymentVariables({
     required this.spaceId,
     required this.invoiceId,
+    required this.accountId,
     required this.amountCents,
     required this.paidAt,
     required this.idempotencyKey,

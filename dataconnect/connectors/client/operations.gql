@@ -123,6 +123,45 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     isDefault
   }
 
+  financialAccounts(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}
+    orderBy: [{createdAt: ASC}]
+    limit: 100
+  ) {
+    id
+    name
+    institutionName
+    type
+    openingBalanceCents
+    openingBalanceAt
+    colorHex
+    includeInTotal
+  }
+
+  accountTransfers(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: CONFIRMED}}
+    orderBy: [{transferredAt: DESC}]
+    limit: 5000
+  ) {
+    id
+    amountCents
+    transferredAt
+    notes
+    fromAccount { id }
+    toAccount { id }
+  }
+
+  monthlyBudgets(
+    where: {financialSpaceId: {eq: $spaceId}}
+    orderBy: [{referenceMonth: DESC}]
+    limit: 240
+  ) {
+    id
+    referenceMonth
+    limitAmountCents
+    category { id name }
+  }
+
   creditCards(
     where: {financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}
     limit: 100
@@ -186,6 +225,7 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     sourceType
     sourceEntityId
     category { id name }
+    financialAccount { id }
     recurrenceSeries {
       id
       frequency
@@ -217,6 +257,7 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     nextOccurrenceDate
     status
     category { id name }
+    financialAccount { id }
   }
 
   creditCardInvoices(
@@ -257,7 +298,18 @@ query GetWorkspaceSnapshot($spaceId: UUID!)
     notes
     status
     invoice { id }
+    financialAccount { id }
     createdByUser { displayName }
+  }
+
+  loanPayments(
+    where: {financialSpaceId: {eq: $spaceId}, status: {eq: CONFIRMED}}
+    limit: 1000
+  ) {
+    id
+    amountCents
+    paidAt
+    financialAccount { id }
   }
 
   loans(
@@ -1052,10 +1104,205 @@ mutation CreateCategory(
   })
 }
 
+# Accounts and monthly budgets
+
+mutation CreateFinancialAccount(
+  $spaceId: UUID!
+  $name: String!
+  $normalizedName: String!
+  $institutionName: String
+  $type: FinancialAccountType!
+  $openingBalanceCents: Int64!
+  $openingBalanceAt: Timestamp!
+  $colorHex: String!
+  $includeInTotal: Boolean!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  account: financialAccount_insert(data: {
+    financialSpaceId: $spaceId
+    name: $name
+    normalizedName: $normalizedName
+    institutionName: $institutionName
+    type: $type
+    openingBalanceCents: $openingBalanceCents
+    openingBalanceAt: $openingBalanceAt
+    colorHex: $colorHex
+    includeInTotal: $includeInTotal
+    status: ACTIVE
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "financial_account"
+    entityId_expr: "response.account.id"
+    action: "created"
+    summary_expr: "'criou a conta ' + vars.name + '.'"
+  })
+}
+
+mutation UpdateFinancialAccount(
+  $spaceId: UUID!
+  $accountId: UUID!
+  $name: String!
+  $normalizedName: String!
+  $institutionName: String
+  $type: FinancialAccountType!
+  $colorHex: String!
+  $includeInTotal: Boolean!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+      @check(expr: "this != null", message: "Conta não encontrada.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  account: financialAccount_update(id: $accountId, data: {
+    name: $name
+    normalizedName: $normalizedName
+    institutionName: $institutionName
+    type: $type
+    colorHex: $colorHex
+    includeInTotal: $includeInTotal
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+mutation ArchiveFinancialAccount($spaceId: UUID!, $accountId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+      @check(expr: "this != null", message: "Conta não encontrada.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  account: financialAccount_update(id: $accountId, data: {
+    status: ARCHIVED
+    archivedAt_expr: "request.time"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version_update: {inc: 1}
+  })
+}
+
+mutation CreateAccountTransfer(
+  $spaceId: UUID!
+  $fromAccountId: UUID!
+  $toAccountId: UUID!
+  $amountCents: Int64!
+  $transferredAt: Timestamp!
+  $notes: String
+  $idempotencyKey: String!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.amountCents > 0 && vars.fromAccountId != vars.toAccountId", message: "Acesso ou transferência inválida.")
+    }
+    origin: financialAccount(first: {where: {id: {eq: $fromAccountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+      @check(expr: "this != null", message: "Conta de origem inválida.") { id }
+    destination: financialAccount(first: {where: {id: {eq: $toAccountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+      @check(expr: "this != null", message: "Conta de destino inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  transfer: accountTransfer_insert(data: {
+    financialSpaceId: $spaceId
+    fromAccountId: $fromAccountId
+    toAccountId: $toAccountId
+    amountCents: $amountCents
+    transferredAt: $transferredAt
+    notes: $notes
+    status: CONFIRMED
+    idempotencyKey: $idempotencyKey
+    createdByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+  })
+  audit: auditEvent_insert(data: {
+    financialSpaceId: $spaceId
+    actorUserId_expr: "response.query.me.id"
+    entityType: "account_transfer"
+    entityId_expr: "response.transfer.id"
+    action: "created"
+    summary: "registrou uma transferência entre contas."
+  })
+}
+
+mutation CancelAccountTransfer($spaceId: UUID!, $transferId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: accountTransfer(first: {where: {id: {eq: $transferId}, financialSpaceId: {eq: $spaceId}, status: {eq: CONFIRMED}}})
+      @check(expr: "this != null", message: "Transferência não encontrada.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  transfer: accountTransfer_update(id: $transferId, data: {
+    status: CANCELLED
+    cancelledByUserId_expr: "response.query.me.id"
+    cancelledAt_expr: "request.time"
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation SetMonthlyBudget(
+  $id: UUID!
+  $spaceId: UUID!
+  $categoryId: UUID!
+  $referenceMonth: Date!
+  $limitAmountCents: Int64!
+) @auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "(this == 'OWNER' || this == 'EDITOR') && vars.limitAmountCents > 0", message: "Acesso ou limite inválido.")
+    }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+      @check(expr: "this != null", message: "Categoria inválida.") { id }
+    me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
+  }
+  budget: monthlyBudget_upsert(data: {
+    id: $id
+    financialSpaceId: $spaceId
+    categoryId: $categoryId
+    referenceMonth: $referenceMonth
+    limitAmountCents: $limitAmountCents
+    createdByUserId_expr: "response.query.me.id"
+    updatedByUserId_expr: "response.query.me.id"
+    updatedAt_expr: "request.time"
+    version: 1
+  })
+}
+
+mutation DeleteMonthlyBudget($spaceId: UUID!, $budgetId: UUID!)
+@auth(level: USER_EMAIL_VERIFIED) @transaction {
+  query @redact {
+    membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
+      role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
+    }
+    current: monthlyBudget(first: {where: {id: {eq: $budgetId}, financialSpaceId: {eq: $spaceId}}})
+      @check(expr: "this != null", message: "Orçamento não encontrado.") { id }
+  }
+  budget: monthlyBudget_delete(id: $budgetId)
+}
+
 # General cash flow
 
 mutation CreateIncomeEntry(
   $spaceId: UUID!
+  $categoryId: UUID
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1069,10 +1316,16 @@ mutation CreateIncomeEntry(
     membership: spaceMember(first: {where: {financialSpaceId: {eq: $spaceId}, memberFirebaseUid: {eq_expr: "auth.uid"}, status: {eq: ACTIVE}}}) {
       role @check(expr: "this == 'OWNER' || this == 'EDITOR'", message: "Acesso somente para editores.")
     }
+    category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
+    @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   entry: cashFlowEntry_insert(data: {
     financialSpaceId: $spaceId
+    categoryId: $categoryId
+    financialAccountId: $accountId
     direction: INCOME
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1101,6 +1354,7 @@ mutation CreateIncomeEntry(
 mutation CreateScheduledIncomeEntry(
   $spaceId: UUID!
   $categoryId: UUID
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1116,11 +1370,14 @@ mutation CreateScheduledIncomeEntry(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   entry: cashFlowEntry_insert(data: {
     financialSpaceId: $spaceId
     categoryId: $categoryId
+    financialAccountId: $accountId
     direction: INCOME
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1150,6 +1407,7 @@ mutation CreateScheduledIncomeEntry(
 mutation CreateExpenseEntry(
   $spaceId: UUID!
   $categoryId: UUID!
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1165,11 +1423,14 @@ mutation CreateExpenseEntry(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   entry: cashFlowEntry_insert(data: {
     financialSpaceId: $spaceId
     categoryId: $categoryId
+    financialAccountId: $accountId
     direction: EXPENSE
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1198,6 +1459,7 @@ mutation CreateExpenseEntry(
 mutation CreatePlannedExpenseEntry(
   $spaceId: UUID!
   $categoryId: UUID!
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1213,11 +1475,14 @@ mutation CreatePlannedExpenseEntry(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   entry: cashFlowEntry_insert(data: {
     financialSpaceId: $spaceId
     categoryId: $categoryId
+    financialAccountId: $accountId
     direction: EXPENSE
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1247,6 +1512,7 @@ mutation CreatePlannedExpenseEntry(
 mutation CreateCashFlowRecurrenceSeries(
   $spaceId: UUID!
   $categoryId: UUID
+  $accountId: UUID
   $direction: CashFlowDirection!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1267,11 +1533,14 @@ mutation CreateCashFlowRecurrenceSeries(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida para este espaço.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   series: cashFlowRecurrenceSeries_insert(data: {
     financialSpaceId: $spaceId
     categoryId: $categoryId
+    financialAccountId: $accountId
     direction: $direction
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1325,12 +1594,14 @@ mutation CreateRecurringCashFlowOccurrence(
       amountCents
       notes
       category { id }
+      financialAccount { id }
     }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   entry: cashFlowEntry_insert(data: {
     financialSpaceId: $spaceId
     categoryId_expr: "response.query.series.category.id"
+    financialAccountId_expr: "response.query.series.financialAccount.id"
     direction_expr: "response.query.series.direction"
     kind_expr: "response.query.series.kind"
     paymentMethod_expr: "response.query.series.paymentMethod"
@@ -1411,6 +1682,7 @@ mutation UpdateCashFlowOccurrence(
   $entryId: UUID!
   $scope: CashFlowMutationScope!
   $categoryId: UUID
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1428,6 +1700,8 @@ mutation UpdateCashFlowOccurrence(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     current: cashFlowEntry(first: {where: {id: {eq: $entryId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}})
     @check(expr: "this != null", message: "Lançamento não encontrado.") {
       id @check(expr: "vars.scope == 'ONLY_THIS'", message: "Escopo inválido para esta operação.")
@@ -1437,6 +1711,7 @@ mutation UpdateCashFlowOccurrence(
   }
   entry: cashFlowEntry_update(id: $entryId, data: {
     categoryId: $categoryId
+    financialAccountId: $accountId
     description: $description
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1460,6 +1735,7 @@ mutation UpdateCashFlowSeriesFrom(
   $scope: CashFlowMutationScope!
   $cutoffAt: Timestamp!
   $categoryId: UUID
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1475,6 +1751,8 @@ mutation UpdateCashFlowSeriesFrom(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
     @check(expr: "this != null", message: "Série recorrente ativa não encontrada.") {
       id @check(expr: "vars.scope == 'THIS_AND_FUTURE'", message: "Escopo inválido para esta operação.")
@@ -1484,6 +1762,7 @@ mutation UpdateCashFlowSeriesFrom(
   }
   series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
     categoryId: $categoryId
+    financialAccountId: $accountId
     description: $description
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1497,6 +1776,7 @@ mutation UpdateCashFlowSeriesFrom(
     where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, occurredAt: {ge: $cutoffAt}, status: {ne: CANCELLED}}
     data: {
       categoryId: $categoryId
+      financialAccountId: $accountId
       description: $description
       kind: $kind
       paymentMethod: $paymentMethod
@@ -1518,6 +1798,7 @@ mutation UpdateEntireCashFlowSeries(
   $seriesId: UUID!
   $scope: CashFlowMutationScope!
   $categoryId: UUID
+  $accountId: UUID
   $description: String!
   $kind: CashFlowKind!
   $paymentMethod: CashFlowPaymentMethod!
@@ -1533,6 +1814,8 @@ mutation UpdateEntireCashFlowSeries(
     }
     category: category(first: {where: {id: {eq: $categoryId}, financialSpaceId: {eq: $spaceId}, archivedAt: {isNull: true}}})
     @check(expr: "vars.categoryId == null || this != null", message: "Categoria inválida.") { id }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     currentSeries: cashFlowRecurrenceSeries(first: {where: {id: {eq: $seriesId}, financialSpaceId: {eq: $spaceId}, status: {ne: CANCELLED}}})
     @check(expr: "this != null", message: "Série recorrente não encontrada.") {
       id @check(expr: "vars.scope == 'ENTIRE_SERIES'", message: "Escopo inválido para esta operação.")
@@ -1542,6 +1825,7 @@ mutation UpdateEntireCashFlowSeries(
   }
   series: cashFlowRecurrenceSeries_update(id: $seriesId, data: {
     categoryId: $categoryId
+    financialAccountId: $accountId
     description: $description
     kind: $kind
     paymentMethod: $paymentMethod
@@ -1556,6 +1840,7 @@ mutation UpdateEntireCashFlowSeries(
     where: {financialSpaceId: {eq: $spaceId}, recurrenceSeriesId: {eq: $seriesId}, status: {ne: CANCELLED}}
     data: {
       categoryId: $categoryId
+      financialAccountId: $accountId
       description: $description
       kind: $kind
       paymentMethod: $paymentMethod
@@ -2024,6 +2309,7 @@ mutation CancelPurchase($spaceId: UUID!, $purchaseId: UUID!, $reason: String!)
 mutation RegisterInvoicePayment(
   $spaceId: UUID!
   $invoiceId: UUID!
+  $accountId: UUID
   $amountCents: Int64!
   $paidAt: Timestamp!
   $notes: String
@@ -2038,11 +2324,14 @@ mutation RegisterInvoicePayment(
       totalAmountCents
       paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents <= response.query.invoice.totalAmountCents - this", message: "Valor de pagamento inválido.")
     }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   payment: invoicePayment_insert(data: {
     financialSpaceId: $spaceId
     invoiceId: $invoiceId
+    financialAccountId: $accountId
     amountCents: $amountCents
     paidAt: $paidAt
     notes: $notes
@@ -2069,6 +2358,7 @@ mutation RegisterInvoicePayment(
 mutation RegisterFullInvoicePayment(
   $spaceId: UUID!
   $invoiceId: UUID!
+  $accountId: UUID
   $amountCents: Int64!
   $paidAt: Timestamp!
   $idempotencyKey: String!
@@ -2081,11 +2371,14 @@ mutation RegisterFullInvoicePayment(
       totalAmountCents
       paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents == response.query.invoice.totalAmountCents - this", message: "O valor deve quitar exatamente o saldo pendente.")
     }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   payment: invoicePayment_insert(data: {
     financialSpaceId: $spaceId
     invoiceId: $invoiceId
+    financialAccountId: $accountId
     amountCents: $amountCents
     paidAt: $paidAt
     status: CONFIRMED
@@ -2195,6 +2488,7 @@ mutation RegisterLoanPayment(
   $spaceId: UUID!
   $loanId: UUID!
   $loanInstallmentId: UUID!
+  $accountId: UUID
   $amountCents: Int64!
   $paidAt: Timestamp!
   $notes: String
@@ -2209,12 +2503,15 @@ mutation RegisterLoanPayment(
       totalAmountCents
       paidAmountCents @check(expr: "vars.amountCents > 0 && vars.amountCents <= response.query.installment.totalAmountCents - this", message: "Valor de pagamento inválido.")
     }
+    account: financialAccount(first: {where: {id: {eq: $accountId}, financialSpaceId: {eq: $spaceId}, status: {eq: ACTIVE}}})
+    @check(expr: "vars.accountId == null || this != null", message: "Conta inválida.") { id }
     me: userProfile(first: {where: {firebaseUid: {eq_expr: "auth.uid"}}}) { id }
   }
   payment: loanPayment_insert(data: {
     financialSpaceId: $spaceId
     loanId: $loanId
     loanInstallmentId: $loanInstallmentId
+    financialAccountId: $accountId
     amountCents: $amountCents
     paidAt: $paidAt
     notes: $notes

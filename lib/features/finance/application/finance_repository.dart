@@ -1,6 +1,7 @@
 import '../../../core/money/money.dart';
 import '../domain/cash_flow.dart';
 import '../domain/finance_models.dart';
+import '../domain/financial_planning.dart';
 
 final class WorkspaceSummary {
   const WorkspaceSummary({
@@ -36,6 +37,10 @@ final class WorkspaceSnapshot {
     required this.invitations,
     required this.currentRole,
     required this.notificationSettings,
+    this.accounts = const [],
+    this.accountTransfers = const [],
+    this.monthlyBudgets = const [],
+    this.accountSettlements = const [],
   });
 
   final String id;
@@ -56,6 +61,10 @@ final class WorkspaceSnapshot {
   final List<InvitationRecord> invitations;
   final MembershipRole currentRole;
   final NotificationSettings notificationSettings;
+  final List<FinancialAccount> accounts;
+  final List<AccountTransfer> accountTransfers;
+  final List<MonthlyBudget> monthlyBudgets;
+  final List<AccountSettlement> accountSettlements;
 }
 
 abstract interface class FinanceRepository {
@@ -121,6 +130,7 @@ abstract interface class FinanceRepository {
     required CashFlowStatus status,
     RecurrenceRule? recurrence,
     String? categoryId,
+    String? accountId,
     String? notes,
   });
 
@@ -138,7 +148,60 @@ abstract interface class FinanceRepository {
     required CashFlowStatus status,
     required RecurrenceScope scope,
     String? categoryId,
+    String? accountId,
     String? notes,
+  });
+
+  Future<void> createAccount({
+    required String spaceId,
+    required String name,
+    required FinancialAccountType type,
+    required Money openingBalance,
+    required DateTime openingBalanceAt,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  });
+
+  Future<void> updateAccount({
+    required String spaceId,
+    required String accountId,
+    required String name,
+    required FinancialAccountType type,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  });
+
+  Future<void> archiveAccount({
+    required String spaceId,
+    required String accountId,
+  });
+
+  Future<void> createAccountTransfer({
+    required String spaceId,
+    required String fromAccountId,
+    required String toAccountId,
+    required Money amount,
+    required DateTime transferredAt,
+    String? notes,
+  });
+
+  Future<void> cancelAccountTransfer({
+    required String spaceId,
+    required String transferId,
+  });
+
+  Future<void> setMonthlyBudget({
+    required String spaceId,
+    required String categoryId,
+    required DateTime referenceMonth,
+    required Money limit,
+  });
+
+  Future<void> deleteMonthlyBudget({
+    required String spaceId,
+    required String budgetId,
   });
 
   Future<void> updateCashFlowStatus({
@@ -210,6 +273,7 @@ abstract interface class FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   });
 
   Future<void> createLoan({
@@ -229,6 +293,7 @@ abstract interface class FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   });
 
   Future<void> updateNotificationPreference({

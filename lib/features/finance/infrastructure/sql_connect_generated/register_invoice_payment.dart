@@ -3,13 +3,18 @@ part of 'client.dart';
 class RegisterInvoicePaymentVariablesBuilder {
   String spaceId;
   String invoiceId;
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   BigInt amountCents;
   Timestamp paidAt;
   Optional<String> _notes = Optional.optional(nativeFromJson, nativeToJson);
   String idempotencyKey;
   InvoiceStatus resultingStatus;
 
-  final FirebaseDataConnect _dataConnect;  RegisterInvoicePaymentVariablesBuilder notes(String? t) {
+  final FirebaseDataConnect _dataConnect;  RegisterInvoicePaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  RegisterInvoicePaymentVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -22,7 +27,7 @@ class RegisterInvoicePaymentVariablesBuilder {
   }
 
   MutationRef<RegisterInvoicePaymentData, RegisterInvoicePaymentVariables> ref() {
-    RegisterInvoicePaymentVariables vars= RegisterInvoicePaymentVariables(spaceId: spaceId,invoiceId: invoiceId,amountCents: amountCents,paidAt: paidAt,notes: _notes,idempotencyKey: idempotencyKey,resultingStatus: resultingStatus,);
+    RegisterInvoicePaymentVariables vars= RegisterInvoicePaymentVariables(spaceId: spaceId,invoiceId: invoiceId,accountId: _accountId,amountCents: amountCents,paidAt: paidAt,notes: _notes,idempotencyKey: idempotencyKey,resultingStatus: resultingStatus,);
     return _dataConnect.mutation("RegisterInvoicePayment", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -179,6 +184,7 @@ class RegisterInvoicePaymentData {
 class RegisterInvoicePaymentVariables {
   final String spaceId;
   final String invoiceId;
+  late final Optional<String>accountId;
   final BigInt amountCents;
   final Timestamp paidAt;
   late final Optional<String>notes;
@@ -195,6 +201,10 @@ class RegisterInvoicePaymentVariables {
   resultingStatus = InvoiceStatus.values.byName(json['resultingStatus']) {
   
   
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -217,6 +227,7 @@ class RegisterInvoicePaymentVariables {
     final RegisterInvoicePaymentVariables otherTyped = other as RegisterInvoicePaymentVariables;
     return spaceId == otherTyped.spaceId && 
     invoiceId == otherTyped.invoiceId && 
+    accountId == otherTyped.accountId && 
     amountCents == otherTyped.amountCents && 
     paidAt == otherTyped.paidAt && 
     notes == otherTyped.notes && 
@@ -225,13 +236,16 @@ class RegisterInvoicePaymentVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, invoiceId.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, idempotencyKey.hashCode, resultingStatus.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, invoiceId.hashCode, accountId.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, idempotencyKey.hashCode, resultingStatus.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['spaceId'] = nativeToJson<String>(spaceId);
     json['invoiceId'] = nativeToJson<String>(invoiceId);
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
+    }
     json['amountCents'] = bigIntToJson(amountCents);
     json['paidAt'] = paidAt.toJson();
     if(notes.state == OptionalState.set) {
@@ -247,6 +261,7 @@ class RegisterInvoicePaymentVariables {
   RegisterInvoicePaymentVariables({
     required this.spaceId,
     required this.invoiceId,
+    required this.accountId,
     required this.amountCents,
     required this.paidAt,
     required this.notes,

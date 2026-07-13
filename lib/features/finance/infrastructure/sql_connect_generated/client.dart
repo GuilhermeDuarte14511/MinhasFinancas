@@ -32,6 +32,20 @@ part 'accept_space_invitation.dart';
 
 part 'create_category.dart';
 
+part 'create_financial_account.dart';
+
+part 'update_financial_account.dart';
+
+part 'archive_financial_account.dart';
+
+part 'create_account_transfer.dart';
+
+part 'cancel_account_transfer.dart';
+
+part 'set_monthly_budget.dart';
+
+part 'delete_monthly_budget.dart';
+
 part 'create_income_entry.dart';
 
 part 'create_scheduled_income_entry.dart';
@@ -441,6 +455,47 @@ BigInt bigIntFromJson(dynamic value) {
       
       case 'ARCHIVED':
         return const Known(CreditCardStatus.ARCHIVED);
+      
+      default:
+        return Unknown(data);
+    }
+  }
+  
+
+  enum FinancialAccountType {
+    
+      CHECKING,
+    
+      SAVINGS,
+    
+      CASH,
+    
+      INVESTMENT,
+    
+      OTHER,
+    
+  }
+  
+  String financialAccountTypeSerializer(EnumValue<FinancialAccountType> e) {
+    return e.stringValue;
+  }
+  EnumValue<FinancialAccountType> financialAccountTypeDeserializer(dynamic data) {
+    switch (data) {
+      
+      case 'CHECKING':
+        return const Known(FinancialAccountType.CHECKING);
+      
+      case 'SAVINGS':
+        return const Known(FinancialAccountType.SAVINGS);
+      
+      case 'CASH':
+        return const Known(FinancialAccountType.CASH);
+      
+      case 'INVESTMENT':
+        return const Known(FinancialAccountType.INVESTMENT);
+      
+      case 'OTHER':
+        return const Known(FinancialAccountType.OTHER);
       
       default:
         return Unknown(data);
@@ -940,6 +995,41 @@ class ClientConnector {
   
   CreateCategoryVariablesBuilder createCategory ({required String spaceId, required String name, required String normalizedName, required String icon, required String colorHex, }) {
     return CreateCategoryVariablesBuilder(dataConnect, spaceId: spaceId,name: name,normalizedName: normalizedName,icon: icon,colorHex: colorHex,);
+  }
+  
+  
+  CreateFinancialAccountVariablesBuilder createFinancialAccount ({required String spaceId, required String name, required String normalizedName, required FinancialAccountType type, required BigInt openingBalanceCents, required Timestamp openingBalanceAt, required String colorHex, required bool includeInTotal, }) {
+    return CreateFinancialAccountVariablesBuilder(dataConnect, spaceId: spaceId,name: name,normalizedName: normalizedName,type: type,openingBalanceCents: openingBalanceCents,openingBalanceAt: openingBalanceAt,colorHex: colorHex,includeInTotal: includeInTotal,);
+  }
+  
+  
+  UpdateFinancialAccountVariablesBuilder updateFinancialAccount ({required String spaceId, required String accountId, required String name, required String normalizedName, required FinancialAccountType type, required String colorHex, required bool includeInTotal, }) {
+    return UpdateFinancialAccountVariablesBuilder(dataConnect, spaceId: spaceId,accountId: accountId,name: name,normalizedName: normalizedName,type: type,colorHex: colorHex,includeInTotal: includeInTotal,);
+  }
+  
+  
+  ArchiveFinancialAccountVariablesBuilder archiveFinancialAccount ({required String spaceId, required String accountId, }) {
+    return ArchiveFinancialAccountVariablesBuilder(dataConnect, spaceId: spaceId,accountId: accountId,);
+  }
+  
+  
+  CreateAccountTransferVariablesBuilder createAccountTransfer ({required String spaceId, required String fromAccountId, required String toAccountId, required BigInt amountCents, required Timestamp transferredAt, required String idempotencyKey, }) {
+    return CreateAccountTransferVariablesBuilder(dataConnect, spaceId: spaceId,fromAccountId: fromAccountId,toAccountId: toAccountId,amountCents: amountCents,transferredAt: transferredAt,idempotencyKey: idempotencyKey,);
+  }
+  
+  
+  CancelAccountTransferVariablesBuilder cancelAccountTransfer ({required String spaceId, required String transferId, }) {
+    return CancelAccountTransferVariablesBuilder(dataConnect, spaceId: spaceId,transferId: transferId,);
+  }
+  
+  
+  SetMonthlyBudgetVariablesBuilder setMonthlyBudget ({required String id, required String spaceId, required String categoryId, required DateTime referenceMonth, required BigInt limitAmountCents, }) {
+    return SetMonthlyBudgetVariablesBuilder(dataConnect, id: id,spaceId: spaceId,categoryId: categoryId,referenceMonth: referenceMonth,limitAmountCents: limitAmountCents,);
+  }
+  
+  
+  DeleteMonthlyBudgetVariablesBuilder deleteMonthlyBudget ({required String spaceId, required String budgetId, }) {
+    return DeleteMonthlyBudgetVariablesBuilder(dataConnect, spaceId: spaceId,budgetId: budgetId,);
   }
   
   

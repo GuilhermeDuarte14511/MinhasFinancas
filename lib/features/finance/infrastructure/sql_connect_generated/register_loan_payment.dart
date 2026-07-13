@@ -4,13 +4,18 @@ class RegisterLoanPaymentVariablesBuilder {
   String spaceId;
   String loanId;
   String loanInstallmentId;
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   BigInt amountCents;
   Timestamp paidAt;
   Optional<String> _notes = Optional.optional(nativeFromJson, nativeToJson);
   String idempotencyKey;
   LoanInstallmentStatus resultingStatus;
 
-  final FirebaseDataConnect _dataConnect;  RegisterLoanPaymentVariablesBuilder notes(String? t) {
+  final FirebaseDataConnect _dataConnect;  RegisterLoanPaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  RegisterLoanPaymentVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -23,7 +28,7 @@ class RegisterLoanPaymentVariablesBuilder {
   }
 
   MutationRef<RegisterLoanPaymentData, RegisterLoanPaymentVariables> ref() {
-    RegisterLoanPaymentVariables vars= RegisterLoanPaymentVariables(spaceId: spaceId,loanId: loanId,loanInstallmentId: loanInstallmentId,amountCents: amountCents,paidAt: paidAt,notes: _notes,idempotencyKey: idempotencyKey,resultingStatus: resultingStatus,);
+    RegisterLoanPaymentVariables vars= RegisterLoanPaymentVariables(spaceId: spaceId,loanId: loanId,loanInstallmentId: loanInstallmentId,accountId: _accountId,amountCents: amountCents,paidAt: paidAt,notes: _notes,idempotencyKey: idempotencyKey,resultingStatus: resultingStatus,);
     return _dataConnect.mutation("RegisterLoanPayment", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -142,6 +147,7 @@ class RegisterLoanPaymentVariables {
   final String spaceId;
   final String loanId;
   final String loanInstallmentId;
+  late final Optional<String>accountId;
   final BigInt amountCents;
   final Timestamp paidAt;
   late final Optional<String>notes;
@@ -160,6 +166,10 @@ class RegisterLoanPaymentVariables {
   
   
   
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -183,6 +193,7 @@ class RegisterLoanPaymentVariables {
     return spaceId == otherTyped.spaceId && 
     loanId == otherTyped.loanId && 
     loanInstallmentId == otherTyped.loanInstallmentId && 
+    accountId == otherTyped.accountId && 
     amountCents == otherTyped.amountCents && 
     paidAt == otherTyped.paidAt && 
     notes == otherTyped.notes && 
@@ -191,7 +202,7 @@ class RegisterLoanPaymentVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, loanId.hashCode, loanInstallmentId.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, idempotencyKey.hashCode, resultingStatus.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, loanId.hashCode, loanInstallmentId.hashCode, accountId.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, idempotencyKey.hashCode, resultingStatus.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -199,6 +210,9 @@ class RegisterLoanPaymentVariables {
     json['spaceId'] = nativeToJson<String>(spaceId);
     json['loanId'] = nativeToJson<String>(loanId);
     json['loanInstallmentId'] = nativeToJson<String>(loanInstallmentId);
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
+    }
     json['amountCents'] = bigIntToJson(amountCents);
     json['paidAt'] = paidAt.toJson();
     if(notes.state == OptionalState.set) {
@@ -215,6 +229,7 @@ class RegisterLoanPaymentVariables {
     required this.spaceId,
     required this.loanId,
     required this.loanInstallmentId,
+    required this.accountId,
     required this.amountCents,
     required this.paidAt,
     required this.notes,

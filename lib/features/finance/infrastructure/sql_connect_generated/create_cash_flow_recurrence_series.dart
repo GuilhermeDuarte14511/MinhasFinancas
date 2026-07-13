@@ -3,6 +3,7 @@ part of 'client.dart';
 class CreateCashFlowRecurrenceSeriesVariablesBuilder {
   String spaceId;
   Optional<String> _categoryId = Optional.optional(nativeFromJson, nativeToJson);
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   CashFlowDirection direction;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -19,6 +20,10 @@ class CreateCashFlowRecurrenceSeriesVariablesBuilder {
 
   final FirebaseDataConnect _dataConnect;  CreateCashFlowRecurrenceSeriesVariablesBuilder categoryId(String? t) {
    _categoryId.value = t;
+   return this;
+  }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
    return this;
   }
   CreateCashFlowRecurrenceSeriesVariablesBuilder notes(String? t) {
@@ -50,7 +55,7 @@ class CreateCashFlowRecurrenceSeriesVariablesBuilder {
   }
 
   MutationRef<CreateCashFlowRecurrenceSeriesData, CreateCashFlowRecurrenceSeriesVariables> ref() {
-    CreateCashFlowRecurrenceSeriesVariables vars= CreateCashFlowRecurrenceSeriesVariables(spaceId: spaceId,categoryId: _categoryId,direction: direction,kind: kind,paymentMethod: paymentMethod,description: description,amountCents: amountCents,notes: _notes,frequency: frequency,startDate: startDate,endDate: _endDate,occurrenceLimit: _occurrenceLimit,preferredDay: _preferredDay,nextOccurrenceDate: _nextOccurrenceDate,idempotencyKey: idempotencyKey,);
+    CreateCashFlowRecurrenceSeriesVariables vars= CreateCashFlowRecurrenceSeriesVariables(spaceId: spaceId,categoryId: _categoryId,accountId: _accountId,direction: direction,kind: kind,paymentMethod: paymentMethod,description: description,amountCents: amountCents,notes: _notes,frequency: frequency,startDate: startDate,endDate: _endDate,occurrenceLimit: _occurrenceLimit,preferredDay: _preferredDay,nextOccurrenceDate: _nextOccurrenceDate,idempotencyKey: idempotencyKey,);
     return _dataConnect.mutation("CreateCashFlowRecurrenceSeries", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -166,6 +171,7 @@ class CreateCashFlowRecurrenceSeriesData {
 class CreateCashFlowRecurrenceSeriesVariables {
   final String spaceId;
   late final Optional<String>categoryId;
+  late final Optional<String>accountId;
   final CashFlowDirection direction;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -196,6 +202,10 @@ class CreateCashFlowRecurrenceSeriesVariables {
   
     categoryId = Optional.optional(nativeFromJson, nativeToJson);
     categoryId.value = json['categoryId'] == null ? null : nativeFromJson<String>(json['categoryId']);
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -238,6 +248,7 @@ class CreateCashFlowRecurrenceSeriesVariables {
     final CreateCashFlowRecurrenceSeriesVariables otherTyped = other as CreateCashFlowRecurrenceSeriesVariables;
     return spaceId == otherTyped.spaceId && 
     categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     direction == otherTyped.direction && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -254,7 +265,7 @@ class CreateCashFlowRecurrenceSeriesVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, notes.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, occurrenceLimit.hashCode, preferredDay.hashCode, nextOccurrenceDate.hashCode, idempotencyKey.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, accountId.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, notes.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, occurrenceLimit.hashCode, preferredDay.hashCode, nextOccurrenceDate.hashCode, idempotencyKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -262,6 +273,9 @@ class CreateCashFlowRecurrenceSeriesVariables {
     json['spaceId'] = nativeToJson<String>(spaceId);
     if(categoryId.state == OptionalState.set) {
       json['categoryId'] = categoryId.toJson();
+    }
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
     }
     json['direction'] = 
     direction.name
@@ -300,6 +314,7 @@ class CreateCashFlowRecurrenceSeriesVariables {
   CreateCashFlowRecurrenceSeriesVariables({
     required this.spaceId,
     required this.categoryId,
+    required this.accountId,
     required this.direction,
     required this.kind,
     required this.paymentMethod,

@@ -68,6 +68,7 @@ final class CashFlowEntry {
     this.notes,
     this.sourceType,
     this.sourceEntityId,
+    this.accountId,
     this.recurrenceSeriesId,
     this.occurrenceIndex,
     this.isRecurrenceException = false,
@@ -90,6 +91,7 @@ final class CashFlowEntry {
   final String? notes;
   final String? sourceType;
   final String? sourceEntityId;
+  final String? accountId;
   final String? recurrenceSeriesId;
   final int? occurrenceIndex;
   final bool isRecurrenceException;

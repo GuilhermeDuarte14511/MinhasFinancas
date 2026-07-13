@@ -3,6 +3,7 @@ part of 'client.dart';
 class CreateScheduledIncomeEntryVariablesBuilder {
   String spaceId;
   Optional<String> _categoryId = Optional.optional(nativeFromJson, nativeToJson);
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   String description;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -14,6 +15,10 @@ class CreateScheduledIncomeEntryVariablesBuilder {
 
   final FirebaseDataConnect _dataConnect;  CreateScheduledIncomeEntryVariablesBuilder categoryId(String? t) {
    _categoryId.value = t;
+   return this;
+  }
+  CreateScheduledIncomeEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
    return this;
   }
   CreateScheduledIncomeEntryVariablesBuilder notes(String? t) {
@@ -29,7 +34,7 @@ class CreateScheduledIncomeEntryVariablesBuilder {
   }
 
   MutationRef<CreateScheduledIncomeEntryData, CreateScheduledIncomeEntryVariables> ref() {
-    CreateScheduledIncomeEntryVariables vars= CreateScheduledIncomeEntryVariables(spaceId: spaceId,categoryId: _categoryId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
+    CreateScheduledIncomeEntryVariables vars= CreateScheduledIncomeEntryVariables(spaceId: spaceId,categoryId: _categoryId,accountId: _accountId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,occurredAt: occurredAt,competenceMonth: competenceMonth,notes: _notes,idempotencyKey: idempotencyKey,);
     return _dataConnect.mutation("CreateScheduledIncomeEntry", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -145,6 +150,7 @@ class CreateScheduledIncomeEntryData {
 class CreateScheduledIncomeEntryVariables {
   final String spaceId;
   late final Optional<String>categoryId;
+  late final Optional<String>accountId;
   final String description;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -171,6 +177,10 @@ class CreateScheduledIncomeEntryVariables {
     categoryId.value = json['categoryId'] == null ? null : nativeFromJson<String>(json['categoryId']);
   
   
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
+  
+  
   
   
   
@@ -194,6 +204,7 @@ class CreateScheduledIncomeEntryVariables {
     final CreateScheduledIncomeEntryVariables otherTyped = other as CreateScheduledIncomeEntryVariables;
     return spaceId == otherTyped.spaceId && 
     categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     description == otherTyped.description && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -205,7 +216,7 @@ class CreateScheduledIncomeEntryVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, categoryId.hashCode, accountId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, idempotencyKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -213,6 +224,9 @@ class CreateScheduledIncomeEntryVariables {
     json['spaceId'] = nativeToJson<String>(spaceId);
     if(categoryId.state == OptionalState.set) {
       json['categoryId'] = categoryId.toJson();
+    }
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
     }
     json['description'] = nativeToJson<String>(description);
     json['kind'] = 
@@ -234,6 +248,7 @@ class CreateScheduledIncomeEntryVariables {
   CreateScheduledIncomeEntryVariables({
     required this.spaceId,
     required this.categoryId,
+    required this.accountId,
     required this.description,
     required this.kind,
     required this.paymentMethod,

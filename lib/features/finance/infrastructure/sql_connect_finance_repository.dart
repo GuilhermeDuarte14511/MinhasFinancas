@@ -12,6 +12,7 @@ import '../../billing/domain/recurrence_schedule.dart' as schedule;
 import '../application/finance_repository.dart';
 import '../domain/cash_flow.dart' as cash;
 import '../domain/finance_models.dart' as domain;
+import '../domain/financial_planning.dart' as planning;
 import 'sql_connect_generated/client.dart' as sql;
 
 final class SqlConnectFinanceRepository implements FinanceRepository {
@@ -265,6 +266,60 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         loanDue: rulesByType['LOAN_INSTALLMENT_DUE']?.enabled ?? true,
         daysBefore: rulesByType['INVOICE_DUE']?.daysBefore ?? 3,
       ),
+      accounts: [
+        for (final account in data.financialAccounts)
+          planning.FinancialAccount(
+            id: account.id,
+            name: account.name,
+            institutionName: account.institutionName,
+            type: _financialAccountType(account.type),
+            openingBalance: Money.fromCents(
+              account.openingBalanceCents.toInt(),
+            ),
+            openingBalanceAt: account.openingBalanceAt.toDateTime(),
+            colorValue: _colorValue(account.colorHex),
+            includeInTotal: account.includeInTotal,
+          ),
+      ],
+      accountTransfers: [
+        for (final transfer in data.accountTransfers)
+          planning.AccountTransfer(
+            id: transfer.id,
+            fromAccountId: transfer.fromAccount.id,
+            toAccountId: transfer.toAccount.id,
+            amount: Money.fromCents(transfer.amountCents.toInt()),
+            transferredAt: transfer.transferredAt.toDateTime(),
+            notes: transfer.notes,
+          ),
+      ],
+      monthlyBudgets: [
+        for (final budget in data.monthlyBudgets)
+          planning.MonthlyBudget(
+            id: budget.id,
+            categoryId: budget.category.id,
+            categoryName: budget.category.name,
+            referenceMonth: budget.referenceMonth,
+            limit: Money.fromCents(budget.limitAmountCents.toInt()),
+          ),
+      ],
+      accountSettlements: [
+        for (final payment in data.invoicePayments)
+          if (payment.financialAccount case final account?)
+            planning.AccountSettlement(
+              id: payment.id,
+              accountId: account.id,
+              amount: Money.fromCents(payment.amountCents.toInt()),
+              paidAt: payment.paidAt.toDateTime(),
+            ),
+        for (final payment in data.loanPayments)
+          if (payment.financialAccount case final account?)
+            planning.AccountSettlement(
+              id: payment.id,
+              accountId: account.id,
+              amount: Money.fromCents(payment.amountCents.toInt()),
+              paidAt: payment.paidAt.toDateTime(),
+            ),
+      ],
     );
   }
 
@@ -424,6 +479,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required cash.CashFlowStatus status,
     cash.RecurrenceRule? recurrence,
     String? categoryId,
+    String? accountId,
     String? notes,
   }) async {
     if (status == cash.CashFlowStatus.cancelled) {
@@ -441,6 +497,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
         status: status,
         recurrence: recurrence!,
         categoryId: categoryId,
+        accountId: accountId,
         notes: notes,
       );
       return;
@@ -460,22 +517,24 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
                 idempotencyKey: idempotencyKey,
               )
               ..categoryId(categoryId)
+              ..accountId(accountId)
               ..notes(_optionalText(notes)))
             .execute();
         return;
       }
-      await _client
-          .createIncomeEntry(
-            spaceId: spaceId,
-            description: description.trim(),
-            kind: _sqlCashFlowKind(kind),
-            paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
-            amountCents: BigInt.from(amount.cents),
-            occurredAt: _timestamp(occurredAt),
-            competenceMonth: competenceMonth,
-            idempotencyKey: idempotencyKey,
-          )
-          .notes(_optionalText(notes))
+      await (_client.createIncomeEntry(
+              spaceId: spaceId,
+              description: description.trim(),
+              kind: _sqlCashFlowKind(kind),
+              paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+              amountCents: BigInt.from(amount.cents),
+              occurredAt: _timestamp(occurredAt),
+              competenceMonth: competenceMonth,
+              idempotencyKey: idempotencyKey,
+            )
+            ..categoryId(categoryId)
+            ..accountId(accountId)
+            ..notes(_optionalText(notes)))
           .execute();
       return;
     }
@@ -483,8 +542,23 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
       throw StateError('Categoria obrigatória para uma saída.');
     }
     if (status == cash.CashFlowStatus.scheduled) {
-      await _client
-          .createPlannedExpenseEntry(
+      await (_client.createPlannedExpenseEntry(
+              spaceId: spaceId,
+              categoryId: categoryId,
+              description: description.trim(),
+              kind: _sqlCashFlowKind(kind),
+              paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
+              amountCents: BigInt.from(amount.cents),
+              occurredAt: _timestamp(occurredAt),
+              competenceMonth: competenceMonth,
+              idempotencyKey: idempotencyKey,
+            )
+            ..accountId(accountId)
+            ..notes(_optionalText(notes)))
+          .execute();
+      return;
+    }
+    await (_client.createExpenseEntry(
             spaceId: spaceId,
             categoryId: categoryId,
             description: description.trim(),
@@ -495,23 +569,8 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
             competenceMonth: competenceMonth,
             idempotencyKey: idempotencyKey,
           )
-          .notes(_optionalText(notes))
-          .execute();
-      return;
-    }
-    await _client
-        .createExpenseEntry(
-          spaceId: spaceId,
-          categoryId: categoryId,
-          description: description.trim(),
-          kind: _sqlCashFlowKind(kind),
-          paymentMethod: _sqlCashFlowPaymentMethod(paymentMethod),
-          amountCents: BigInt.from(amount.cents),
-          occurredAt: _timestamp(occurredAt),
-          competenceMonth: competenceMonth,
-          idempotencyKey: idempotencyKey,
-        )
-        .notes(_optionalText(notes))
+          ..accountId(accountId)
+          ..notes(_optionalText(notes)))
         .execute();
   }
 
@@ -530,6 +589,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required cash.CashFlowStatus status,
     required cash.RecurrenceScope scope,
     String? categoryId,
+    String? accountId,
     String? notes,
   }) async {
     final sqlStatus = _sqlCashFlowStatus(status, direction);
@@ -550,6 +610,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
               status: sqlStatus,
             )
             ..categoryId(categoryId)
+            ..accountId(accountId)
             ..notes(_optionalText(notes))
             ..receivedAt(
               direction == cash.CashFlowDirection.income ? realizedAt : null,
@@ -578,6 +639,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
               entryStatus: sqlStatus,
             )
             ..categoryId(categoryId)
+            ..accountId(accountId)
             ..notes(_optionalText(notes))
             ..receivedAt(
               direction == cash.CashFlowDirection.income ? realizedAt : null,
@@ -599,6 +661,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
             entryStatus: sqlStatus,
           )
           ..categoryId(categoryId)
+          ..accountId(accountId)
           ..notes(_optionalText(notes))
           ..receivedAt(
             direction == cash.CashFlowDirection.income ? realizedAt : null,
@@ -686,6 +749,121 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
           scope: sql.CashFlowMutationScope.ENTIRE_SERIES,
           reason: 'Série excluída pelo usuário',
         )
+        .execute();
+  }
+
+  @override
+  Future<void> createAccount({
+    required String spaceId,
+    required String name,
+    required planning.FinancialAccountType type,
+    required Money openingBalance,
+    required DateTime openingBalanceAt,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  }) async {
+    await (_client.createFinancialAccount(
+      spaceId: spaceId,
+      name: name.trim(),
+      normalizedName: name.trim().toLowerCase(),
+      type: _sqlFinancialAccountType(type),
+      openingBalanceCents: BigInt.from(openingBalance.cents),
+      openingBalanceAt: _timestamp(openingBalanceAt),
+      colorHex: _colorHex(colorValue),
+      includeInTotal: includeInTotal,
+    )..institutionName(_optionalText(institutionName))).execute();
+  }
+
+  @override
+  Future<void> updateAccount({
+    required String spaceId,
+    required String accountId,
+    required String name,
+    required planning.FinancialAccountType type,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  }) async {
+    await (_client.updateFinancialAccount(
+      spaceId: spaceId,
+      accountId: accountId,
+      name: name.trim(),
+      normalizedName: name.trim().toLowerCase(),
+      type: _sqlFinancialAccountType(type),
+      colorHex: _colorHex(colorValue),
+      includeInTotal: includeInTotal,
+    )..institutionName(_optionalText(institutionName))).execute();
+  }
+
+  @override
+  Future<void> archiveAccount({
+    required String spaceId,
+    required String accountId,
+  }) async {
+    await _client
+        .archiveFinancialAccount(spaceId: spaceId, accountId: accountId)
+        .execute();
+  }
+
+  @override
+  Future<void> createAccountTransfer({
+    required String spaceId,
+    required String fromAccountId,
+    required String toAccountId,
+    required Money amount,
+    required DateTime transferredAt,
+    String? notes,
+  }) async {
+    await (_client.createAccountTransfer(
+      spaceId: spaceId,
+      fromAccountId: fromAccountId,
+      toAccountId: toAccountId,
+      amountCents: BigInt.from(amount.cents),
+      transferredAt: _timestamp(transferredAt),
+      idempotencyKey: _secureToken(),
+    )..notes(_optionalText(notes))).execute();
+  }
+
+  @override
+  Future<void> cancelAccountTransfer({
+    required String spaceId,
+    required String transferId,
+  }) async {
+    await _client
+        .cancelAccountTransfer(spaceId: spaceId, transferId: transferId)
+        .execute();
+  }
+
+  @override
+  Future<void> setMonthlyBudget({
+    required String spaceId,
+    required String categoryId,
+    required DateTime referenceMonth,
+    required Money limit,
+  }) async {
+    final month = DateTime(referenceMonth.year, referenceMonth.month);
+    final key = sha256.convert(
+      utf8.encode('$spaceId:$categoryId:${month.toIso8601String()}'),
+    );
+    await _client
+        .setMonthlyBudget(
+          id: _uuidFromHash(key.toString()),
+          spaceId: spaceId,
+          categoryId: categoryId,
+          referenceMonth: month,
+          limitAmountCents: BigInt.from(limit.cents),
+        )
+        .execute();
+  }
+
+  @override
+  Future<void> deleteMonthlyBudget({
+    required String spaceId,
+    required String budgetId,
+  }) async {
+    await _client
+        .deleteMonthlyBudget(spaceId: spaceId, budgetId: budgetId)
         .execute();
   }
 
@@ -876,29 +1054,26 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   }) async {
     if (amount.cents >= pendingBeforePayment.cents) {
-      await _client
-          .registerFullInvoicePayment(
-            spaceId: spaceId,
-            invoiceId: invoiceId,
-            amountCents: BigInt.from(amount.cents),
-            paidAt: _timestamp(paidAt),
-            idempotencyKey: _secureToken(),
-          )
-          .execute();
+      await (_client.registerFullInvoicePayment(
+        spaceId: spaceId,
+        invoiceId: invoiceId,
+        amountCents: BigInt.from(amount.cents),
+        paidAt: _timestamp(paidAt),
+        idempotencyKey: _secureToken(),
+      )..accountId(accountId)).execute();
       return;
     }
-    await _client
-        .registerInvoicePayment(
-          spaceId: spaceId,
-          invoiceId: invoiceId,
-          amountCents: BigInt.from(amount.cents),
-          paidAt: _timestamp(paidAt),
-          idempotencyKey: _secureToken(),
-          resultingStatus: sql.InvoiceStatus.PARTIALLY_PAID,
-        )
-        .execute();
+    await (_client.registerInvoicePayment(
+      spaceId: spaceId,
+      invoiceId: invoiceId,
+      amountCents: BigInt.from(amount.cents),
+      paidAt: _timestamp(paidAt),
+      idempotencyKey: _secureToken(),
+      resultingStatus: sql.InvoiceStatus.PARTIALLY_PAID,
+    )..accountId(accountId)).execute();
   }
 
   @override
@@ -972,20 +1147,19 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   }) async {
-    await _client
-        .registerLoanPayment(
-          spaceId: spaceId,
-          loanId: loanId,
-          loanInstallmentId: installmentId,
-          amountCents: BigInt.from(amount.cents),
-          paidAt: _timestamp(paidAt),
-          idempotencyKey: _secureToken(),
-          resultingStatus: amount.cents >= pendingBeforePayment.cents
-              ? sql.LoanInstallmentStatus.PAID
-              : sql.LoanInstallmentStatus.PARTIALLY_PAID,
-        )
-        .execute();
+    await (_client.registerLoanPayment(
+      spaceId: spaceId,
+      loanId: loanId,
+      loanInstallmentId: installmentId,
+      amountCents: BigInt.from(amount.cents),
+      paidAt: _timestamp(paidAt),
+      idempotencyKey: _secureToken(),
+      resultingStatus: amount.cents >= pendingBeforePayment.cents
+          ? sql.LoanInstallmentStatus.PAID
+          : sql.LoanInstallmentStatus.PARTIALLY_PAID,
+    )..accountId(accountId)).execute();
   }
 
   @override
@@ -1042,6 +1216,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     required cash.CashFlowStatus status,
     required cash.RecurrenceRule recurrence,
     required String? categoryId,
+    required String? accountId,
     required String? notes,
   }) async {
     if (direction == cash.CashFlowDirection.expense && categoryId == null) {
@@ -1065,6 +1240,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
             idempotencyKey: _secureToken(),
           )
           ..categoryId(categoryId)
+          ..accountId(accountId)
           ..notes(_optionalText(notes))
           ..endDate(recurrence.endDate)
           ..occurrenceLimit(recurrence.occurrenceCount)
@@ -1267,6 +1443,7 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     notes: entry.notes,
     sourceType: entry.sourceType,
     sourceEntityId: entry.sourceEntityId,
+    accountId: entry.financialAccount?.id,
     recurrenceSeriesId: entry.recurrenceSeries?.id,
     occurrenceIndex: entry.occurrenceIndex,
     isRecurrenceException: entry.isRecurrenceException,
@@ -1492,6 +1669,27 @@ final class SqlConnectFinanceRepository implements FinanceRepository {
     'SUSPENDED' => domain.MembershipStatus.suspended,
     'REMOVED' => domain.MembershipStatus.removed,
     _ => domain.MembershipStatus.active,
+  };
+
+  static planning.FinancialAccountType _financialAccountType(
+    sql.EnumValue<sql.FinancialAccountType> type,
+  ) => switch (type.stringValue) {
+    'CHECKING' => planning.FinancialAccountType.checking,
+    'SAVINGS' => planning.FinancialAccountType.savings,
+    'CASH' => planning.FinancialAccountType.cash,
+    'INVESTMENT' => planning.FinancialAccountType.investment,
+    _ => planning.FinancialAccountType.other,
+  };
+
+  static sql.FinancialAccountType _sqlFinancialAccountType(
+    planning.FinancialAccountType type,
+  ) => switch (type) {
+    planning.FinancialAccountType.checking => sql.FinancialAccountType.CHECKING,
+    planning.FinancialAccountType.savings => sql.FinancialAccountType.SAVINGS,
+    planning.FinancialAccountType.cash => sql.FinancialAccountType.CASH,
+    planning.FinancialAccountType.investment =>
+      sql.FinancialAccountType.INVESTMENT,
+    planning.FinancialAccountType.other => sql.FinancialAccountType.OTHER,
   };
 
   static cash.CashFlowDirection _cashFlowDirection(String value) =>

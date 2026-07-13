@@ -6,6 +6,7 @@ class UpdateCashFlowSeriesFromVariablesBuilder {
   CashFlowMutationScope scope;
   Timestamp cutoffAt;
   Optional<String> _categoryId = Optional.optional(nativeFromJson, nativeToJson);
+  Optional<String> _accountId = Optional.optional(nativeFromJson, nativeToJson);
   String description;
   CashFlowKind kind;
   CashFlowPaymentMethod paymentMethod;
@@ -17,6 +18,10 @@ class UpdateCashFlowSeriesFromVariablesBuilder {
 
   final FirebaseDataConnect _dataConnect;  UpdateCashFlowSeriesFromVariablesBuilder categoryId(String? t) {
    _categoryId.value = t;
+   return this;
+  }
+  UpdateCashFlowSeriesFromVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
    return this;
   }
   UpdateCashFlowSeriesFromVariablesBuilder notes(String? t) {
@@ -40,7 +45,7 @@ class UpdateCashFlowSeriesFromVariablesBuilder {
   }
 
   MutationRef<UpdateCashFlowSeriesFromData, UpdateCashFlowSeriesFromVariables> ref() {
-    UpdateCashFlowSeriesFromVariables vars= UpdateCashFlowSeriesFromVariables(spaceId: spaceId,seriesId: seriesId,scope: scope,cutoffAt: cutoffAt,categoryId: _categoryId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,notes: _notes,entryStatus: entryStatus,receivedAt: _receivedAt,paidAt: _paidAt,);
+    UpdateCashFlowSeriesFromVariables vars= UpdateCashFlowSeriesFromVariables(spaceId: spaceId,seriesId: seriesId,scope: scope,cutoffAt: cutoffAt,categoryId: _categoryId,accountId: _accountId,description: description,kind: kind,paymentMethod: paymentMethod,amountCents: amountCents,notes: _notes,entryStatus: entryStatus,receivedAt: _receivedAt,paidAt: _paidAt,);
     return _dataConnect.mutation("UpdateCashFlowSeriesFrom", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -127,6 +132,7 @@ class UpdateCashFlowSeriesFromVariables {
   final CashFlowMutationScope scope;
   final Timestamp cutoffAt;
   late final Optional<String>categoryId;
+  late final Optional<String>accountId;
   final String description;
   final CashFlowKind kind;
   final CashFlowPaymentMethod paymentMethod;
@@ -155,6 +161,10 @@ class UpdateCashFlowSeriesFromVariables {
   
     categoryId = Optional.optional(nativeFromJson, nativeToJson);
     categoryId.value = json['categoryId'] == null ? null : nativeFromJson<String>(json['categoryId']);
+  
+  
+    accountId = Optional.optional(nativeFromJson, nativeToJson);
+    accountId.value = json['accountId'] == null ? null : nativeFromJson<String>(json['accountId']);
   
   
   
@@ -189,6 +199,7 @@ class UpdateCashFlowSeriesFromVariables {
     scope == otherTyped.scope && 
     cutoffAt == otherTyped.cutoffAt && 
     categoryId == otherTyped.categoryId && 
+    accountId == otherTyped.accountId && 
     description == otherTyped.description && 
     kind == otherTyped.kind && 
     paymentMethod == otherTyped.paymentMethod && 
@@ -200,7 +211,7 @@ class UpdateCashFlowSeriesFromVariables {
     
   }
   @override
-  int get hashCode => Object.hashAll([spaceId.hashCode, seriesId.hashCode, scope.hashCode, cutoffAt.hashCode, categoryId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, notes.hashCode, entryStatus.hashCode, receivedAt.hashCode, paidAt.hashCode]);
+  int get hashCode => Object.hashAll([spaceId.hashCode, seriesId.hashCode, scope.hashCode, cutoffAt.hashCode, categoryId.hashCode, accountId.hashCode, description.hashCode, kind.hashCode, paymentMethod.hashCode, amountCents.hashCode, notes.hashCode, entryStatus.hashCode, receivedAt.hashCode, paidAt.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -213,6 +224,9 @@ class UpdateCashFlowSeriesFromVariables {
     json['cutoffAt'] = cutoffAt.toJson();
     if(categoryId.state == OptionalState.set) {
       json['categoryId'] = categoryId.toJson();
+    }
+    if(accountId.state == OptionalState.set) {
+      json['accountId'] = accountId.toJson();
     }
     json['description'] = nativeToJson<String>(description);
     json['kind'] = 
@@ -243,6 +257,7 @@ class UpdateCashFlowSeriesFromVariables {
     required this.scope,
     required this.cutoffAt,
     required this.categoryId,
+    required this.accountId,
     required this.description,
     required this.kind,
     required this.paymentMethod,

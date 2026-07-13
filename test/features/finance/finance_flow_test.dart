@@ -103,6 +103,9 @@ final class _FakeFinanceRepository implements FinanceRepository {
   MembershipRole currentRole = MembershipRole.owner;
 
   @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+
+  @override
   Future<List<WorkspaceSummary>> listMySpaces() async =>
       _space == null ? const [] : [_space!];
 
@@ -237,6 +240,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required CashFlowStatus status,
     RecurrenceRule? recurrence,
     String? categoryId,
+    String? accountId,
     String? notes,
   }) async {
     cashFlowDescription = description;
@@ -259,6 +263,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required CashFlowStatus status,
     required RecurrenceScope scope,
     String? categoryId,
+    String? accountId,
     String? notes,
   }) async {}
 
@@ -347,6 +352,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   }) async {}
 
   @override
@@ -368,6 +374,7 @@ final class _FakeFinanceRepository implements FinanceRepository {
     required Money amount,
     required Money pendingBeforePayment,
     required DateTime paidAt,
+    String? accountId,
   }) async {}
 
   @override

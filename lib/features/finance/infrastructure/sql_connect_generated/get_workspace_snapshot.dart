@@ -252,6 +252,296 @@ class GetWorkspaceSnapshotCategories {
 }
 
 @immutable
+class GetWorkspaceSnapshotFinancialAccounts {
+  final String id;
+  final String name;
+  final String? institutionName;
+  final EnumValue<FinancialAccountType> type;
+  final BigInt openingBalanceCents;
+  final Timestamp openingBalanceAt;
+  final String colorHex;
+  final bool includeInTotal;
+  GetWorkspaceSnapshotFinancialAccounts.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']),
+  institutionName = json['institutionName'] == null ? null : nativeFromJson<String>(json['institutionName']),
+  type = financialAccountTypeDeserializer(json['type']),
+  openingBalanceCents = bigIntFromJson(json['openingBalanceCents']),
+  openingBalanceAt = Timestamp.fromJson(json['openingBalanceAt']),
+  colorHex = nativeFromJson<String>(json['colorHex']),
+  includeInTotal = nativeFromJson<bool>(json['includeInTotal']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotFinancialAccounts otherTyped = other as GetWorkspaceSnapshotFinancialAccounts;
+    return id == otherTyped.id && 
+    name == otherTyped.name && 
+    institutionName == otherTyped.institutionName && 
+    type == otherTyped.type && 
+    openingBalanceCents == otherTyped.openingBalanceCents && 
+    openingBalanceAt == otherTyped.openingBalanceAt && 
+    colorHex == otherTyped.colorHex && 
+    includeInTotal == otherTyped.includeInTotal;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode, institutionName.hashCode, type.hashCode, openingBalanceCents.hashCode, openingBalanceAt.hashCode, colorHex.hashCode, includeInTotal.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['name'] = nativeToJson<String>(name);
+    if (institutionName != null) {
+      json['institutionName'] = nativeToJson<String?>(institutionName);
+    }
+    json['type'] = 
+    financialAccountTypeSerializer(type)
+    ;
+    json['openingBalanceCents'] = bigIntToJson(openingBalanceCents);
+    json['openingBalanceAt'] = openingBalanceAt.toJson();
+    json['colorHex'] = nativeToJson<String>(colorHex);
+    json['includeInTotal'] = nativeToJson<bool>(includeInTotal);
+    return json;
+  }
+
+  GetWorkspaceSnapshotFinancialAccounts({
+    required this.id,
+    required this.name,
+    this.institutionName,
+    required this.type,
+    required this.openingBalanceCents,
+    required this.openingBalanceAt,
+    required this.colorHex,
+    required this.includeInTotal,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotAccountTransfers {
+  final String id;
+  final BigInt amountCents;
+  final Timestamp transferredAt;
+  final String? notes;
+  final GetWorkspaceSnapshotAccountTransfersFromAccount fromAccount;
+  final GetWorkspaceSnapshotAccountTransfersToAccount toAccount;
+  GetWorkspaceSnapshotAccountTransfers.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  transferredAt = Timestamp.fromJson(json['transferredAt']),
+  notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
+  fromAccount = GetWorkspaceSnapshotAccountTransfersFromAccount.fromJson(json['fromAccount']),
+  toAccount = GetWorkspaceSnapshotAccountTransfersToAccount.fromJson(json['toAccount']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotAccountTransfers otherTyped = other as GetWorkspaceSnapshotAccountTransfers;
+    return id == otherTyped.id && 
+    amountCents == otherTyped.amountCents && 
+    transferredAt == otherTyped.transferredAt && 
+    notes == otherTyped.notes && 
+    fromAccount == otherTyped.fromAccount && 
+    toAccount == otherTyped.toAccount;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, amountCents.hashCode, transferredAt.hashCode, notes.hashCode, fromAccount.hashCode, toAccount.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['amountCents'] = bigIntToJson(amountCents);
+    json['transferredAt'] = transferredAt.toJson();
+    if (notes != null) {
+      json['notes'] = nativeToJson<String?>(notes);
+    }
+    json['fromAccount'] = fromAccount.toJson();
+    json['toAccount'] = toAccount.toJson();
+    return json;
+  }
+
+  GetWorkspaceSnapshotAccountTransfers({
+    required this.id,
+    required this.amountCents,
+    required this.transferredAt,
+    this.notes,
+    required this.fromAccount,
+    required this.toAccount,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotAccountTransfersFromAccount {
+  final String id;
+  GetWorkspaceSnapshotAccountTransfersFromAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotAccountTransfersFromAccount otherTyped = other as GetWorkspaceSnapshotAccountTransfersFromAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotAccountTransfersFromAccount({
+    required this.id,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotAccountTransfersToAccount {
+  final String id;
+  GetWorkspaceSnapshotAccountTransfersToAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotAccountTransfersToAccount otherTyped = other as GetWorkspaceSnapshotAccountTransfersToAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotAccountTransfersToAccount({
+    required this.id,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotMonthlyBudgets {
+  final String id;
+  final DateTime referenceMonth;
+  final BigInt limitAmountCents;
+  final GetWorkspaceSnapshotMonthlyBudgetsCategory category;
+  GetWorkspaceSnapshotMonthlyBudgets.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  referenceMonth = nativeFromJson<DateTime>(json['referenceMonth']),
+  limitAmountCents = bigIntFromJson(json['limitAmountCents']),
+  category = GetWorkspaceSnapshotMonthlyBudgetsCategory.fromJson(json['category']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotMonthlyBudgets otherTyped = other as GetWorkspaceSnapshotMonthlyBudgets;
+    return id == otherTyped.id && 
+    referenceMonth == otherTyped.referenceMonth && 
+    limitAmountCents == otherTyped.limitAmountCents && 
+    category == otherTyped.category;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, referenceMonth.hashCode, limitAmountCents.hashCode, category.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['referenceMonth'] = nativeToJson<DateTime>(referenceMonth);
+    json['limitAmountCents'] = bigIntToJson(limitAmountCents);
+    json['category'] = category.toJson();
+    return json;
+  }
+
+  GetWorkspaceSnapshotMonthlyBudgets({
+    required this.id,
+    required this.referenceMonth,
+    required this.limitAmountCents,
+    required this.category,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotMonthlyBudgetsCategory {
+  final String id;
+  final String name;
+  GetWorkspaceSnapshotMonthlyBudgetsCategory.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  name = nativeFromJson<String>(json['name']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotMonthlyBudgetsCategory otherTyped = other as GetWorkspaceSnapshotMonthlyBudgetsCategory;
+    return id == otherTyped.id && 
+    name == otherTyped.name;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, name.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['name'] = nativeToJson<String>(name);
+    return json;
+  }
+
+  GetWorkspaceSnapshotMonthlyBudgetsCategory({
+    required this.id,
+    required this.name,
+  });
+}
+
+@immutable
 class GetWorkspaceSnapshotCreditCards {
   final String id;
   final String nickname;
@@ -645,6 +935,7 @@ class GetWorkspaceSnapshotCashFlowEntries {
   final String? sourceType;
   final String? sourceEntityId;
   final GetWorkspaceSnapshotCashFlowEntriesCategory? category;
+  final GetWorkspaceSnapshotCashFlowEntriesFinancialAccount? financialAccount;
   final GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries? recurrenceSeries;
   final GetWorkspaceSnapshotCashFlowEntriesCreatedByUser createdByUser;
   GetWorkspaceSnapshotCashFlowEntries.fromJson(dynamic json):
@@ -666,6 +957,7 @@ class GetWorkspaceSnapshotCashFlowEntries {
   sourceType = json['sourceType'] == null ? null : nativeFromJson<String>(json['sourceType']),
   sourceEntityId = json['sourceEntityId'] == null ? null : nativeFromJson<String>(json['sourceEntityId']),
   category = json['category'] == null ? null : GetWorkspaceSnapshotCashFlowEntriesCategory.fromJson(json['category']),
+  financialAccount = json['financialAccount'] == null ? null : GetWorkspaceSnapshotCashFlowEntriesFinancialAccount.fromJson(json['financialAccount']),
   recurrenceSeries = json['recurrenceSeries'] == null ? null : GetWorkspaceSnapshotCashFlowEntriesRecurrenceSeries.fromJson(json['recurrenceSeries']),
   createdByUser = GetWorkspaceSnapshotCashFlowEntriesCreatedByUser.fromJson(json['createdByUser']);
   @override
@@ -695,12 +987,13 @@ class GetWorkspaceSnapshotCashFlowEntries {
     sourceType == otherTyped.sourceType && 
     sourceEntityId == otherTyped.sourceEntityId && 
     category == otherTyped.category && 
+    financialAccount == otherTyped.financialAccount && 
     recurrenceSeries == otherTyped.recurrenceSeries && 
     createdByUser == otherTyped.createdByUser;
     
   }
   @override
-  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, status.hashCode, occurrenceIndex.hashCode, isRecurrenceException.hashCode, receivedAt.hashCode, paidAt.hashCode, sourceType.hashCode, sourceEntityId.hashCode, category.hashCode, recurrenceSeries.hashCode, createdByUser.hashCode]);
+  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, occurredAt.hashCode, competenceMonth.hashCode, notes.hashCode, status.hashCode, occurrenceIndex.hashCode, isRecurrenceException.hashCode, receivedAt.hashCode, paidAt.hashCode, sourceType.hashCode, sourceEntityId.hashCode, category.hashCode, financialAccount.hashCode, recurrenceSeries.hashCode, createdByUser.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -744,6 +1037,9 @@ class GetWorkspaceSnapshotCashFlowEntries {
     if (category != null) {
       json['category'] = category!.toJson();
     }
+    if (financialAccount != null) {
+      json['financialAccount'] = financialAccount!.toJson();
+    }
     if (recurrenceSeries != null) {
       json['recurrenceSeries'] = recurrenceSeries!.toJson();
     }
@@ -769,6 +1065,7 @@ class GetWorkspaceSnapshotCashFlowEntries {
     this.sourceType,
     this.sourceEntityId,
     this.category,
+    this.financialAccount,
     this.recurrenceSeries,
     required this.createdByUser,
   });
@@ -810,6 +1107,40 @@ class GetWorkspaceSnapshotCashFlowEntriesCategory {
   GetWorkspaceSnapshotCashFlowEntriesCategory({
     required this.id,
     required this.name,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotCashFlowEntriesFinancialAccount {
+  final String id;
+  GetWorkspaceSnapshotCashFlowEntriesFinancialAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotCashFlowEntriesFinancialAccount otherTyped = other as GetWorkspaceSnapshotCashFlowEntriesFinancialAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotCashFlowEntriesFinancialAccount({
+    required this.id,
   });
 }
 
@@ -936,6 +1267,7 @@ class GetWorkspaceSnapshotRecurrenceSeries {
   final DateTime? nextOccurrenceDate;
   final EnumValue<CashFlowRecurrenceSeriesStatus> status;
   final GetWorkspaceSnapshotRecurrenceSeriesCategory? category;
+  final GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount? financialAccount;
   GetWorkspaceSnapshotRecurrenceSeries.fromJson(dynamic json):
   
   id = nativeFromJson<String>(json['id']),
@@ -952,7 +1284,8 @@ class GetWorkspaceSnapshotRecurrenceSeries {
   preferredDay = json['preferredDay'] == null ? null : nativeFromJson<int>(json['preferredDay']),
   nextOccurrenceDate = json['nextOccurrenceDate'] == null ? null : nativeFromJson<DateTime>(json['nextOccurrenceDate']),
   status = cashFlowRecurrenceSeriesStatusDeserializer(json['status']),
-  category = json['category'] == null ? null : GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(json['category']);
+  category = json['category'] == null ? null : GetWorkspaceSnapshotRecurrenceSeriesCategory.fromJson(json['category']),
+  financialAccount = json['financialAccount'] == null ? null : GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount.fromJson(json['financialAccount']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -977,11 +1310,12 @@ class GetWorkspaceSnapshotRecurrenceSeries {
     preferredDay == otherTyped.preferredDay && 
     nextOccurrenceDate == otherTyped.nextOccurrenceDate && 
     status == otherTyped.status && 
-    category == otherTyped.category;
+    category == otherTyped.category && 
+    financialAccount == otherTyped.financialAccount;
     
   }
   @override
-  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, notes.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, occurrenceLimit.hashCode, preferredDay.hashCode, nextOccurrenceDate.hashCode, status.hashCode, category.hashCode]);
+  int get hashCode => Object.hashAll([id.hashCode, direction.hashCode, kind.hashCode, paymentMethod.hashCode, description.hashCode, amountCents.hashCode, notes.hashCode, frequency.hashCode, startDate.hashCode, endDate.hashCode, occurrenceLimit.hashCode, preferredDay.hashCode, nextOccurrenceDate.hashCode, status.hashCode, category.hashCode, financialAccount.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -1023,6 +1357,9 @@ class GetWorkspaceSnapshotRecurrenceSeries {
     if (category != null) {
       json['category'] = category!.toJson();
     }
+    if (financialAccount != null) {
+      json['financialAccount'] = financialAccount!.toJson();
+    }
     return json;
   }
 
@@ -1042,6 +1379,7 @@ class GetWorkspaceSnapshotRecurrenceSeries {
     this.nextOccurrenceDate,
     required this.status,
     this.category,
+    this.financialAccount,
   });
 }
 
@@ -1081,6 +1419,40 @@ class GetWorkspaceSnapshotRecurrenceSeriesCategory {
   GetWorkspaceSnapshotRecurrenceSeriesCategory({
     required this.id,
     required this.name,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount {
+  final String id;
+  GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount otherTyped = other as GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotRecurrenceSeriesFinancialAccount({
+    required this.id,
   });
 }
 
@@ -1341,6 +1713,7 @@ class GetWorkspaceSnapshotInvoicePayments {
   final String? notes;
   final EnumValue<PaymentStatus> status;
   final GetWorkspaceSnapshotInvoicePaymentsInvoice invoice;
+  final GetWorkspaceSnapshotInvoicePaymentsFinancialAccount? financialAccount;
   final GetWorkspaceSnapshotInvoicePaymentsCreatedByUser createdByUser;
   GetWorkspaceSnapshotInvoicePayments.fromJson(dynamic json):
   
@@ -1350,6 +1723,7 @@ class GetWorkspaceSnapshotInvoicePayments {
   notes = json['notes'] == null ? null : nativeFromJson<String>(json['notes']),
   status = paymentStatusDeserializer(json['status']),
   invoice = GetWorkspaceSnapshotInvoicePaymentsInvoice.fromJson(json['invoice']),
+  financialAccount = json['financialAccount'] == null ? null : GetWorkspaceSnapshotInvoicePaymentsFinancialAccount.fromJson(json['financialAccount']),
   createdByUser = GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(json['createdByUser']);
   @override
   bool operator ==(Object other) {
@@ -1367,11 +1741,12 @@ class GetWorkspaceSnapshotInvoicePayments {
     notes == otherTyped.notes && 
     status == otherTyped.status && 
     invoice == otherTyped.invoice && 
+    financialAccount == otherTyped.financialAccount && 
     createdByUser == otherTyped.createdByUser;
     
   }
   @override
-  int get hashCode => Object.hashAll([id.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, status.hashCode, invoice.hashCode, createdByUser.hashCode]);
+  int get hashCode => Object.hashAll([id.hashCode, amountCents.hashCode, paidAt.hashCode, notes.hashCode, status.hashCode, invoice.hashCode, financialAccount.hashCode, createdByUser.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -1386,6 +1761,9 @@ class GetWorkspaceSnapshotInvoicePayments {
     paymentStatusSerializer(status)
     ;
     json['invoice'] = invoice.toJson();
+    if (financialAccount != null) {
+      json['financialAccount'] = financialAccount!.toJson();
+    }
     json['createdByUser'] = createdByUser.toJson();
     return json;
   }
@@ -1397,6 +1775,7 @@ class GetWorkspaceSnapshotInvoicePayments {
     this.notes,
     required this.status,
     required this.invoice,
+    this.financialAccount,
     required this.createdByUser,
   });
 }
@@ -1436,6 +1815,40 @@ class GetWorkspaceSnapshotInvoicePaymentsInvoice {
 }
 
 @immutable
+class GetWorkspaceSnapshotInvoicePaymentsFinancialAccount {
+  final String id;
+  GetWorkspaceSnapshotInvoicePaymentsFinancialAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotInvoicePaymentsFinancialAccount otherTyped = other as GetWorkspaceSnapshotInvoicePaymentsFinancialAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotInvoicePaymentsFinancialAccount({
+    required this.id,
+  });
+}
+
+@immutable
 class GetWorkspaceSnapshotInvoicePaymentsCreatedByUser {
   final String displayName;
   GetWorkspaceSnapshotInvoicePaymentsCreatedByUser.fromJson(dynamic json):
@@ -1466,6 +1879,91 @@ class GetWorkspaceSnapshotInvoicePaymentsCreatedByUser {
 
   GetWorkspaceSnapshotInvoicePaymentsCreatedByUser({
     required this.displayName,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotLoanPayments {
+  final String id;
+  final BigInt amountCents;
+  final Timestamp paidAt;
+  final GetWorkspaceSnapshotLoanPaymentsFinancialAccount? financialAccount;
+  GetWorkspaceSnapshotLoanPayments.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']),
+  amountCents = bigIntFromJson(json['amountCents']),
+  paidAt = Timestamp.fromJson(json['paidAt']),
+  financialAccount = json['financialAccount'] == null ? null : GetWorkspaceSnapshotLoanPaymentsFinancialAccount.fromJson(json['financialAccount']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotLoanPayments otherTyped = other as GetWorkspaceSnapshotLoanPayments;
+    return id == otherTyped.id && 
+    amountCents == otherTyped.amountCents && 
+    paidAt == otherTyped.paidAt && 
+    financialAccount == otherTyped.financialAccount;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([id.hashCode, amountCents.hashCode, paidAt.hashCode, financialAccount.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    json['amountCents'] = bigIntToJson(amountCents);
+    json['paidAt'] = paidAt.toJson();
+    if (financialAccount != null) {
+      json['financialAccount'] = financialAccount!.toJson();
+    }
+    return json;
+  }
+
+  GetWorkspaceSnapshotLoanPayments({
+    required this.id,
+    required this.amountCents,
+    required this.paidAt,
+    this.financialAccount,
+  });
+}
+
+@immutable
+class GetWorkspaceSnapshotLoanPaymentsFinancialAccount {
+  final String id;
+  GetWorkspaceSnapshotLoanPaymentsFinancialAccount.fromJson(dynamic json):
+  
+  id = nativeFromJson<String>(json['id']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetWorkspaceSnapshotLoanPaymentsFinancialAccount otherTyped = other as GetWorkspaceSnapshotLoanPaymentsFinancialAccount;
+    return id == otherTyped.id;
+    
+  }
+  @override
+  int get hashCode => id.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['id'] = nativeToJson<String>(id);
+    return json;
+  }
+
+  GetWorkspaceSnapshotLoanPaymentsFinancialAccount({
+    required this.id,
   });
 }
 
@@ -1937,6 +2435,9 @@ class GetWorkspaceSnapshotData {
   final GetWorkspaceSnapshotFinancialSpace? financialSpace;
   final List<GetWorkspaceSnapshotSpaceMembers> spaceMembers;
   final List<GetWorkspaceSnapshotCategories> categories;
+  final List<GetWorkspaceSnapshotFinancialAccounts> financialAccounts;
+  final List<GetWorkspaceSnapshotAccountTransfers> accountTransfers;
+  final List<GetWorkspaceSnapshotMonthlyBudgets> monthlyBudgets;
   final List<GetWorkspaceSnapshotCreditCards> creditCards;
   final List<GetWorkspaceSnapshotPurchases> purchases;
   final List<GetWorkspaceSnapshotCashFlowEntries> cashFlowEntries;
@@ -1944,6 +2445,7 @@ class GetWorkspaceSnapshotData {
   final List<GetWorkspaceSnapshotCreditCardInvoices> creditCardInvoices;
   final List<GetWorkspaceSnapshotPurchaseInstallments> purchaseInstallments;
   final List<GetWorkspaceSnapshotInvoicePayments> invoicePayments;
+  final List<GetWorkspaceSnapshotLoanPayments> loanPayments;
   final List<GetWorkspaceSnapshotLoans> loans;
   final List<GetWorkspaceSnapshotLoanInstallments> loanInstallments;
   final List<GetWorkspaceSnapshotNotificationPreferences> notificationPreferences;
@@ -1957,6 +2459,15 @@ class GetWorkspaceSnapshotData {
         .toList(),
   categories = (json['categories'] as List<dynamic>)
         .map((e) => GetWorkspaceSnapshotCategories.fromJson(e))
+        .toList(),
+  financialAccounts = (json['financialAccounts'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotFinancialAccounts.fromJson(e))
+        .toList(),
+  accountTransfers = (json['accountTransfers'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotAccountTransfers.fromJson(e))
+        .toList(),
+  monthlyBudgets = (json['monthlyBudgets'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotMonthlyBudgets.fromJson(e))
         .toList(),
   creditCards = (json['creditCards'] as List<dynamic>)
         .map((e) => GetWorkspaceSnapshotCreditCards.fromJson(e))
@@ -1978,6 +2489,9 @@ class GetWorkspaceSnapshotData {
         .toList(),
   invoicePayments = (json['invoicePayments'] as List<dynamic>)
         .map((e) => GetWorkspaceSnapshotInvoicePayments.fromJson(e))
+        .toList(),
+  loanPayments = (json['loanPayments'] as List<dynamic>)
+        .map((e) => GetWorkspaceSnapshotLoanPayments.fromJson(e))
         .toList(),
   loans = (json['loans'] as List<dynamic>)
         .map((e) => GetWorkspaceSnapshotLoans.fromJson(e))
@@ -2007,6 +2521,9 @@ class GetWorkspaceSnapshotData {
     return financialSpace == otherTyped.financialSpace && 
     spaceMembers == otherTyped.spaceMembers && 
     categories == otherTyped.categories && 
+    financialAccounts == otherTyped.financialAccounts && 
+    accountTransfers == otherTyped.accountTransfers && 
+    monthlyBudgets == otherTyped.monthlyBudgets && 
     creditCards == otherTyped.creditCards && 
     purchases == otherTyped.purchases && 
     cashFlowEntries == otherTyped.cashFlowEntries && 
@@ -2014,6 +2531,7 @@ class GetWorkspaceSnapshotData {
     creditCardInvoices == otherTyped.creditCardInvoices && 
     purchaseInstallments == otherTyped.purchaseInstallments && 
     invoicePayments == otherTyped.invoicePayments && 
+    loanPayments == otherTyped.loanPayments && 
     loans == otherTyped.loans && 
     loanInstallments == otherTyped.loanInstallments && 
     notificationPreferences == otherTyped.notificationPreferences && 
@@ -2022,7 +2540,7 @@ class GetWorkspaceSnapshotData {
     
   }
   @override
-  int get hashCode => Object.hashAll([financialSpace.hashCode, spaceMembers.hashCode, categories.hashCode, creditCards.hashCode, purchases.hashCode, cashFlowEntries.hashCode, recurrenceSeries.hashCode, creditCardInvoices.hashCode, purchaseInstallments.hashCode, invoicePayments.hashCode, loans.hashCode, loanInstallments.hashCode, notificationPreferences.hashCode, notificationRules.hashCode, auditEvents.hashCode]);
+  int get hashCode => Object.hashAll([financialSpace.hashCode, spaceMembers.hashCode, categories.hashCode, financialAccounts.hashCode, accountTransfers.hashCode, monthlyBudgets.hashCode, creditCards.hashCode, purchases.hashCode, cashFlowEntries.hashCode, recurrenceSeries.hashCode, creditCardInvoices.hashCode, purchaseInstallments.hashCode, invoicePayments.hashCode, loanPayments.hashCode, loans.hashCode, loanInstallments.hashCode, notificationPreferences.hashCode, notificationRules.hashCode, auditEvents.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -2032,6 +2550,9 @@ class GetWorkspaceSnapshotData {
     }
     json['spaceMembers'] = spaceMembers.map((e) => e.toJson()).toList();
     json['categories'] = categories.map((e) => e.toJson()).toList();
+    json['financialAccounts'] = financialAccounts.map((e) => e.toJson()).toList();
+    json['accountTransfers'] = accountTransfers.map((e) => e.toJson()).toList();
+    json['monthlyBudgets'] = monthlyBudgets.map((e) => e.toJson()).toList();
     json['creditCards'] = creditCards.map((e) => e.toJson()).toList();
     json['purchases'] = purchases.map((e) => e.toJson()).toList();
     json['cashFlowEntries'] = cashFlowEntries.map((e) => e.toJson()).toList();
@@ -2039,6 +2560,7 @@ class GetWorkspaceSnapshotData {
     json['creditCardInvoices'] = creditCardInvoices.map((e) => e.toJson()).toList();
     json['purchaseInstallments'] = purchaseInstallments.map((e) => e.toJson()).toList();
     json['invoicePayments'] = invoicePayments.map((e) => e.toJson()).toList();
+    json['loanPayments'] = loanPayments.map((e) => e.toJson()).toList();
     json['loans'] = loans.map((e) => e.toJson()).toList();
     json['loanInstallments'] = loanInstallments.map((e) => e.toJson()).toList();
     json['notificationPreferences'] = notificationPreferences.map((e) => e.toJson()).toList();
@@ -2051,6 +2573,9 @@ class GetWorkspaceSnapshotData {
     this.financialSpace,
     required this.spaceMembers,
     required this.categories,
+    required this.financialAccounts,
+    required this.accountTransfers,
+    required this.monthlyBudgets,
     required this.creditCards,
     required this.purchases,
     required this.cashFlowEntries,
@@ -2058,6 +2583,7 @@ class GetWorkspaceSnapshotData {
     required this.creditCardInvoices,
     required this.purchaseInstallments,
     required this.invoicePayments,
+    required this.loanPayments,
     required this.loans,
     required this.loanInstallments,
     required this.notificationPreferences,

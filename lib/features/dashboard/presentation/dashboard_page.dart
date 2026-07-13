@@ -118,6 +118,14 @@ class DashboardPage extends ConsumerWidget {
     final overdueCount = dueItems.where((item) => item.isOverdue).length;
     final totalExpenses = cardExpenses + loanExpenses + otherExpenses;
     final balance = expectedIncome - totalExpenses;
+    final financialPosition = finance.financialPosition(now);
+    final budgetProgress = finance.budgetProgress(month);
+    final budgetLimit = _sumMoney(
+      budgetProgress.map((item) => item.budget.limit),
+    );
+    final budgetCommitted = _sumMoney(
+      budgetProgress.map((item) => item.committed),
+    );
     final monthName = toBeginningOfSentenceCase(
       DateFormat.MMMM('pt_BR').format(month),
     );
@@ -171,6 +179,20 @@ class DashboardPage extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              AnimatedPageEntry(
+                delay: const Duration(milliseconds: 110),
+                child: _PlanningOverview(
+                  hasAccounts: finance.accounts.isNotEmpty,
+                  currentBalance: financialPosition.currentBalance,
+                  projectedBalance: financialPosition.projectedBalance,
+                  hasBudgets: budgetProgress.isNotEmpty,
+                  budgetAvailable: budgetLimit - budgetCommitted,
+                  budgetUsage: budgetLimit.cents <= 0
+                      ? 0
+                      : budgetCommitted.cents / budgetLimit.cents,
                 ),
               ),
               const SizedBox(height: 26),
@@ -241,6 +263,125 @@ class DashboardPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _PlanningOverview extends StatelessWidget {
+  const _PlanningOverview({
+    required this.hasAccounts,
+    required this.currentBalance,
+    required this.projectedBalance,
+    required this.hasBudgets,
+    required this.budgetAvailable,
+    required this.budgetUsage,
+  });
+
+  final bool hasAccounts;
+  final Money currentBalance;
+  final Money projectedBalance;
+  final bool hasBudgets;
+  final Money budgetAvailable;
+  final double budgetUsage;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: AppColors.outline),
+    ),
+    child: Column(
+      children: [
+        _PlanningRow(
+          icon: Icons.account_balance_wallet_outlined,
+          title: 'Saldo nas contas',
+          value: hasAccounts ? currentBalance.format() : 'Configurar',
+          subtitle: hasAccounts
+              ? 'Previsto: ${projectedBalance.format()}'
+              : 'Cadastre onde seu dinheiro fica',
+          onTap: () => context.push('/accounts'),
+        ),
+        const Divider(height: 1),
+        _PlanningRow(
+          icon: Icons.donut_small_rounded,
+          title: 'Orçamento do mês',
+          value: hasBudgets ? budgetAvailable.format() : 'Definir limites',
+          subtitle: hasBudgets
+              ? '${(budgetUsage * 100).round()}% comprometido'
+              : 'Acompanhe os gastos por categoria',
+          isError: hasBudgets && budgetAvailable.isNegative,
+          onTap: () => context.push('/budgets'),
+        ),
+      ],
+    ),
+  );
+}
+
+class _PlanningRow extends StatelessWidget {
+  const _PlanningRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    required this.onTap,
+    this.isError = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final String subtitle;
+  final VoidCallback onTap;
+  final bool isError;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(18),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: AppColors.surfaceContainer,
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: isError ? AppColors.error : AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.chevron_right_rounded),
+        ],
+      ),
+    ),
+  );
 }
 
 class _RecentCashFlowList extends StatelessWidget {

@@ -25,6 +25,7 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
   final _formKey = GlobalKey<FormState>();
   Money _amount = const Money.zero();
   DateTime _paidAt = DateTime.now();
+  String? _accountId;
   bool _saving = false;
 
   Future<void> _save(LoanContract loan) async {
@@ -40,7 +41,12 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
         widget.onSubmit ??
         (String loanId, Money amount, DateTime paidAt) => ref
             .read(financeControllerProvider.notifier)
-            .payLoan(loanId: loanId, amount: amount, paidAt: paidAt);
+            .payLoan(
+              loanId: loanId,
+              amount: amount,
+              paidAt: paidAt,
+              accountId: _accountId,
+            );
     setState(() => _saving = true);
     try {
       await submit(widget.loanId, _amount, _paidAt);
@@ -62,7 +68,8 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loans = ref.watch(financeControllerProvider).loans;
+    final finance = ref.watch(financeControllerProvider);
+    final loans = finance.loans;
     final loan = loans.cast<LoanContract?>().firstWhere(
       (item) => item?.id == widget.loanId,
       orElse: () => null,
@@ -75,6 +82,7 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
         ),
       );
     }
+    _accountId ??= finance.accounts.firstOrNull?.id;
 
     return Scaffold(
       appBar: const BrandAppBar(title: 'Registrar pagamento', showBack: true),
@@ -158,6 +166,27 @@ class _LoanPaymentPageState extends ConsumerState<LoanPaymentPage> {
                       child: Text(DateFormat('dd/MM/yyyy').format(_paidAt)),
                     ),
                   ),
+                  if (finance.accounts.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      initialValue: _accountId,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Conta usada no pagamento',
+                        prefixIcon: Icon(Icons.account_balance_outlined),
+                      ),
+                      items: [
+                        for (final account in finance.accounts)
+                          DropdownMenuItem(
+                            value: account.id,
+                            child: Text(account.name),
+                          ),
+                      ],
+                      validator: (value) =>
+                          value == null ? 'Selecione uma conta.' : null,
+                      onChanged: (value) => _accountId = value,
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   FilledButton.icon(
                     onPressed: _saving ? null : () => _save(loan),

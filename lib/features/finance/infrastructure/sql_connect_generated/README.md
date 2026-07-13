@@ -906,6 +906,497 @@ ref.execute();
 ```
 
 
+### CreateFinancialAccount
+#### Required Arguments
+```dart
+String spaceId = ...;
+String name = ...;
+String normalizedName = ...;
+FinancialAccountType type = ...;
+BigInt openingBalanceCents = ...;
+Timestamp openingBalanceAt = ...;
+String colorHex = ...;
+bool includeInTotal = ...;
+ClientConnector.instance.createFinancialAccount(
+  spaceId: spaceId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  openingBalanceCents: openingBalanceCents,
+  openingBalanceAt: openingBalanceAt,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateFinancialAccount, we created `CreateFinancialAccountBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateFinancialAccountVariablesBuilder {
+  ...
+   CreateFinancialAccountVariablesBuilder institutionName(String? t) {
+   _institutionName.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createFinancialAccount(
+  spaceId: spaceId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  openingBalanceCents: openingBalanceCents,
+  openingBalanceAt: openingBalanceAt,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+)
+.institutionName(institutionName)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateFinancialAccountData, CreateFinancialAccountVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createFinancialAccount(
+  spaceId: spaceId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  openingBalanceCents: openingBalanceCents,
+  openingBalanceAt: openingBalanceAt,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+);
+CreateFinancialAccountData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String name = ...;
+String normalizedName = ...;
+FinancialAccountType type = ...;
+BigInt openingBalanceCents = ...;
+Timestamp openingBalanceAt = ...;
+String colorHex = ...;
+bool includeInTotal = ...;
+
+final ref = ClientConnector.instance.createFinancialAccount(
+  spaceId: spaceId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  openingBalanceCents: openingBalanceCents,
+  openingBalanceAt: openingBalanceAt,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+).ref();
+ref.execute();
+```
+
+
+### UpdateFinancialAccount
+#### Required Arguments
+```dart
+String spaceId = ...;
+String accountId = ...;
+String name = ...;
+String normalizedName = ...;
+FinancialAccountType type = ...;
+String colorHex = ...;
+bool includeInTotal = ...;
+ClientConnector.instance.updateFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For UpdateFinancialAccount, we created `UpdateFinancialAccountBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class UpdateFinancialAccountVariablesBuilder {
+  ...
+   UpdateFinancialAccountVariablesBuilder institutionName(String? t) {
+   _institutionName.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.updateFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+)
+.institutionName(institutionName)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateFinancialAccountData, UpdateFinancialAccountVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.updateFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+);
+UpdateFinancialAccountData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String accountId = ...;
+String name = ...;
+String normalizedName = ...;
+FinancialAccountType type = ...;
+String colorHex = ...;
+bool includeInTotal = ...;
+
+final ref = ClientConnector.instance.updateFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+  name: name,
+  normalizedName: normalizedName,
+  type: type,
+  colorHex: colorHex,
+  includeInTotal: includeInTotal,
+).ref();
+ref.execute();
+```
+
+
+### ArchiveFinancialAccount
+#### Required Arguments
+```dart
+String spaceId = ...;
+String accountId = ...;
+ClientConnector.instance.archiveFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<ArchiveFinancialAccountData, ArchiveFinancialAccountVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.archiveFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+);
+ArchiveFinancialAccountData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String accountId = ...;
+
+final ref = ClientConnector.instance.archiveFinancialAccount(
+  spaceId: spaceId,
+  accountId: accountId,
+).ref();
+ref.execute();
+```
+
+
+### CreateAccountTransfer
+#### Required Arguments
+```dart
+String spaceId = ...;
+String fromAccountId = ...;
+String toAccountId = ...;
+BigInt amountCents = ...;
+Timestamp transferredAt = ...;
+String idempotencyKey = ...;
+ClientConnector.instance.createAccountTransfer(
+  spaceId: spaceId,
+  fromAccountId: fromAccountId,
+  toAccountId: toAccountId,
+  amountCents: amountCents,
+  transferredAt: transferredAt,
+  idempotencyKey: idempotencyKey,
+).execute();
+```
+
+#### Optional Arguments
+We return a builder for each query. For CreateAccountTransfer, we created `CreateAccountTransferBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class CreateAccountTransferVariablesBuilder {
+  ...
+   CreateAccountTransferVariablesBuilder notes(String? t) {
+   _notes.value = t;
+   return this;
+  }
+
+  ...
+}
+ClientConnector.instance.createAccountTransfer(
+  spaceId: spaceId,
+  fromAccountId: fromAccountId,
+  toAccountId: toAccountId,
+  amountCents: amountCents,
+  transferredAt: transferredAt,
+  idempotencyKey: idempotencyKey,
+)
+.notes(notes)
+.execute();
+```
+
+#### Return Type
+`execute()` returns a `OperationResult<CreateAccountTransferData, CreateAccountTransferVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.createAccountTransfer(
+  spaceId: spaceId,
+  fromAccountId: fromAccountId,
+  toAccountId: toAccountId,
+  amountCents: amountCents,
+  transferredAt: transferredAt,
+  idempotencyKey: idempotencyKey,
+);
+CreateAccountTransferData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String fromAccountId = ...;
+String toAccountId = ...;
+BigInt amountCents = ...;
+Timestamp transferredAt = ...;
+String idempotencyKey = ...;
+
+final ref = ClientConnector.instance.createAccountTransfer(
+  spaceId: spaceId,
+  fromAccountId: fromAccountId,
+  toAccountId: toAccountId,
+  amountCents: amountCents,
+  transferredAt: transferredAt,
+  idempotencyKey: idempotencyKey,
+).ref();
+ref.execute();
+```
+
+
+### CancelAccountTransfer
+#### Required Arguments
+```dart
+String spaceId = ...;
+String transferId = ...;
+ClientConnector.instance.cancelAccountTransfer(
+  spaceId: spaceId,
+  transferId: transferId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<CancelAccountTransferData, CancelAccountTransferVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.cancelAccountTransfer(
+  spaceId: spaceId,
+  transferId: transferId,
+);
+CancelAccountTransferData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String transferId = ...;
+
+final ref = ClientConnector.instance.cancelAccountTransfer(
+  spaceId: spaceId,
+  transferId: transferId,
+).ref();
+ref.execute();
+```
+
+
+### SetMonthlyBudget
+#### Required Arguments
+```dart
+String id = ...;
+String spaceId = ...;
+String categoryId = ...;
+DateTime referenceMonth = ...;
+BigInt limitAmountCents = ...;
+ClientConnector.instance.setMonthlyBudget(
+  id: id,
+  spaceId: spaceId,
+  categoryId: categoryId,
+  referenceMonth: referenceMonth,
+  limitAmountCents: limitAmountCents,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<SetMonthlyBudgetData, SetMonthlyBudgetVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.setMonthlyBudget(
+  id: id,
+  spaceId: spaceId,
+  categoryId: categoryId,
+  referenceMonth: referenceMonth,
+  limitAmountCents: limitAmountCents,
+);
+SetMonthlyBudgetData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String id = ...;
+String spaceId = ...;
+String categoryId = ...;
+DateTime referenceMonth = ...;
+BigInt limitAmountCents = ...;
+
+final ref = ClientConnector.instance.setMonthlyBudget(
+  id: id,
+  spaceId: spaceId,
+  categoryId: categoryId,
+  referenceMonth: referenceMonth,
+  limitAmountCents: limitAmountCents,
+).ref();
+ref.execute();
+```
+
+
+### DeleteMonthlyBudget
+#### Required Arguments
+```dart
+String spaceId = ...;
+String budgetId = ...;
+ClientConnector.instance.deleteMonthlyBudget(
+  spaceId: spaceId,
+  budgetId: budgetId,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<DeleteMonthlyBudgetData, DeleteMonthlyBudgetVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ClientConnector.instance.deleteMonthlyBudget(
+  spaceId: spaceId,
+  budgetId: budgetId,
+);
+DeleteMonthlyBudgetData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String spaceId = ...;
+String budgetId = ...;
+
+final ref = ClientConnector.instance.deleteMonthlyBudget(
+  spaceId: spaceId,
+  budgetId: budgetId,
+).ref();
+ref.execute();
+```
+
+
 ### CreateIncomeEntry
 #### Required Arguments
 ```dart
@@ -935,7 +1426,15 @@ The builder pattern allows Data Connect to distinguish between fields that haven
 ```dart
 class CreateIncomeEntryVariablesBuilder {
   ...
-   CreateIncomeEntryVariablesBuilder notes(String? t) {
+   CreateIncomeEntryVariablesBuilder categoryId(String? t) {
+   _categoryId.value = t;
+   return this;
+  }
+  CreateIncomeEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  CreateIncomeEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -952,6 +1451,8 @@ ClientConnector.instance.createIncomeEntry(
   competenceMonth: competenceMonth,
   idempotencyKey: idempotencyKey,
 )
+.categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```
@@ -1041,6 +1542,10 @@ class CreateScheduledIncomeEntryVariablesBuilder {
    _categoryId.value = t;
    return this;
   }
+  CreateScheduledIncomeEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
   CreateScheduledIncomeEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
@@ -1059,6 +1564,7 @@ ClientConnector.instance.createScheduledIncomeEntry(
   idempotencyKey: idempotencyKey,
 )
 .categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```
@@ -1146,7 +1652,11 @@ The builder pattern allows Data Connect to distinguish between fields that haven
 ```dart
 class CreateExpenseEntryVariablesBuilder {
   ...
-   CreateExpenseEntryVariablesBuilder notes(String? t) {
+   CreateExpenseEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  CreateExpenseEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -1164,6 +1674,7 @@ ClientConnector.instance.createExpenseEntry(
   competenceMonth: competenceMonth,
   idempotencyKey: idempotencyKey,
 )
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```
@@ -1254,7 +1765,11 @@ The builder pattern allows Data Connect to distinguish between fields that haven
 ```dart
 class CreatePlannedExpenseEntryVariablesBuilder {
   ...
-   CreatePlannedExpenseEntryVariablesBuilder notes(String? t) {
+   CreatePlannedExpenseEntryVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  CreatePlannedExpenseEntryVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -1272,6 +1787,7 @@ ClientConnector.instance.createPlannedExpenseEntry(
   competenceMonth: competenceMonth,
   idempotencyKey: idempotencyKey,
 )
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```
@@ -1366,6 +1882,10 @@ class CreateCashFlowRecurrenceSeriesVariablesBuilder {
    _categoryId.value = t;
    return this;
   }
+  CreateCashFlowRecurrenceSeriesVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
   CreateCashFlowRecurrenceSeriesVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
@@ -1401,6 +1921,7 @@ ClientConnector.instance.createCashFlowRecurrenceSeries(
   idempotencyKey: idempotencyKey,
 )
 .categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .endDate(endDate)
 .occurrenceLimit(occurrenceLimit)
@@ -1711,6 +2232,10 @@ class UpdateCashFlowOccurrenceVariablesBuilder {
    _categoryId.value = t;
    return this;
   }
+  UpdateCashFlowOccurrenceVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
   UpdateCashFlowOccurrenceVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
@@ -1739,6 +2264,7 @@ ClientConnector.instance.updateCashFlowOccurrence(
   status: status,
 )
 .categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .receivedAt(receivedAt)
 .paidAt(paidAt)
@@ -1838,6 +2364,10 @@ class UpdateCashFlowSeriesFromVariablesBuilder {
    _categoryId.value = t;
    return this;
   }
+  UpdateCashFlowSeriesFromVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
   UpdateCashFlowSeriesFromVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
@@ -1865,6 +2395,7 @@ ClientConnector.instance.updateCashFlowSeriesFrom(
   entryStatus: entryStatus,
 )
 .categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .receivedAt(receivedAt)
 .paidAt(paidAt)
@@ -1959,6 +2490,10 @@ class UpdateEntireCashFlowSeriesVariablesBuilder {
    _categoryId.value = t;
    return this;
   }
+  UpdateEntireCashFlowSeriesVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
   UpdateEntireCashFlowSeriesVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
@@ -1985,6 +2520,7 @@ ClientConnector.instance.updateEntireCashFlowSeries(
   entryStatus: entryStatus,
 )
 .categoryId(categoryId)
+.accountId(accountId)
 .notes(notes)
 .receivedAt(receivedAt)
 .paidAt(paidAt)
@@ -2878,7 +3414,11 @@ The builder pattern allows Data Connect to distinguish between fields that haven
 ```dart
 class RegisterInvoicePaymentVariablesBuilder {
   ...
-   RegisterInvoicePaymentVariablesBuilder notes(String? t) {
+   RegisterInvoicePaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  RegisterInvoicePaymentVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -2893,6 +3433,7 @@ ClientConnector.instance.registerInvoicePayment(
   idempotencyKey: idempotencyKey,
   resultingStatus: resultingStatus,
 )
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```
@@ -2960,7 +3501,29 @@ ClientConnector.instance.registerFullInvoicePayment(
 ).execute();
 ```
 
+#### Optional Arguments
+We return a builder for each query. For RegisterFullInvoicePayment, we created `RegisterFullInvoicePaymentBuilder`. For queries and mutations with optional parameters, we return a builder class.
+The builder pattern allows Data Connect to distinguish between fields that haven't been set and fields that have been set to null. A field can be set by calling its respective setter method like below:
+```dart
+class RegisterFullInvoicePaymentVariablesBuilder {
+  ...
+   RegisterFullInvoicePaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
 
+  ...
+}
+ClientConnector.instance.registerFullInvoicePayment(
+  spaceId: spaceId,
+  invoiceId: invoiceId,
+  amountCents: amountCents,
+  paidAt: paidAt,
+  idempotencyKey: idempotencyKey,
+)
+.accountId(accountId)
+.execute();
+```
 
 #### Return Type
 `execute()` returns a `OperationResult<RegisterFullInvoicePaymentData, RegisterFullInvoicePaymentVariables>`
@@ -3220,7 +3783,11 @@ The builder pattern allows Data Connect to distinguish between fields that haven
 ```dart
 class RegisterLoanPaymentVariablesBuilder {
   ...
-   RegisterLoanPaymentVariablesBuilder notes(String? t) {
+   RegisterLoanPaymentVariablesBuilder accountId(String? t) {
+   _accountId.value = t;
+   return this;
+  }
+  RegisterLoanPaymentVariablesBuilder notes(String? t) {
    _notes.value = t;
    return this;
   }
@@ -3236,6 +3803,7 @@ ClientConnector.instance.registerLoanPayment(
   idempotencyKey: idempotencyKey,
   resultingStatus: resultingStatus,
 )
+.accountId(accountId)
 .notes(notes)
 .execute();
 ```

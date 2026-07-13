@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/money/money.dart';
 import '../domain/cash_flow.dart';
 import '../domain/finance_models.dart';
+import '../domain/financial_planning.dart';
 import 'finance_repository.dart';
 
 final financeRepositoryProvider = Provider<FinanceRepository>((ref) {
@@ -40,6 +41,10 @@ final class FinanceState {
     required this.notificationSettings,
     required this.isLoading,
     required this.errorMessage,
+    required this.accounts,
+    required this.accountTransfers,
+    required this.monthlyBudgets,
+    required this.accountSettlements,
   });
 
   final bool hasFinancialSpace;
@@ -66,10 +71,32 @@ final class FinanceState {
   final NotificationSettings notificationSettings;
   final bool isLoading;
   final String? errorMessage;
+  final List<FinancialAccount> accounts;
+  final List<AccountTransfer> accountTransfers;
+  final List<MonthlyBudget> monthlyBudgets;
+  final List<AccountSettlement> accountSettlements;
 
   bool get notificationsEnabled => notificationSettings.enabled;
   bool get canEdit => currentRole != MembershipRole.viewer;
   bool get isOwner => currentRole == MembershipRole.owner;
+
+  FinancialPosition financialPosition([DateTime? asOf]) =>
+      const AccountBalanceCalculator().calculate(
+        accounts: accounts,
+        entries: cashFlowEntries,
+        transfers: accountTransfers,
+        settlements: accountSettlements,
+        asOf: asOf ?? DateTime.now(),
+      );
+
+  List<BudgetProgress> budgetProgress([DateTime? referenceMonth]) =>
+      const MonthlyBudgetCalculator().calculate(
+        budgets: monthlyBudgets,
+        entries: cashFlowEntries,
+        purchases: purchases,
+        installments: purchaseInstallments,
+        referenceMonth: referenceMonth ?? DateTime.now(),
+      );
 
   Money get totalLimit =>
       cards.fold(const Money.zero(), (total, card) => total + card.limit);
@@ -127,6 +154,10 @@ final class FinanceState {
     bool? isLoading,
     String? errorMessage,
     bool clearError = false,
+    List<FinancialAccount>? accounts,
+    List<AccountTransfer>? accountTransfers,
+    List<MonthlyBudget>? monthlyBudgets,
+    List<AccountSettlement>? accountSettlements,
   }) => FinanceState(
     hasFinancialSpace: hasFinancialSpace ?? this.hasFinancialSpace,
     spaceId: clearSpaceId ? null : spaceId ?? this.spaceId,
@@ -152,6 +183,10 @@ final class FinanceState {
     notificationSettings: notificationSettings ?? this.notificationSettings,
     isLoading: isLoading ?? this.isLoading,
     errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+    accounts: accounts ?? this.accounts,
+    accountTransfers: accountTransfers ?? this.accountTransfers,
+    monthlyBudgets: monthlyBudgets ?? this.monthlyBudgets,
+    accountSettlements: accountSettlements ?? this.accountSettlements,
   );
 }
 
@@ -204,6 +239,10 @@ final class FinanceController extends Notifier<FinanceState> {
       ),
       isLoading: false,
       errorMessage: null,
+      accounts: const [],
+      accountTransfers: const [],
+      monthlyBudgets: const [],
+      accountSettlements: const [],
     );
   }
 
@@ -406,6 +445,7 @@ final class FinanceController extends Notifier<FinanceState> {
     CashFlowStatus? status,
     RecurrenceRule? recurrence,
     String? category,
+    String? accountId,
     String? notes,
   }) async {
     final spaceId = _requireSpaceId();
@@ -433,6 +473,7 @@ final class FinanceController extends Notifier<FinanceState> {
         status: effectiveStatus,
         recurrence: recurrence,
         categoryId: categoryId,
+        accountId: accountId,
         notes: notes,
       );
       await _loadWorkspace(spaceId);
@@ -452,6 +493,7 @@ final class FinanceController extends Notifier<FinanceState> {
     required CashFlowStatus status,
     required RecurrenceScope scope,
     String? category,
+    String? accountId,
     String? notes,
   }) async {
     final spaceId = _requireSpaceId();
@@ -480,6 +522,7 @@ final class FinanceController extends Notifier<FinanceState> {
         status: status,
         scope: entry.isRecurring ? scope : RecurrenceScope.single,
         categoryId: categoryId,
+        accountId: accountId ?? entry.accountId,
         notes: notes,
       );
       await _loadWorkspace(spaceId);
@@ -538,6 +581,155 @@ final class FinanceController extends Notifier<FinanceState> {
 
   Future<void> cancelCashFlowEntry(String entryId) =>
       deleteCashFlowEntry(entryId, RecurrenceScope.single);
+
+  Future<void> addAccount({
+    required String name,
+    required FinancialAccountType type,
+    required Money openingBalance,
+    required DateTime openingBalanceAt,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  }) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.createAccount(
+        spaceId: spaceId,
+        name: name,
+        type: type,
+        openingBalance: openingBalance,
+        openingBalanceAt: openingBalanceAt,
+        colorValue: colorValue,
+        includeInTotal: includeInTotal,
+        institutionName: institutionName,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> updateAccount({
+    required String accountId,
+    required String name,
+    required FinancialAccountType type,
+    required int colorValue,
+    required bool includeInTotal,
+    String? institutionName,
+  }) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.updateAccount(
+        spaceId: spaceId,
+        accountId: accountId,
+        name: name,
+        type: type,
+        colorValue: colorValue,
+        includeInTotal: includeInTotal,
+        institutionName: institutionName,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> archiveAccount(String accountId) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.archiveAccount(spaceId: spaceId, accountId: accountId);
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> transferBetweenAccounts({
+    required String fromAccountId,
+    required String toAccountId,
+    required Money amount,
+    required DateTime transferredAt,
+    String? notes,
+  }) async {
+    if (fromAccountId == toAccountId) {
+      throw StateError('Selecione contas diferentes para a transferência.');
+    }
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.createAccountTransfer(
+        spaceId: spaceId,
+        fromAccountId: fromAccountId,
+        toAccountId: toAccountId,
+        amount: amount,
+        transferredAt: transferredAt,
+        notes: notes,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> cancelTransfer(String transferId) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.cancelAccountTransfer(
+        spaceId: spaceId,
+        transferId: transferId,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> saveMonthlyBudget({
+    required String category,
+    required DateTime referenceMonth,
+    required Money limit,
+  }) async {
+    final categoryId = state.categoryIdsByName[category];
+    if (categoryId == null) throw StateError('Categoria não encontrada.');
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.setMonthlyBudget(
+        spaceId: spaceId,
+        categoryId: categoryId,
+        referenceMonth: DateTime(referenceMonth.year, referenceMonth.month),
+        limit: limit,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteMonthlyBudget(String budgetId) async {
+    final spaceId = _requireSpaceId();
+    _requireEditor();
+    try {
+      await _repository.deleteMonthlyBudget(
+        spaceId: spaceId,
+        budgetId: budgetId,
+      );
+      await _loadWorkspace(spaceId);
+    } catch (error) {
+      _recordError(error);
+      rethrow;
+    }
+  }
 
   Future<void> updateCategory(String categoryId, String name) async {
     final spaceId = _requireSpaceId();
@@ -722,6 +914,7 @@ final class FinanceController extends Notifier<FinanceState> {
     required String invoiceId,
     required Money amount,
     DateTime? paidAt,
+    String? accountId,
   }) async {
     final spaceId = _requireSpaceId();
     _requireEditor();
@@ -735,6 +928,7 @@ final class FinanceController extends Notifier<FinanceState> {
         amount: allowed,
         pendingBeforePayment: invoice.pending,
         paidAt: paidAt ?? DateTime.now(),
+        accountId: accountId,
       );
       await _loadWorkspace(spaceId);
     } catch (error) {
@@ -774,6 +968,7 @@ final class FinanceController extends Notifier<FinanceState> {
     required String loanId,
     required Money amount,
     DateTime? paidAt,
+    String? accountId,
   }) async {
     final spaceId = _requireSpaceId();
     _requireEditor();
@@ -792,6 +987,7 @@ final class FinanceController extends Notifier<FinanceState> {
       amount: allowed,
       pendingBeforePayment: installment.pending,
       paidAt: paidAt ?? DateTime.now(),
+      accountId: accountId,
     );
     await _loadWorkspace(spaceId);
   }
@@ -843,6 +1039,10 @@ final class FinanceController extends Notifier<FinanceState> {
       categoryIdsByName: const {},
       members: const [],
       invitations: const [],
+      accounts: const [],
+      accountTransfers: const [],
+      monthlyBudgets: const [],
+      accountSettlements: const [],
       clearError: true,
     );
   }
@@ -869,6 +1069,10 @@ final class FinanceController extends Notifier<FinanceState> {
       invitations: snapshot.invitations,
       currentRole: snapshot.currentRole,
       notificationSettings: snapshot.notificationSettings,
+      accounts: snapshot.accounts,
+      accountTransfers: snapshot.accountTransfers,
+      monthlyBudgets: snapshot.monthlyBudgets,
+      accountSettlements: snapshot.accountSettlements,
       isLoading: false,
       clearError: true,
     );

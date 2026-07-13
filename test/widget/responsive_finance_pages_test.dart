@@ -10,9 +10,12 @@ import 'package:nossa_grana/features/finance/application/finance_controller.dart
 import 'package:nossa_grana/features/finance/application/finance_repository.dart';
 import 'package:nossa_grana/features/finance/domain/cash_flow.dart';
 import 'package:nossa_grana/features/finance/domain/finance_models.dart';
+import 'package:nossa_grana/features/finance/domain/financial_planning.dart';
+import 'package:nossa_grana/features/finance/presentation/accounts_page.dart';
 import 'package:nossa_grana/features/finance/presentation/add_card_page.dart';
 import 'package:nossa_grana/features/finance/presentation/add_cash_flow_entry_page.dart';
 import 'package:nossa_grana/features/finance/presentation/cards_page.dart';
+import 'package:nossa_grana/features/finance/presentation/budgets_page.dart';
 import 'package:nossa_grana/features/finance/presentation/members_page.dart';
 
 void main() {
@@ -151,6 +154,35 @@ void main() {
     container.dispose();
   });
 
+  testWidgets('accounts and budgets remain readable at 320 px', (tester) async {
+    useCompactViewport(tester);
+    final container = await configuredContainer();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: AccountsPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Saldo atual'), findsOneWidget);
+    expect(find.text('Conta conjunta'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: BudgetsPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Limites por categoria'), findsOneWidget);
+    expect(find.text('Mercado'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    container.dispose();
+  });
+
   testWidgets('cash flow form fits a 320 px viewport', (tester) async {
     useCompactViewport(tester);
     final container = await configuredContainer();
@@ -251,6 +283,7 @@ final class _ResponsiveFinanceRepository implements FinanceRepository {
             competenceMonth: DateTime(2026, 7),
             status: CashFlowStatus.confirmed,
             createdBy: 'Guilherme',
+            accountId: 'account-1',
           ),
         ],
         cashFlowOverview: CashFlowOverview.empty(DateTime(2026, 7)),
@@ -289,6 +322,27 @@ final class _ResponsiveFinanceRepository implements FinanceRepository {
           loanDue: true,
           daysBefore: 3,
         ),
+        accounts: [
+          FinancialAccount(
+            id: 'account-1',
+            name: 'Conta conjunta',
+            institutionName: 'Nossa conta',
+            type: FinancialAccountType.checking,
+            openingBalance: Money.fromCents(100000),
+            openingBalanceAt: DateTime(2026, 7, 1),
+            colorValue: 0xFF3525CD,
+            includeInTotal: true,
+          ),
+        ],
+        monthlyBudgets: [
+          MonthlyBudget(
+            id: 'budget-1',
+            categoryId: 'category-market',
+            categoryName: 'Mercado',
+            referenceMonth: DateTime(DateTime.now().year, DateTime.now().month),
+            limit: Money.fromCents(80000),
+          ),
+        ],
       );
 
   @override

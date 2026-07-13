@@ -10,10 +10,14 @@ import '../../features/auth/presentation/login_page.dart';
 import '../../features/dashboard/presentation/app_shell.dart';
 import '../../features/dashboard/presentation/analytics_page.dart';
 import '../../features/finance/presentation/add_card_page.dart';
+import '../../features/finance/presentation/add_account_page.dart';
+import '../../features/finance/presentation/account_transfer_page.dart';
+import '../../features/finance/presentation/accounts_page.dart';
 import '../../features/finance/presentation/add_cash_flow_entry_page.dart';
 import '../../features/finance/presentation/add_loan_page.dart';
 import '../../features/finance/presentation/add_purchase_page.dart';
 import '../../features/finance/presentation/categories_page.dart';
+import '../../features/finance/presentation/budgets_page.dart';
 import '../../features/finance/presentation/card_detail_page.dart';
 import '../../features/finance/presentation/cash_flow_entry_detail_page.dart';
 import '../../features/finance/presentation/edit_card_page.dart';
@@ -141,6 +145,30 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) =>
           _animatedPage(state, const IncomesPage()),
+    ),
+    GoRoute(
+      path: '/accounts',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const AccountsPage()),
+    ),
+    GoRoute(
+      path: '/accounts/new',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const AddAccountPage()),
+    ),
+    GoRoute(
+      path: '/accounts/transfer',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const AccountTransferPage()),
+    ),
+    GoRoute(
+      path: '/budgets',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const BudgetsPage()),
     ),
     GoRoute(
       path: '/new-income',
