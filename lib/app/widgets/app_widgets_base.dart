@@ -29,8 +29,11 @@ class AppContent extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        child: Padding(padding: resolvedPadding, child: child),
+        constraints: BoxConstraints(minWidth: 0, maxWidth: maxWidth),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(padding: resolvedPadding, child: child),
+        ),
       ),
     );
   }
@@ -362,7 +365,8 @@ class SectionHeading extends StatelessWidget {
     };
     final resolvedActionLabel =
         actionLabel ?? (historyDestination == null ? null : 'Ver mais');
-    final resolvedOnAction = onAction ??
+    final resolvedOnAction =
+        onAction ??
         (historyDestination == null
             ? null
             : () {

@@ -328,31 +328,41 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Seu fluxo em perspectiva',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Compare receitas, cartões e empréstimos em qualquer período.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  FilledButton.tonalIcon(
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final copy = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Seu fluxo em perspectiva',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Compare receitas, cartões e empréstimos em qualquer período.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  );
+                  final button = FilledButton.tonalIcon(
                     onPressed: () => _openFilters(categories, finance.cards),
                     icon: const Icon(Icons.tune_rounded, size: 18),
                     label: const Text('Filtrar'),
-                  ),
-                ],
+                  );
+                  if (constraints.maxWidth < 420) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [copy, const SizedBox(height: 14), button],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      Expanded(child: copy),
+                      const SizedBox(width: 12),
+                      button,
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 18),
               SingleChildScrollView(
@@ -469,9 +479,11 @@ class _AnalyticsSummary extends StatelessWidget {
               color: Color(0xFFDAD7FF),
             ),
             SizedBox(width: 8),
-            Text(
-              'Saldo previsto no período',
-              style: TextStyle(color: Color(0xFFDAD7FF), fontSize: 14),
+            Expanded(
+              child: Text(
+                'Saldo previsto no período',
+                style: TextStyle(color: Color(0xFFDAD7FF), fontSize: 14),
+              ),
             ),
           ],
         ),

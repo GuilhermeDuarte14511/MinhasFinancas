@@ -9,6 +9,7 @@ import '../../../core/money/money.dart';
 import '../../finance/application/finance_controller.dart';
 import '../../finance/domain/cash_flow.dart';
 import '../../finance/domain/finance_models.dart';
+import '../../finance/presentation/cash_flow_labels.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -219,10 +220,195 @@ class DashboardPage extends ConsumerWidget {
               ),
               const SizedBox(height: 10),
               _DueItemsCard(items: dueItems.take(4).toList()),
+              if (finance.cashFlowEntries.isNotEmpty) ...[
+                const SizedBox(height: 28),
+                const SectionHeading(title: 'Movimentações recentes'),
+                const SizedBox(height: 8),
+                _RecentCashFlowList(entries: finance.cashFlowEntries.take(5)),
+              ],
+              if (finance.activities.isNotEmpty) ...[
+                const SizedBox(height: 28),
+                const SectionHeading(title: 'Atividades do espaço'),
+                const SizedBox(height: 12),
+                for (final activity in finance.activities.take(3)) ...[
+                  _ActivityTile(activity: activity),
+                  const SizedBox(height: 12),
+                ],
+              ],
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RecentCashFlowList extends StatelessWidget {
+  const _RecentCashFlowList({required this.entries});
+
+  final Iterable<CashFlowEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = entries.toList();
+    return Column(
+      children: [
+        for (var index = 0; index < items.length; index++) ...[
+          _CashFlowRow(entry: items[index]),
+          if (index < items.length - 1) const Divider(height: 1),
+        ],
+      ],
+    );
+  }
+}
+
+class _CashFlowRow extends StatelessWidget {
+  const _CashFlowRow({required this.entry});
+
+  final CashFlowEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final income = entry.direction == CashFlowDirection.income;
+    final cancelled = entry.status == CashFlowStatus.cancelled;
+    final color = cancelled
+        ? AppColors.textMuted
+        : income
+        ? AppColors.secondary
+        : AppColors.error;
+    final statusLabel = switch (entry.status) {
+      CashFlowStatus.scheduled => income ? 'Prevista' : 'Pendente',
+      CashFlowStatus.confirmed => income ? 'Recebida' : 'Paga',
+      CashFlowStatus.cancelled => 'Cancelada',
+    };
+    final effectiveDate = entry.status == CashFlowStatus.scheduled
+        ? entry.occurredAt
+        : income
+        ? entry.receivedAt ?? entry.occurredAt
+        : entry.paidAt ?? entry.occurredAt;
+    final formattedDate = DateFormat(
+      "d 'de' MMM",
+      'pt_BR',
+    ).format(effectiveDate);
+    final signedValue = '${income ? '+' : '−'} ${entry.amount.format()}';
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () => context.push('/cash-flow/${entry.id}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 21,
+              backgroundColor: color.withValues(alpha: .1),
+              child: Icon(cashFlowKindIcon(entry.kind), size: 21, color: color),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.description,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            decoration: cancelled
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            signedValue,
+                            style: TextStyle(
+                              color: color,
+                              fontWeight: FontWeight.w700,
+                              decoration: cancelled
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '$statusLabel • ${cashFlowKindLabel(entry.kind)} • $formattedDate',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActivityTile extends StatelessWidget {
+  const _ActivityTile({required this.activity});
+
+  final ActivityEntry activity;
+
+  @override
+  Widget build(BuildContext context) {
+    final initial = activity.person.trim().isEmpty
+        ? '?'
+        : activity.person.characters.first.toUpperCase();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          backgroundColor: AppColors.surfaceContainer,
+          child: Text(initial),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceLow,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${activity.person} ',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      TextSpan(text: activity.description),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  activity.whenLabel,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nossa_grana/core/money/money.dart';
 import 'package:nossa_grana/features/dashboard/presentation/app_shell.dart';
+import 'package:nossa_grana/features/dashboard/presentation/analytics_page.dart';
 import 'package:nossa_grana/features/dashboard/presentation/dashboard_page.dart';
 import 'package:nossa_grana/features/finance/application/finance_controller.dart';
 import 'package:nossa_grana/features/finance/application/finance_repository.dart';
@@ -118,7 +120,32 @@ void main() {
       find.textContaining('Movimentação prevista por semana'),
       findsOneWidget,
     );
+    expect(find.text('Movimentações recentes'), findsOneWidget);
+    expect(find.text('Atividades do espaço'), findsOneWidget);
     expect(find.textContaining('Fluxo em '), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    container.dispose();
+  });
+
+  testWidgets('analytics page remains readable at 320 px', (tester) async {
+    useCompactViewport(tester);
+    final container = await configuredContainer();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: AnalyticsPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Seu fluxo em perspectiva'), findsOneWidget);
+    expect(find.text('Filtrar'), findsOneWidget);
+    expect(
+      tester.getSize(find.text('Seu fluxo em perspectiva')).width,
+      greaterThan(120),
+    );
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();
@@ -212,13 +239,32 @@ final class _ResponsiveFinanceRepository implements FinanceRepository {
         colorValue: 0xFF3525CD,
         cards: const [],
         purchases: const [],
-        cashFlowEntries: const [],
+        cashFlowEntries: [
+          CashFlowEntry(
+            id: 'cash-flow-1',
+            direction: CashFlowDirection.income,
+            kind: CashFlowKind.salary,
+            paymentMethod: CashFlowPaymentMethod.pix,
+            description: 'Salário do mês',
+            amount: Money.fromCents(350000),
+            occurredAt: DateTime(2026, 7, 5),
+            competenceMonth: DateTime(2026, 7),
+            status: CashFlowStatus.confirmed,
+            createdBy: 'Guilherme',
+          ),
+        ],
         cashFlowOverview: CashFlowOverview.empty(DateTime(2026, 7)),
         purchaseInstallments: const [],
         invoices: const [],
         loans: const [],
         loanInstallments: const [],
-        activities: const [],
+        activities: const [
+          ActivityEntry(
+            person: 'Guilherme',
+            description: 'registrou uma entrada',
+            whenLabel: 'Hoje, 09:30',
+          ),
+        ],
         categories: const ['Outros'],
         categoryIdsByName: const {'Outros': 'category-other'},
         members: const [
