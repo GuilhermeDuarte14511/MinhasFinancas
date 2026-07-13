@@ -4,7 +4,8 @@ import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import '../../../core/money/money.dart';
 import '../domain/cash_flow.dart';
-import 'sql_connect_generated/client.dart' hide CashFlowDirection, CashFlowKind, CashFlowPaymentMethod, CashFlowStatus;
+import 'sql_connect_generated/client.dart'
+    hide CashFlowDirection, CashFlowKind, CashFlowPaymentMethod, CashFlowStatus;
 
 final class WorkspaceHistoryPage<T> {
   const WorkspaceHistoryPage({
@@ -52,10 +53,10 @@ final class WorkspaceHistoryDataSource {
       limit: requestedLimit,
       offset: offset,
     );
-    final Deserializer<_CashFlowHistoryResponse> dataDeserializer =
-        (dynamic json) => _CashFlowHistoryResponse.fromJson(jsonDecode(json));
-    final Serializer<_WorkspaceHistoryVariables> varsSerializer =
-        (_WorkspaceHistoryVariables value) => jsonEncode(value.toJson());
+    _CashFlowHistoryResponse dataDeserializer(dynamic json) =>
+        _CashFlowHistoryResponse.fromJson(jsonDecode(json));
+    String varsSerializer(_WorkspaceHistoryVariables value) =>
+        jsonEncode(value.toJson());
 
     final result = await ClientConnector.instance.dataConnect
         .query(
@@ -88,10 +89,10 @@ final class WorkspaceHistoryDataSource {
       limit: requestedLimit,
       offset: offset,
     );
-    final Deserializer<_ActivityHistoryResponse> dataDeserializer =
-        (dynamic json) => _ActivityHistoryResponse.fromJson(jsonDecode(json));
-    final Serializer<_WorkspaceHistoryVariables> varsSerializer =
-        (_WorkspaceHistoryVariables value) => jsonEncode(value.toJson());
+    _ActivityHistoryResponse dataDeserializer(dynamic json) =>
+        _ActivityHistoryResponse.fromJson(jsonDecode(json));
+    String varsSerializer(_WorkspaceHistoryVariables value) =>
+        jsonEncode(value.toJson());
 
     final result = await ClientConnector.instance.dataConnect
         .query(
@@ -140,11 +141,7 @@ final class _CashFlowHistoryResponse {
     final values = map['cashFlowEntries'] as List<dynamic>? ?? const [];
     return _CashFlowHistoryResponse(
       values
-          .map(
-            (item) => _cashFlowEntryFromJson(
-              item as Map<String, dynamic>,
-            ),
-          )
+          .map((item) => _cashFlowEntryFromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -160,11 +157,7 @@ final class _ActivityHistoryResponse {
     final values = map['auditEvents'] as List<dynamic>? ?? const [];
     return _ActivityHistoryResponse(
       values
-          .map(
-            (item) => _activityFromJson(
-              item as Map<String, dynamic>,
-            ),
-          )
+          .map((item) => _activityFromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -174,24 +167,18 @@ final class _ActivityHistoryResponse {
 
 CashFlowEntry _cashFlowEntryFromJson(Map<String, dynamic> json) {
   final category = json['category'] as Map<String, dynamic>?;
-  final recurrenceSeries =
-      json['recurrenceSeries'] as Map<String, dynamic>?;
-  final createdByUser =
-      json['createdByUser'] as Map<String, dynamic>?;
+  final recurrenceSeries = json['recurrenceSeries'] as Map<String, dynamic>?;
+  final createdByUser = json['createdByUser'] as Map<String, dynamic>?;
 
   return CashFlowEntry(
     id: json['id'] as String,
     direction: _cashFlowDirection(json['direction'] as String),
     kind: _cashFlowKind(json['kind'] as String),
-    paymentMethod: _cashFlowPaymentMethod(
-      json['paymentMethod'] as String,
-    ),
+    paymentMethod: _cashFlowPaymentMethod(json['paymentMethod'] as String),
     description: json['description'] as String,
     amount: Money.fromCents(_intFromJson(json['amountCents'])),
     occurredAt: _timestampFromJson(json['occurredAt']),
-    competenceMonth: DateTime.parse(
-      json['competenceMonth'].toString(),
-    ),
+    competenceMonth: DateTime.parse(json['competenceMonth'].toString()),
     status: _cashFlowStatus(json['status'] as String),
     createdBy:
         (createdByUser?['displayName'] as String?)?.trim().isNotEmpty == true
@@ -204,14 +191,11 @@ CashFlowEntry _cashFlowEntryFromJson(Map<String, dynamic> json) {
     sourceEntityId: json['sourceEntityId'] as String?,
     recurrenceSeriesId: recurrenceSeries?['id'] as String?,
     occurrenceIndex: json['occurrenceIndex'] as int?,
-    isRecurrenceException:
-        json['isRecurrenceException'] as bool? ?? false,
+    isRecurrenceException: json['isRecurrenceException'] as bool? ?? false,
     receivedAt: json['receivedAt'] == null
         ? null
         : _timestampFromJson(json['receivedAt']),
-    paidAt: json['paidAt'] == null
-        ? null
-        : _timestampFromJson(json['paidAt']),
+    paidAt: json['paidAt'] == null ? null : _timestampFromJson(json['paidAt']),
   );
 }
 
@@ -236,9 +220,7 @@ DateTime _timestampFromJson(dynamic value) =>
     Timestamp.fromJson(value).toDateTime().toLocal();
 
 CashFlowDirection _cashFlowDirection(String value) =>
-    value == 'INCOME'
-    ? CashFlowDirection.income
-    : CashFlowDirection.expense;
+    value == 'INCOME' ? CashFlowDirection.income : CashFlowDirection.expense;
 
 CashFlowKind _cashFlowKind(String value) => switch (value) {
   'SALARY' => CashFlowKind.salary,

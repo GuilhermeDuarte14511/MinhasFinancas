@@ -8,6 +8,7 @@ import '../../features/auth/presentation/create_account_page.dart';
 import '../../features/auth/presentation/email_verification_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/dashboard/presentation/app_shell.dart';
+import '../../features/dashboard/presentation/analytics_page.dart';
 import '../../features/finance/presentation/add_card_page.dart';
 import '../../features/finance/presentation/add_cash_flow_entry_page.dart';
 import '../../features/finance/presentation/add_loan_page.dart';
@@ -18,6 +19,7 @@ import '../../features/finance/presentation/cash_flow_entry_detail_page.dart';
 import '../../features/finance/presentation/edit_card_page.dart';
 import '../../features/finance/presentation/help_page.dart';
 import '../../features/finance/presentation/invoice_detail_page.dart';
+import '../../features/finance/presentation/incomes_page.dart';
 import '../../features/finance/presentation/loans_page.dart';
 import '../../features/finance/presentation/loan_detail_page.dart';
 import '../../features/finance/presentation/loan_payment_page.dart';
@@ -127,6 +129,18 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) =>
           _animatedPage(state, const AddPurchasePage()),
+    ),
+    GoRoute(
+      path: '/analytics',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const AnalyticsPage()),
+    ),
+    GoRoute(
+      path: '/incomes',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          _animatedPage(state, const IncomesPage()),
     ),
     GoRoute(
       path: '/new-income',

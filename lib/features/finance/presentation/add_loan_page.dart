@@ -327,7 +327,8 @@ DateTime _defaultFirstPaymentDate() {
 
 String _friendlyError(Object error) {
   if (error is StateError) return error.message;
-  if (error is ArgumentError)
+  if (error is ArgumentError) {
     return error.message?.toString() ?? error.toString();
+  }
   return 'Não foi possível salvar o empréstimo. Tente novamente.';
 }

@@ -19,6 +19,18 @@ class MorePage extends ConsumerWidget {
     final email = authenticatedUser?.email ?? finance.email;
     final items = <_MenuItem>[
       const _MenuItem(
+        icon: Icons.query_stats_rounded,
+        title: 'Análises e relatórios',
+        subtitle: 'Compare períodos, cartões e categorias',
+        route: '/analytics',
+      ),
+      const _MenuItem(
+        icon: Icons.savings_outlined,
+        title: 'Receitas',
+        subtitle: 'Acompanhe entradas previstas e recebidas',
+        route: '/incomes',
+      ),
+      const _MenuItem(
         icon: Icons.payments_outlined,
         title: 'Empréstimos',
         subtitle: 'Simule ou acompanhe seus contratos',
@@ -27,7 +39,7 @@ class MorePage extends ConsumerWidget {
       const _MenuItem(
         icon: Icons.category_outlined,
         title: 'Categorias',
-        subtitle: 'Organize seus gastos',
+        subtitle: 'Organize seus gastos e receitas',
         route: '/categories',
       ),
       const _MenuItem(

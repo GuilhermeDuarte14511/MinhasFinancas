@@ -110,9 +110,8 @@ List<_CommitmentItem> _buildCommitments(FinanceState finance) {
       continue;
     }
     final reference = toBeginningOfSentenceCase(
-          DateFormat('MMMM yyyy', 'pt_BR').format(invoice.referenceMonth),
-        ) ??
-        '';
+      DateFormat('MMMM yyyy', 'pt_BR').format(invoice.referenceMonth),
+    );
     items.add(
       _CommitmentItem(
         kind: _CommitmentKind.invoice,
@@ -128,7 +127,8 @@ List<_CommitmentItem> _buildCommitments(FinanceState finance) {
   final loansById = {for (final loan in finance.loans) loan.id: loan};
   for (final installment in finance.loanInstallments) {
     final loan = loansById[installment.loanId];
-    final ignored = installment.status == LoanInstallmentStatus.cancelled ||
+    final ignored =
+        installment.status == LoanInstallmentStatus.cancelled ||
         installment.status == LoanInstallmentStatus.paid;
     if (loan == null || installment.pending.cents <= 0 || ignored) continue;
 
@@ -318,9 +318,8 @@ class _MonthHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = toBeginningOfSentenceCase(
-          DateFormat('MMMM yyyy', 'pt_BR').format(month),
-        ) ??
-        '';
+      DateFormat('MMMM yyyy', 'pt_BR').format(month),
+    );
     return Row(
       children: [
         Expanded(

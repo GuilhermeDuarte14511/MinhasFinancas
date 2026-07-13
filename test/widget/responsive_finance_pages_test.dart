@@ -112,9 +112,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Resultado de'), findsOneWidget);
-    expect(find.text('Fluxo em 2026'), findsOneWidget);
-    expect(find.text('Desde o primeiro registro'), findsOneWidget);
+    expect(find.textContaining('Visão de'), findsOneWidget);
+    expect(find.textContaining('Fluxo de caixa de'), findsOneWidget);
+    expect(
+      find.textContaining('Movimentação prevista por semana'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Fluxo em '), findsNothing);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();

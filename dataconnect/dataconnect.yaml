@@ -8,5 +8,5 @@ schemas:
         database: "minhasfinancasofc-database"
         cloudSql:
           instanceId: "minhasfinancasofc-instance"
-          schemaValidation: "COMPATIBLE"
+          schemaValidation: "STRICT"
 connectorDirs: ["./connectors/client"]
